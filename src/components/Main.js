@@ -51,6 +51,13 @@ const Main = () => {
         console.log('submit hit', searchVal)
     }
 
+    const filterOnHand = (event) => {
+        setSearchBy(event.target.name)
+        setActiveSearchVal(event.target.value)
+        getData(`${API_URL}parts/?format=json&${searchBy}=${activeSearchVal}`)
+        console.log('filter hit', searchBy)
+    }
+
     const handlePost = () => {
         fetch(`${API_URL}parts/`, {
             method: 'POST',
@@ -95,8 +102,8 @@ const Main = () => {
                 <UncontrolledDropdown className="me-2">
                     <DropdownToggle caret> Count </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem>High</DropdownItem>
-                        <DropdownItem>Low</DropdownItem>
+                        <DropdownItem name='onHandDec' value='high' onClick={filterOnHand}>High</DropdownItem>
+                        <DropdownItem name='onHandAce' value='low' onClick={filterOnHand}>Low</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
