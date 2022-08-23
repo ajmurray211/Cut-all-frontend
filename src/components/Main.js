@@ -3,7 +3,7 @@ import Part from "./Part";
 import {
     DropdownToggle, DropdownMenu, DropdownItem, Button,
     UncontrolledDropdown, Modal, ModalBody, ModalFooter, ModalHeader,
-    Form, FormGroup, Label, Input
+    Form, FormGroup, Label, Input, Spinner
 } from 'reactstrap';
 import axios from "axios";
 
@@ -21,6 +21,7 @@ const Main = () => {
     // const API_URL = 'http://0.0.0.0:5000/'
 
     const getData = (url) => {
+        setLoading(true)
         axios
             .get(url)
             .then((response) => setParts(response.data))
@@ -106,7 +107,7 @@ const Main = () => {
             </Modal>
 
             <ul>
-                {mappedParts}
+                {loading ?  <Spinner animation="border" /> :mappedParts}
             </ul>
         </>
     );
