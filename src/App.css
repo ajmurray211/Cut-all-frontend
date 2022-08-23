@@ -1,11 +1,55 @@
+/* font-family: 'Nunito', sans-serif */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap');
+
+/* base styling */
+
 .App {
   text-align: center;
+  font-family: 'Nunito', sans-serif;
 }
-ul{
+
+/* header styling */
+
+.cut-all-logo {
+  height: 25vh;
+}
+
+/* body styling */
+
+.searchbar {
+  width: 250px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: .7em;
+  transition: 0.3s ease;
+  border-width: 3px;
+  border-color: rgb(31, 95, 158);
+  margin-right: 10px;
+}
+
+.searchbar:hover {
+  box-shadow: 0 0 0 2px rgba(43, 127, 210, 0.847);
+  border-color: rgb(44, 126, 208);
+}
+
+.search-submit {
+  background: transparent;
+  border: none;
+  outline: none;
+  margin-left: -40px;
+}
+
+.search-submit img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+}
+
+ul {
   padding: 0;
 }
 
-.part{
+.part {
   list-style: none;
   display: flex;
   margin: 1vw;
