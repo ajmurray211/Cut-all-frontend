@@ -1,3 +1,17 @@
 .App {
   text-align: center;
 }
+ul{
+  padding: 0;
+}
+
+.part{
+  list-style: none;
+  display: flex;
+  margin: 1vw;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  background-color: rgba(128, 128, 128, 0.685);
+  border-radius: 35px;
+  font-size: larger;
+}
