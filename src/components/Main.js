@@ -16,6 +16,8 @@ const Main = () => {
     const [parts, setParts] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [postName, setPostName] = useState('')
+    const [postOnHand, setpostOnHand] = useState(null)
 
     const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
     // const API_URL = 'http://0.0.0.0:5000/'
@@ -30,12 +32,12 @@ const Main = () => {
     }
 
     useEffect(() => {
-        if (activeSearchVal == ''){
+        if (activeSearchVal == '') {
             getData(`${API_URL}parts/?format=json`)
-        } else{
+        } else {
             getData(`${API_URL}parts/?format=json&${searchBy}=${activeSearchVal}`)
         }
-    },[activeSearchVal])
+    }, [activeSearchVal])
 
     const handleChange = (event) => {
         event.preventDefault()
@@ -48,7 +50,21 @@ const Main = () => {
     }
 
     const handlePost = () => {
-
+        fetch(`${API_URL}parts/`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            name: postName,
+            onHand: postOnHand,
+            })
+        });
+        getData(`${API_URL}parts/?format=json`)
+        setPostName('')
+        setpostOnHand(null)
+        toggleModal()
     }
 
     const mappedParts = parts.map((part) => {
@@ -93,11 +109,11 @@ const Main = () => {
                     <Form>
                         <FormGroup>
                             <Label for="partName"> Part Name </Label>
-                            <Input id="partName" placeholder="Enter the parts name" type="text" />
+                            <Input id="partName" placeholder="Enter the parts name" type="text" onChange={(event) => setPostName(event.target.value)} value={postName} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="partCount"> Amount on hand </Label>
-                            <Input id="partCount" placeholder="On hand count" type="number" />
+                            <Input id="partCount" placeholder="On hand count" type="number" onChange={(event) => setpostOnHand(event.target.value)} value={postOnHand} />
                         </FormGroup>
                     </Form>
                 </ModalBody>
@@ -107,7 +123,7 @@ const Main = () => {
             </Modal>
 
             <ul>
-                {loading ?  <Spinner animation="border" /> :mappedParts}
+                {loading ? <Spinner animation="border" /> : mappedParts}
             </ul>
         </>
     );
