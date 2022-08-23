@@ -46,6 +46,8 @@ const Main = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
+        getData(`${API_URL}parts/?format=json&name=${searchVal}`)
+        setSearchVal('')
         console.log('submit hit', searchVal)
     }
 
