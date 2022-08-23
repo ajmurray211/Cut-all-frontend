@@ -56,7 +56,6 @@ const Main = () => {
         setSearchBy(event.target.name)
         setActiveSearchVal(event.target.value)
         getData(`${API_URL}parts/?format=json&${searchBy}=${activeSearchVal}`)
-        console.log('filter hit', searchBy)
     }
 
     const handlePost = () => {

@@ -52,9 +52,11 @@ ul {
 .part {
   list-style: none;
   display: flex;
-  margin: 1vw;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 15px;
   justify-content: space-evenly;
-  align-items: flex-start;
+  align-items: center;
   background-color: rgba(128, 128, 128, 0.685);
   border-radius: 35px;
   font-size: larger;
