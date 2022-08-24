@@ -5,6 +5,15 @@ const Part = (props) => {
     const [isOpen, setIsOpen] = useState(false)
     const toggle = () => setIsOpen(!isOpen);
 
+    const mappedLastDrawNames = (props.part.drawList).map((info) => {
+        // if (!info && info == undefined) {
+        //     return <li>No current draw list data.</li>
+        // }
+        return (
+            <li style={{ fontSize: 20 }}>{info.name} took <span style={{ color: 'red' }}>{info.amountTaken}</span> on <span style={{ color: 'blue' }}>{info.dateTaken}</span>.</li>
+        )
+    })
+
     return (
         <>
         <li className="part">
@@ -15,7 +24,8 @@ const Part = (props) => {
                 On hand count: {props.part.onHand}
             </section>
             <section id="partLastPerson" className="item">
-                Last person to draw: (props.part.workerKey when operational)
+                <p>Last person to draw: {props.part.drawList.at(-1).name}</p>
+                {/* {props.part.drawList.at(-1).name ? <p>Last person to draw: {props.part.drawList.at(-1).name}</p> : <p>No Name</p> } */}
             </section>
             <Button
                 color="primary"
@@ -24,12 +34,13 @@ const Part = (props) => {
             Details
             </Button>
         </li>
-        <Collapse isOpen={isOpen}>
+        <Collapse className="part-collapse" isOpen={isOpen}>
             <Card>
-                <CardBody>
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
-                    terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
-                    labore wes anderson cred nesciunt sapiente ea proident.
+                <h4 style={{ fontSize: 27, marginTop: 10 }}>History of who has pulled {props.part.name}:</h4>
+                <CardBody className="detail-cards">
+                    <ul className="lastdrawednames">
+                        {mappedLastDrawNames}
+                    </ul>
                 </CardBody>
             </Card>
         </Collapse>
