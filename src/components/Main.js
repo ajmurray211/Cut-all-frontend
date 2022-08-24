@@ -6,6 +6,7 @@ import {
     Form, FormGroup, Label, Input, Spinner
 } from 'reactstrap';
 import axios from "axios";
+import searchicon from "../Assets/searchicon.png";
 
 const Main = () => {
     const [searchVal, setSearchVal] = useState('')
@@ -51,6 +52,12 @@ const Main = () => {
         console.log('submit hit', searchVal)
     }
 
+    const filterOnHand = (event) => {
+        setSearchBy(event.target.name)
+        setActiveSearchVal(event.target.value)
+        getData(`${API_URL}parts/?format=json&${searchBy}=${activeSearchVal}`)
+    }
+
     const handlePost = () => {
         fetch(`${API_URL}parts/`, {
             method: 'POST',
@@ -81,8 +88,10 @@ const Main = () => {
         <>
             <section className="d-flex p-5 justify-content-center">
                 <form className="me-2" onSubmit={handleSubmit} >
-                    <input type='text' placeholder="Search by name" onChange={handleChange} value={searchVal} />
-                    <input type="submit" />
+                    <input className="searchbar" type='text' placeholder="Search by name" onChange={handleChange} value={searchVal} />
+                    <button className="search-submit" type="submit">
+                        <img src={searchicon} alt="Search Icon" />
+                    </button>
                 </form>
 
                 <UncontrolledDropdown className="me-2">
@@ -95,8 +104,8 @@ const Main = () => {
                 <UncontrolledDropdown className="me-2">
                     <DropdownToggle caret> Count </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem>High</DropdownItem>
-                        <DropdownItem>Low</DropdownItem>
+                        <DropdownItem name='onHandDec' value='high' onClick={filterOnHand}>High</DropdownItem>
+                        <DropdownItem name='onHandAce' value='low' onClick={filterOnHand}>Low</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
@@ -116,6 +125,10 @@ const Main = () => {
                         <FormGroup>
                             <Label for="partCount"> Amount on hand </Label>
                             <Input id="partCount" placeholder="On hand count" type="number" onChange={(event) => setpostOnHand(event.target.value)} value={postOnHand} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="partLastPerson"> Last person to draw </Label>
+                            <Input id="partLastPerson" placeholder="Last person to draw" type="text" onChange={(event) => setpostOnHand(event.target.value)} value={postOnHand} />
                         </FormGroup>
                     </Form>
                 </ModalBody>
