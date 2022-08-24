@@ -61,3 +61,20 @@ ul {
   border-radius: 35px;
   font-size: larger;
 }
+
+.part-collapse {
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 15px;
+}
+
+/* styling drop downs */
+
+.detail-cards {
+  display: flex;
+  justify-content: center;
+}
+
+.detail-cards ul {
+  list-style: none;
+}

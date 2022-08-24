@@ -128,7 +128,7 @@ const Main = () => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="partLastPerson"> Last person to draw </Label>
-                            <Input id="partLastPerson" placeholder="Last person to draw" type="text" onChange={(event) => setpostOnHand(event.target.value)} value={postOnHand} />
+                            <Input id="partLastPerson" placeholder="Last person to draw" type="text" />
                         </FormGroup>
                     </Form>
                 </ModalBody>
