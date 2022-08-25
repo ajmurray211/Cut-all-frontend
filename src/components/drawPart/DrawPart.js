@@ -7,6 +7,10 @@ const DrawPart = () => {
     const [data, setData] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [postName, setPostName] = useState('')
+    const [amountTaken, setAmountTaken] = useState(null)
+    const [dateTaken, setDateTaken] = useState(null)
+    const [partName, setpartName] = useState(null)
 
     const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
 
@@ -17,6 +21,37 @@ const DrawPart = () => {
             .then((response) => setData(response.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
+    }
+
+    const postData = () => {
+        fetch(`${API_URL}workers/`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: postName,
+                amountTaken: amountTaken,
+                dateTaken: dateTaken
+            })
+        });
+        // getData()
+        // fetch(`${API_URL}parts/?name=${partName}`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         name: partName,
+        //         drawList: [{
+        //             name: postName,
+        //             amountTaken: amountTaken,
+        //             dateTaken: dateTaken
+        //         }]
+        //     })
+        // });
     }
 
     useEffect(() => {
@@ -31,8 +66,7 @@ const DrawPart = () => {
 
     return (
         <>
-            <Form>
-
+            <Form onSubmit={postData}>
                 <Row>
                     <Col md={3} />
                     <Col md={3}>
@@ -45,9 +79,10 @@ const DrawPart = () => {
                                 name="select"
                                 placeholder="Who are you?"
                                 type="select"
+                                onChange={(event) => setPostName(event.target.value)}
                             >
                                 <option></option>
-                                <option>Rilyn</option>
+                                <option >Rilyn</option>
                                 <option>Kyle</option>
                                 <option>Pat</option>
                                 <option>Gordon</option>
@@ -63,7 +98,9 @@ const DrawPart = () => {
                                 name="select"
                                 placeholder="What part are you taking?"
                                 type="select"
+                                onChange={(event) => setpartName(event.target.value)}
                             >
+                                <option></option>
                                 {mapParts}
                             </Input>
                         </FormGroup>
@@ -74,7 +111,7 @@ const DrawPart = () => {
                 <Row>
                     <Col md={4} />
                     <Col md={2}>
-                        <FormGroup>
+                        <FormGroup onChange={(event) => setAmountTaken(event.target.value)}>
                             <Label for="amount">
                                 Amount
                             </Label>
@@ -84,11 +121,12 @@ const DrawPart = () => {
                                 type='number'
                                 placeholder='0'
                                 min={0}
+
                             />
                         </FormGroup>
                     </Col>
                     <Col md={2}>
-                        <FormGroup>
+                        <FormGroup onChange={(event) => setDateTaken(event.target.value)}>
                             <Label for="dateGroup">
                                 Date
                             </Label>
@@ -100,7 +138,7 @@ const DrawPart = () => {
                         </FormGroup>
                     </Col>
                 </Row>
-                <Button>
+                <Button type='submit'>
                     Submit
                 </Button>
             </Form>
