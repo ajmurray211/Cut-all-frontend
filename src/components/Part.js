@@ -17,14 +17,14 @@ const Part = (props) => {
     return (
         <>
         <li className="part">
-            <section id="partName" className="item">
+            <section id="partName" className="item" >
                 Part Name: {props.part.name}
             </section>
             <section id="partsOnHand" className="item">
                 On hand count: {props.part.onHand}
             </section>
             <section id="partLastPerson" className="item">
-                <p>Last person to draw: {props.part.drawList.at(-1).name}</p>
+                <p style={{paddingTop: 15}}>Last person to draw: {props.part.drawList.at(-1).name}</p>
                 {/* {props.part.drawList.at(-1).name ? <p>Last person to draw: {props.part.drawList.at(-1).name}</p> : <p>No Name</p> } */}
             </section>
             <Button
