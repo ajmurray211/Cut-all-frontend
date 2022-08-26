@@ -11,6 +11,8 @@ const DrawPart = () => {
     const [amountTaken, setAmountTaken] = useState(null)
     const [dateTaken, setDateTaken] = useState(null)
     const [partName, setpartName] = useState(null)
+    const [idNumber, setIdNumber] = useState(null)
+    const [partNumber, setpartNumber] = useState(null)
 
     const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
 
@@ -24,7 +26,7 @@ const DrawPart = () => {
     }
 
     const postData = () => {
-        fetch(`${API_URL}workers/`, {
+        fetch(`${API_URL}workers/?name=${partName}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -35,23 +37,37 @@ const DrawPart = () => {
                 amountTaken: amountTaken,
                 dateTaken: dateTaken
             })
-        });
-        // getData()
-        // fetch(`${API_URL}parts/?name=${partName}`, {
-        //     method: 'PUT',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         name: partName,
-        //         drawList: [{
-        //             name: postName,
-        //             amountTaken: amountTaken,
-        //             dateTaken: dateTaken
-        //         }]
-        //     })
-        // });
+        })
+            .then(req => fetch(`${API_URL}workers/?name=${postName}`))
+            .then(res => res.json())
+            .then(data => setIdNumber(data.at(-1).id))
+            .then(i => {
+                fetch(`${API_URL}workers/`, {
+                    method: 'Put',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: postName,
+                        drawList: [{
+                            idNumber: idNumber
+                        }]
+                    })
+                })
+            })
+    }
+
+    const getId = () => {
+        axios
+            .get(`${API_URL}workers`)
+            .then((response) => console.log(response.data))
+            .catch((err) => setError(err))
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        postData()
     }
 
     useEffect(() => {
@@ -60,13 +76,13 @@ const DrawPart = () => {
 
     const mapParts = data.map((part) => {
         return (
-            <option>{part.name}" {part.tool}</option>
+            <option>{part.name}</option>
         )
     })
 
     return (
         <>
-            <Form onSubmit={postData}>
+            <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col md={3} />
                     <Col md={3}>
