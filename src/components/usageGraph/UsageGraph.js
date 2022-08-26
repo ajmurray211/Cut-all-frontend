@@ -28,18 +28,18 @@ const UsageGraph = () => {
     }, [])
 
     const mockdata = [
-        { name: 'Jan', Kyle: 40, Rilyn: 24, Pat: 20, Gordon: 30, amt: 5 },
-        { name: 'Feb', Kyle: 10, Rilyn: 13, Pat: 20, Gordon: 30, amt: 20, },
-        { name: 'Mar', Kyle: 20, Rilyn: 56, Pat: 20, Gordon: 30, mt: 22, },
-        { name: 'Apr', Kyle: 27, Rilyn: 39, Pat: 20, Gordon: 30, amt: 20, },
-        { name: 'May', Kyle: 18, Rilyn: 48, Pat: 20, Gordon: 30, amt: 21, },
-        { name: 'Jun', Kyle: 23, Rilyn: 38, Pat: 20, Gordon: 30, amt: 25, },
-        { name: 'Jul', Kyle: 34, Rilyn: 63, Pat: 20, Gordon: 30, amt: 21, },
-        { name: 'Aug', Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30, amt: 21, },
-        { name: 'Sep', Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30, amt: 21, },
-        { name: 'Oct', Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30, amt: 21, },
-        { name: 'Nov', Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30, amt: 21, },
-        { name: 'Dec', Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30, amt: 21, },
+        { name: 1, Kyle: 40, Rilyn: 24, Pat: 20, Gordon: 20},
+        { name: 2, Kyle: 10, Rilyn: 13, Pat: 20, Gordon: 30},
+        { name: 3, Kyle: 20, Rilyn: 56, Pat: 20, Gordon: 30},
+        { name: 4, Kyle: 27, Rilyn: 39, Pat: 20, Gordon: 30},
+        { name: 5, Kyle: 18, Rilyn: 48, Pat: 20, Gordon: 30},
+        { name: 6, Kyle: 23, Rilyn: 38, Pat: 20, Gordon: 30},
+        { name: 7, Kyle: 34, Rilyn: 63, Pat: 20, Gordon: 30},
+        { name: 8, Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 20},
+        { name: 9, Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30},
+        { name: 10, Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30},
+        { name: 11, Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30},
+        { name: 12, Kyle: 34, Rilyn: 43, Pat: 20, Gordon: 30},
     ];
 
     const renderLineChart = (
@@ -70,7 +70,7 @@ const UsageGraph = () => {
 
     const mappedParts = data.map((item) => {
         return (
-            <DropdownItem action id={item.name} onClick={() => setActiveSort(`${item.name}" ${item.tool}`)} href=''>{`${item.name}" ${item.tool}`}</DropdownItem>
+            <DropdownItem action id={item.name} onClick={() => setActiveSort(`${item.name}`)} href=''>{`${item.name}`}</DropdownItem>
         )
     })
 
