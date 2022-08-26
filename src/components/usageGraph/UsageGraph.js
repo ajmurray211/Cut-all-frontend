@@ -70,7 +70,7 @@ const UsageGraph = () => {
 
     const mappedParts = data.map((item) => {
         return (
-            <DropdownItem action id={item.name} onClick={() => setActiveSort(item.name)} href=''>{item.name}</DropdownItem>
+            <DropdownItem action id={item.name} onClick={() => setActiveSort(`${item.name}" ${item.tool}`)} href=''>{`${item.name}" ${item.tool}`}</DropdownItem>
         )
     })
 
