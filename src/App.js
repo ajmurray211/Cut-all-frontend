@@ -5,24 +5,11 @@ import { Route, Routes } from 'react-router-dom';
 import logo from './Assets/cut-all-logo.png';
 import DrawPart from './components/drawPart/DrawPart';
 import UsageGraph from './components/usageGraph/UsageGraph';
+import JobTIcket from './components/jobTicket/JobTicket';
 
 function App() {
   return (
     <div className="App">
-      {/* <nav>
-        <Nav pills tabs>
-          <NavItem active className=''>
-            <NavLink href='/'> Home </NavLink>
-            <NavLink href='/drawParts'> Draw Parts </NavLink>
-            <NavLink href='/usageGraph'> Usage Graph </NavLink>
-          </NavItem>
-        </Nav>
-      </nav> 
-      <div className="header-container">
-        <img className="cut-all-logo" src={logo} />
-        <h2 style={{ fontSize: 40 }}>Inventory System</h2>
-      </div> */}
-
       <Navbar>
         <NavbarBrand href="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></NavbarBrand>
         <Nav className="me-auto" navbar>
@@ -31,6 +18,9 @@ function App() {
           </NavItem>
           <NavItem>
             <NavLink href="/usageGraph">UsageGraph </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink href="/jobTicket">Job Ticket </NavLink>
           </NavItem>
         </Nav>
         <NavbarText>Inventory System</NavbarText>
@@ -41,6 +31,7 @@ function App() {
           <Route path='/' element={<Home />}></Route>
           <Route path='/drawParts' element={<DrawPart />}></Route>
           <Route path='/usageGraph' element={<UsageGraph />}></Route>
+          <Route path='/jobTicket' element={<JobTIcket />}></Route>
         </Routes>
       </div>
     </div>
