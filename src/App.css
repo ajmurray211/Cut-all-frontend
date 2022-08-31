@@ -14,6 +14,10 @@
   height: 25vh;
 }
 
+nav{
+  margin-bottom: 40px;
+}
+
 /* body styling */
 
 .searchbar {
