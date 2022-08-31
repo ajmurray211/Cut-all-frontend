@@ -10,10 +10,10 @@ import JobTIcket from './components/jobTicket/JobTicket';
 function App() {
   return (
     <div className="App">
-      <Navbar>
+      <Navbar color='primary'>
         <NavbarBrand href="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></NavbarBrand>
         <Nav className="me-auto" navbar>
-          <NavItem>
+          <NavItem >
             <NavLink href="/drawParts">Draw Parts</NavLink>
           </NavItem>
           <NavItem>

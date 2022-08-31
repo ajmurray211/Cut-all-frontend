@@ -55,7 +55,7 @@ const Main = () => {
     const filterOnHand = (event) => {
         setSearchBy(event.target.name)
         setActiveSearchVal(event.target.value)
-        getData(`${API_URL}parts/?format=json&${searchBy}=${activeSearchVal}`)
+        console.log('filter')
     }
 
     const handlePost = () => {
@@ -66,8 +66,8 @@ const Main = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-            name: postName,
-            onHand: postOnHand,
+                name: postName,
+                onHand: postOnHand,
             })
         });
         getData(`${API_URL}parts/?format=json`)
@@ -97,7 +97,12 @@ const Main = () => {
                 <UncontrolledDropdown className="me-2">
                     <DropdownToggle caret> Tools </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem>Action</DropdownItem>
+                    <DropdownItem name='tool' value='Concrete saw' onClick={filterOnHand}>Concrete</DropdownItem>
+                    <DropdownItem name='tool' value='Asphalt saw' onClick={filterOnHand}>Asphalt</DropdownItem>
+                    <DropdownItem name='tool' value='Wall saw' onClick={filterOnHand}>Wall</DropdownItem>
+                    <DropdownItem name='tool' value='Hand saw' onClick={filterOnHand}>Hand</DropdownItem>
+                    <DropdownItem name='tool' value='Core saw' onClick={filterOnHand} disabled>Core</DropdownItem>
+                    <DropdownItem name='tool' value='Consumable' onClick={filterOnHand} disabled>Consumable</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
