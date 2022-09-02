@@ -18,7 +18,8 @@ const Main = () => {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [postName, setPostName] = useState('')
-    const [postOnHand, setpostOnHand] = useState(null)
+    const [postOnHand, setPostOnHand] = useState(null)
+    const [postTool, setPostTool] = useState(null)
 
     const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
     // const API_URL = 'http://0.0.0.0:5000/'
@@ -69,11 +70,12 @@ const Main = () => {
             body: JSON.stringify({
                 name: postName,
                 onHand: postOnHand,
+                tool: postTool
             })
         });
         getData(`${API_URL}parts/?format=json`)
         setPostName('')
-        setpostOnHand(null)
+        setPostOnHand(null)
         toggleModal()
     }
 
@@ -95,15 +97,15 @@ const Main = () => {
                     </button>
                 </form>
 
-                <UncontrolledDropdown className="me-2"  id="filter-item">
+                <UncontrolledDropdown className="me-2" id="filter-item">
                     <DropdownToggle caret> Tools </DropdownToggle>
                     <DropdownMenu>
-                    <DropdownItem name='tool' value='Concrete saw' onClick={filterOnHand}>Concrete saw</DropdownItem>
-                    <DropdownItem name='tool' value='Asphalt saw' onClick={filterOnHand}>Asphalt saw</DropdownItem>
-                    <DropdownItem name='tool' value='Wall saw' onClick={filterOnHand}>Wall saw</DropdownItem>
-                    <DropdownItem name='tool' value='Hand saw' onClick={filterOnHand}>Hand saw</DropdownItem>
-                    <DropdownItem name='tool' value='Core saw' onClick={filterOnHand} disabled>Core drill</DropdownItem>
-                    <DropdownItem name='tool' value='Consumable' onClick={filterOnHand} disabled>Consumables</DropdownItem>
+                        <DropdownItem name='tool' value='Concrete saw' onClick={filterOnHand}>Concrete saw</DropdownItem>
+                        <DropdownItem name='tool' value='Asphalt saw' onClick={filterOnHand}>Asphalt saw</DropdownItem>
+                        <DropdownItem name='tool' value='Wall saw' onClick={filterOnHand}>Wall saw</DropdownItem>
+                        <DropdownItem name='tool' value='Hand saw' onClick={filterOnHand}>Hand saw</DropdownItem>
+                        <DropdownItem name='tool' value='Core saw' onClick={filterOnHand} disabled>Core drill</DropdownItem>
+                        <DropdownItem name='tool' value='Consumable' onClick={filterOnHand} disabled>Consumables</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
@@ -118,9 +120,9 @@ const Main = () => {
                 <Button className="me-2" id="filter-item" color="danger" onClick={toggleModal}>
                     Add Item
                 </Button>
-           
-                <Button className="me-2" id="filter-item" color="dark" onClick={() =>  console.log('refresh')}>
-                   Refresh
+
+                <Button className="me-2" id="filter-item" color="dark" onClick={() => console.log('refresh')}>
+                    Refresh
                 </Button>
             </section>
 
@@ -134,11 +136,27 @@ const Main = () => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="partCount"> Amount on hand </Label>
-                            <Input id="partCount" placeholder="On hand count" type="number" onChange={(event) => setpostOnHand(event.target.value)} value={postOnHand} />
+                            <Input id="partCount" placeholder="On hand count" type="number" onChange={(event) => setPostOnHand(event.target.value)} value={postOnHand} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="toolInput">Tool </Label>
+                            <Input id="toolInput" placeholder="What tool does this part belong to?" type="select" onChange={(event) => setPostTool(event.target.value)} value={postTool}>
+                                <option>Concrete saw</option>
+                                <option>Asphalt saw</option>
+                                <option>Hand saw</option>
+                                <option>Core drill</option>
+                                <option>Consumables</option>
+                            </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="partLastPerson"> Last person to draw </Label>
-                            <Input id="partLastPerson" placeholder="Last person to draw" type="text" />
+                            <Input id="partLastPerson" placeholder="Last person to draw" type="select">
+                                <option>Gordon</option>
+                                <option>Pat</option>
+                                <option>Rilyn</option>
+                                <option>Kyle</option>
+                                <option>Kim</option>
+                            </Input>
                         </FormGroup>
                     </Form>
                 </ModalBody>
