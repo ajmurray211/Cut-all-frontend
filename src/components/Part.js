@@ -6,9 +6,6 @@ const Part = (props) => {
     const toggle = () => setIsOpen(!isOpen);
 
     const mappedLastDrawNames = (props.part.drawList).map((info) => {
-        // if (!info && info == undefined) {
-        //     return <li>No current draw list data.</li>
-        // }
         return (
             <li style={{ fontSize: 20 }}>{info.name} took <span style={{ color: 'red' }}>{info.amountTaken}</span> on <span style={{ color: 'blue' }}>{info.dateTaken}</span>.</li>
         )
@@ -31,7 +28,7 @@ const Part = (props) => {
                 color="primary"
                 onClick={toggle}
             >
-            Details
+            History
             </Button>
         </li>
         <Collapse className="part-collapse" isOpen={isOpen}>

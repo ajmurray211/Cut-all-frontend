@@ -22,6 +22,7 @@ const Main = () => {
 
     const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
     // const API_URL = 'http://0.0.0.0:5000/'
+    // const API_URL = 'http://127.0.0.1:8000/'
 
     const getData = (url) => {
         setLoading(true)
@@ -85,37 +86,41 @@ const Main = () => {
     })
 
     return (
-        <>
-            <section className="d-flex p-5 justify-content-center">
-                <form className="me-2" onSubmit={handleSubmit} >
+        <div className="partDisplay">
+            <section className="d-flex p-5 justify-content-center" id="filter-bar">
+                <form className="me-2" id="filter-item" onSubmit={handleSubmit} >
                     <input className="searchbar" type='text' placeholder="Search by name" onChange={handleChange} value={searchVal} />
                     <button className="search-submit" type="submit">
                         <img src={searchicon} alt="Search Icon" />
                     </button>
                 </form>
 
-                <UncontrolledDropdown className="me-2">
+                <UncontrolledDropdown className="me-2"  id="filter-item">
                     <DropdownToggle caret> Tools </DropdownToggle>
                     <DropdownMenu>
-                    <DropdownItem name='tool' value='Concrete saw' onClick={filterOnHand}>Concrete</DropdownItem>
-                    <DropdownItem name='tool' value='Asphalt saw' onClick={filterOnHand}>Asphalt</DropdownItem>
-                    <DropdownItem name='tool' value='Wall saw' onClick={filterOnHand}>Wall</DropdownItem>
-                    <DropdownItem name='tool' value='Hand saw' onClick={filterOnHand}>Hand</DropdownItem>
-                    <DropdownItem name='tool' value='Core saw' onClick={filterOnHand} disabled>Core</DropdownItem>
-                    <DropdownItem name='tool' value='Consumable' onClick={filterOnHand} disabled>Consumable</DropdownItem>
+                    <DropdownItem name='tool' value='Concrete saw' onClick={filterOnHand}>Concrete saw</DropdownItem>
+                    <DropdownItem name='tool' value='Asphalt saw' onClick={filterOnHand}>Asphalt saw</DropdownItem>
+                    <DropdownItem name='tool' value='Wall saw' onClick={filterOnHand}>Wall saw</DropdownItem>
+                    <DropdownItem name='tool' value='Hand saw' onClick={filterOnHand}>Hand saw</DropdownItem>
+                    <DropdownItem name='tool' value='Core saw' onClick={filterOnHand} disabled>Core drill</DropdownItem>
+                    <DropdownItem name='tool' value='Consumable' onClick={filterOnHand} disabled>Consumables</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
-                <UncontrolledDropdown className="me-2">
-                    <DropdownToggle caret> Count </DropdownToggle>
+                <UncontrolledDropdown className="me-2" id="filter-item">
+                    <DropdownToggle caret disabled> Count </DropdownToggle>
                     <DropdownMenu>
                         <DropdownItem name='onHandDec' value='high' onClick={filterOnHand}>High</DropdownItem>
                         <DropdownItem name='onHandAce' value='low' onClick={filterOnHand}>Low</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
-                <Button className="me-2" color="danger" onClick={toggleModal}>
+                <Button className="me-2" id="filter-item" color="danger" onClick={toggleModal}>
                     Add Item
+                </Button>
+           
+                <Button className="me-2" id="filter-item" color="dark" onClick={() =>  console.log('refresh')}>
+                   Refresh
                 </Button>
             </section>
 
@@ -145,7 +150,7 @@ const Main = () => {
             <ul>
                 {loading ? <Spinner animation="border" /> : mappedParts}
             </ul>
-        </>
+        </div>
     );
 }
 

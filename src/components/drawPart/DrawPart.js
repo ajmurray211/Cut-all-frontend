@@ -81,7 +81,7 @@ const DrawPart = () => {
     })
 
     return (
-        <>
+        <section>
             <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col md={3} />
@@ -158,7 +158,7 @@ const DrawPart = () => {
                     Submit
                 </Button>
             </Form>
-        </>
+        </section>
     );
 }
 
