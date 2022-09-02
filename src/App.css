@@ -82,3 +82,27 @@ ul {
 .detail-cards ul {
   list-style: none;
 }
+
+/* styles for phone view */
+@media screen and (max-width: 425px){
+  section{
+    color: grey;
+  }
+
+  #filter-bar{
+    flex-wrap: wrap;
+  }
+
+  #filter-item{
+    padding: 5px;
+  }
+  
+  .item{
+    color: black;
+  }
+
+  #partLastPerson{
+    display: none;
+  }
+
+}
