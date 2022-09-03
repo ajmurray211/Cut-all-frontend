@@ -38,37 +38,41 @@ const DrawPart = () => {
                 dateTaken: dateTaken
             })
         })
-            .then(req => fetch(`${API_URL}workers/?name=${postName}`))
+            .then(() => fetch(`${API_URL}workers/?name=${postName}`))
             .then(res => res.json())
             .then(data => setIdNumber(data.at(-1).id))
-            .then(i => {
-                fetch(`${API_URL}workers/`, {
-                    method: 'Put',
+            .then(() => fetch(`${API_URL}parts/?name=${partName}`))
+            .then(res => res.json())
+            .then(data => setpartNumber(data[0].id))
+            .then(() => {
+                fetch(`${API_URL}parts/${partNumber}`, {
+                    method: 'PUT',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        name: postName,
-                        drawList: [{
-                            idNumber: idNumber
-                        }]
+                        name: partName,
+                        drawList: idNumber
                     })
                 })
             })
     }
 
-    const getId = () => {
-        axios
-            .get(`${API_URL}workers`)
-            .then((response) => console.log(response.data))
-            .catch((err) => setError(err))
+    const setDefault = (event) => {
+        event.preventDefault()
+        setAmountTaken(null)
+        setDateTaken(null)
+        setPostName(null)
+        setpartName(null)
     }
 
     const handleSubmit = (event) => {
         event.preventDefault()
         postData()
+        // setDefault()
     }
+
 
     useEffect(() => {
         getData(`${API_URL}parts/?format=json`)
