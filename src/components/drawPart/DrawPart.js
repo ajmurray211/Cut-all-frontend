@@ -35,9 +35,12 @@ const DrawPart = () => {
 
         const getPartNumber = await axios.get(`${API_URL}parts/?name=${partName}`)
         const partNumber = getPartNumber.data[0].id
+        const onHand = getPartNumber.data[0].onHand
+        const newOnHandCount = onHand - amountTaken
 
         const drawListAddition = await axios.put(`${API_URL}parts/${partNumber}`, {
             name: partName,
+            onHand: newOnHandCount,
             drawList: workerId
         })
         const addToList = drawListAddition
