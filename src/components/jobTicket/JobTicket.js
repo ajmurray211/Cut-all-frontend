@@ -4,7 +4,7 @@ import { Form, Row, Col, Label, FormGroup, Input, Button, Table } from 'reactstr
 
 const JobTIcket = () => {
     return (
-        <div>
+        <div id='job-ticket'>
             <Form onSubmit={console.log('submit')}>
                 <Row>
                     <Col md={2} />

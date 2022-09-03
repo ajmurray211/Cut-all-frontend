@@ -11,8 +11,8 @@ const DrawPart = () => {
     const [amountTaken, setAmountTaken] = useState(null)
     const [dateTaken, setDateTaken] = useState(null)
     const [partName, setpartName] = useState(null)
-    const [idNumber, setIdNumber] = useState(null)
-    const [partNumber, setpartNumber] = useState(null)
+    // const [idNumber, setIdNumber] = useState(null)
+    // const [partNumber, setpartNumber] = useState(null)
 
     const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
 
@@ -25,50 +25,29 @@ const DrawPart = () => {
             .finally(() => setLoading(false))
     }
 
-    const postData = () => {
-        fetch(`${API_URL}workers/?name=${partName}`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: postName,
-                amountTaken: amountTaken,
-                dateTaken: dateTaken
-            })
+    const postData = async () => {
+        const postWorker = await axios.post(`${API_URL}workers/?name=${partName}`, {
+            name: postName,
+            amountTaken: amountTaken,
+            dateTaken: dateTaken
         })
-            .then(req => fetch(`${API_URL}workers/?name=${postName}`))
-            .then(res => res.json())
-            .then(data => setIdNumber(data.at(-1).id))
-            .then(i => {
-                fetch(`${API_URL}workers/`, {
-                    method: 'Put',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: postName,
-                        drawList: [{
-                            idNumber: idNumber
-                        }]
-                    })
-                })
-            })
-    }
+        const workerId = postWorker.data.id
 
-    const getId = () => {
-        axios
-            .get(`${API_URL}workers`)
-            .then((response) => console.log(response.data))
-            .catch((err) => setError(err))
+        const getPartNumber = await axios.get(`${API_URL}parts/?name=${partName}`)
+        const partNumber = getPartNumber.data[0].id
+
+        const drawListAddition = await axios.put(`${API_URL}parts/${partNumber}`, {
+            name: partName,
+            drawList: workerId
+        })
+        const addToList = drawListAddition
     }
 
     const handleSubmit = (event) => {
         event.preventDefault()
         postData()
     }
+
 
     useEffect(() => {
         getData(`${API_URL}parts/?format=json`)
