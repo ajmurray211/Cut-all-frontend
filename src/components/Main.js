@@ -121,7 +121,7 @@ const Main = () => {
                     Add Item
                 </Button>
 
-                <Button className="me-2" id="filter-item" color="dark" onClick={() => console.log('refresh')}>
+                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${API_URL}parts/?format=json`)}>
                     Refresh
                 </Button>
             </section>
