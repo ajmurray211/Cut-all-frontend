@@ -4,16 +4,14 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 const DrawPart = () => {
-    const [data, setData] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [postName, setPostName] = useState('')
     const [amountTaken, setAmountTaken] = useState(null)
     const [dateTaken, setDateTaken] = useState(null)
     const [partName, setpartName] = useState(null)
-    // const [idNumber, setIdNumber] = useState(null)
-    // const [partNumber, setpartNumber] = useState(null)
-
+    const [data, setData] = useState([])
+    
     const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
 
     const getData = (url) => {
@@ -25,6 +23,7 @@ const DrawPart = () => {
             .finally(() => setLoading(false))
     }
 
+    // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const postData = async () => {
         const postWorker = await axios.post(`${API_URL}workers/?name=${partName}`, {
             name: postName,
@@ -50,7 +49,6 @@ const DrawPart = () => {
         event.preventDefault()
         postData()
     }
-
 
     useEffect(() => {
         getData(`${API_URL}parts/?format=json`)
@@ -119,7 +117,7 @@ const DrawPart = () => {
                                 type='number'
                                 placeholder='0'
                                 min={0}
-
+                                max={3}
                             />
                         </FormGroup>
                     </Col>
