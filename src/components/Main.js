@@ -51,13 +51,11 @@ const Main = () => {
         event.preventDefault()
         getData(`${API_URL}parts/?format=json&name=${searchVal}`)
         setSearchVal('')
-        console.log('submit hit', searchVal)
     }
 
     const filterOnHand = (event) => {
         setSearchBy(event.target.name)
         setActiveSearchVal(event.target.value)
-        console.log('filter')
     }
 
     const handlePost = () => {
