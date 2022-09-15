@@ -1,18 +1,17 @@
 import './drawPart.css'
-import { Form, Row, Col, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Form, Row, Col, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 const DrawPart = () => {
-    const [data, setData] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [postName, setPostName] = useState('')
     const [amountTaken, setAmountTaken] = useState(null)
     const [dateTaken, setDateTaken] = useState(null)
     const [partName, setpartName] = useState(null)
-    // const [idNumber, setIdNumber] = useState(null)
-    // const [partNumber, setpartNumber] = useState(null)
+    const [data, setData] = useState([])
+    const [show, setShow] = useState(false)
 
     const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
 
@@ -23,8 +22,9 @@ const DrawPart = () => {
             .then((response) => setData(response.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
-    }
+    }     
 
+    // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const postData = async () => {
         const postWorker = await axios.post(`${API_URL}workers/?name=${partName}`, {
             name: postName,
@@ -44,13 +44,18 @@ const DrawPart = () => {
             drawList: workerId
         })
         const addToList = drawListAddition
+
+        if (addToList.status == 202) {
+            setShow(true)
+        }
+
+        const timer = setTimeout(() => setShow(false), 5000);
     }
 
     const handleSubmit = (event) => {
         event.preventDefault()
         postData()
     }
-
 
     useEffect(() => {
         getData(`${API_URL}parts/?format=json`)
@@ -119,7 +124,7 @@ const DrawPart = () => {
                                 type='number'
                                 placeholder='0'
                                 min={0}
-
+                                max={3}
                             />
                         </FormGroup>
                     </Col>
@@ -140,6 +145,8 @@ const DrawPart = () => {
                     Submit
                 </Button>
             </Form>
+
+            <Alert color='success' isOpen={show}>You have drawn a part!</Alert>
         </section>
     );
 }
