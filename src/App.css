@@ -83,6 +83,14 @@ ul {
   list-style: none;
 }
 
+li.part{
+  transition: all 0.4s ease;
+}
+
+.down{
+  transform: rotateZ(-90deg)
+}
+
 /* styles for phone view */
 @media screen and (max-width: 425px){
   section{
