@@ -14,7 +14,7 @@ const Part = (props) => {
     const handleEdit = async () => {
         const getID = await axios.put(`https://fast-meadow-65226.herokuapp.com/parts/${props.part.id}`, {
             name: putName,
-            amountTaken: putOnHand
+            onHand: putOnHand
         })
         toggleEdit()
     }
