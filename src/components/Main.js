@@ -102,8 +102,8 @@ const Main = () => {
                         <DropdownItem name='tool' value='Asphalt saw' onClick={filterOnHand}>Asphalt saw</DropdownItem>
                         <DropdownItem name='tool' value='Wall saw' onClick={filterOnHand}>Wall saw</DropdownItem>
                         <DropdownItem name='tool' value='Hand saw' onClick={filterOnHand}>Hand saw</DropdownItem>
-                        <DropdownItem name='tool' value='Core saw' onClick={filterOnHand} disabled>Core drill</DropdownItem>
-                        <DropdownItem name='tool' value='Consumable' onClick={filterOnHand} disabled>Consumables</DropdownItem>
+                        <DropdownItem name='tool' value='Core saw' onClick={filterOnHand} >Core drill</DropdownItem>
+                        <DropdownItem name='tool' value='Consumable' onClick={filterOnHand} >Consumables</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 

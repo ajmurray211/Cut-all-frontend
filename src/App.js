@@ -17,10 +17,10 @@ function App() {
             <NavLink href="/drawParts">Draw Parts</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="/usageGraph">UsageGraph </NavLink>
+            <NavLink href="/usageGraph" disabled>UsageGraph </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="/jobTicket">Job Ticket </NavLink>
+            <NavLink href="/jobTicket" disabled>Job Ticket </NavLink>
           </NavItem>
         </Nav>
         <NavbarText>Inventory System</NavbarText>
