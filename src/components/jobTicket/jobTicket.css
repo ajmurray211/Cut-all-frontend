@@ -1,0 +1,16 @@
+h1{
+    color: red;
+}
+
+.sigCanvas{
+    border: 5px solid black;
+}
+
+#job-ticket{
+margin: 10px;
+}
+
+.table-responsive{
+    display: flex;
+    flex-wrap: wrap;
+}

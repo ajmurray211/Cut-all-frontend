@@ -1,0 +1,21 @@
+.container{
+    margin-top: 4vw;
+    display: flex;
+    justify-content: space-around;
+}
+
+.partsList{
+    display: block;
+    size:initial;
+}
+
+.chart{
+    height: 50vw;
+    width: 50vw;
+}
+
+#sortedBy{
+    min-width: fit-content;
+    width:  15vw;
+    transition: all 1s ease-out;
+}
