@@ -10,25 +10,33 @@ import JobTIcket from './components/jobTicket/JobTicket';
 function App() {
   return (
     <div className="App">
-      <Navbar color='primary'>
-        {/* <NavbarBrand href="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></NavbarBrand> */}
-        <Link to="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></Link>
+      <navbar>
+        <nav>
+          <Link to="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></Link>
+          <section className='link-container'>
+            <Link className='link' to='/drawParts'>Draw parts</Link>
+            <Link className='link' to='/usageGraph'>Usage Graph</Link>
+            <Link className='link' to='/jobTicket'>Job ticket</Link>
+          </section>
+          <p>Inventory system</p>
+        </nav>
+      </navbar>
+
+      {/* <Navbar color='primary'>
+        <NavbarBrand href="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></NavbarBrand>
         <Nav className="me-auto" navbar>
           <NavItem >
-            {/* <NavLink href="/drawParts">Draw Parts</NavLink> */}
-            <Link className='link' to='/drawParts'>Draw parts</Link>
+            <NavLink href="/drawParts">Draw Parts</NavLink>
           </NavItem>
           <NavItem>
             <NavLink href="/usageGraph" disabled>UsageGraph </NavLink>
-            {/* <Link className='link' to='/usageGraph'>Usage Graph</Link> */}
           </NavItem>
           <NavItem>
             <NavLink href="/jobTicket" disabled>Job Ticket </NavLink>
-            {/* <Link className='link' to='/jobTicket'>Job ticket</Link> */}
           </NavItem>
         </Nav>
         <NavbarText>Inventory System</NavbarText>
-      </Navbar>
+      </Navbar> */}
 
       <div>
         <Routes>

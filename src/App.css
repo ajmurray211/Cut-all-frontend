@@ -16,11 +16,27 @@
 
 nav{
   margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* justify-content: space-around; */
+  background-color: rgb(12, 100, 253);
+}
+
+.link-container{
+  display: flex;
+  flex-direction: column;
+}
+
+nav p {
+position: fixed;
+right: 1vw;
 }
 
 .link{
   color: black;
   text-decoration: none;
+  padding: 9px;
 }
 
 /* body styling */
