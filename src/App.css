@@ -18,6 +18,11 @@ nav{
   margin-bottom: 40px;
 }
 
+.link{
+  color: black;
+  text-decoration: none;
+}
+
 /* body styling */
 
 .searchbar {
