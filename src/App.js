@@ -10,7 +10,7 @@ import JobTIcket from './components/jobTicket/JobTicket';
 function App() {
   return (
     <div className="App">
-      <Link to='/drawParts'>Test Link</Link>
+      {/* <Link to='/drawParts'>Test Link</Link> */}
       <Navbar color='primary'>
         <NavbarBrand href="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></NavbarBrand>
         <Nav className="me-auto" navbar>
@@ -27,14 +27,14 @@ function App() {
         <NavbarText>Inventory System</NavbarText>
       </Navbar>
 
-      <div>
+      {/* <div>
         <Routes>
           <Route path='/' element={<Home />}></Route>
           <Route path='/drawParts' element={<DrawPart />}></Route>
           <Route path='/usageGraph' element={<UsageGraph />}></Route>
           <Route path='/jobTicket' element={<JobTIcket />}></Route>
         </Routes>
-      </div>
+      </div> */}
     </div>
   );
 }
