@@ -1,7 +1,7 @@
 import './App.css';
 import Home from './components/Main';
 import { Navbar, NavItem, NavLink, Nav, NavbarBrand, NavbarText } from 'reactstrap';
-import { Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import logo from './Assets/cut-all-logo.png';
 import DrawPart from './components/drawPart/DrawPart';
 import UsageGraph from './components/usageGraph/UsageGraph';
@@ -10,6 +10,7 @@ import JobTIcket from './components/jobTicket/JobTicket';
 function App() {
   return (
     <div className="App">
+      <Link to='/drawParts'>Test Link</Link>
       <Navbar color='primary'>
         <NavbarBrand href="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></NavbarBrand>
         <Nav className="me-auto" navbar>
