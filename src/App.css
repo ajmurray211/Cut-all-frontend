@@ -112,6 +112,10 @@ li.part{
   transform: rotateZ(-90deg)
 }
 
+#partLastPerson{
+  padding-top: 15px;
+}
+
 /* styles for phone view */
 @media screen and (max-width: 425px){
   section{

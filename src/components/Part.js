@@ -11,6 +11,8 @@ const Part = (props) => {
     const [putName, setPutName] = useState(props.part.name)
     const [putOnHand, setPutOnHand] = useState(props.part.onHand)
 
+    console.log(props.part.drawList.length)
+
     const handleEdit = async () => {
         const getID = await axios.put(`https://fast-meadow-65226.herokuapp.com/parts/${props.part.id}`, {
             name: putName,
@@ -35,8 +37,7 @@ const Part = (props) => {
                     On hand count: {props.part.onHand}
                 </section>
                 <section id="partLastPerson" className="item">
-                    <p style={{ paddingTop: 15 }}>Last person to draw: {props.part.drawList.at(-1).name}</p>
-                    {/* {props.part.drawList.at(-1).name ? <p>Last person to draw: {props.part.drawList.at(-1).name}</p> : <p>No Name</p> } */}
+                    {props.part.drawList.length !== 0 ? <p>Last person to draw: {props.part.drawList.at(-1).name}</p> : <p>Last person to draw: No Data</p> }
                 </section>
                 <ButtonGroup>
                     <Button color="primary" onClick={toggleEdit}>
@@ -52,7 +53,7 @@ const Part = (props) => {
                     <h4 style={{ fontSize: 27, marginTop: 10 }}>History of who has pulled {props.part.name}:</h4>
                     <CardBody className="detail-cards">
                         <ul className="lastdrawednames">
-                            {props.part.drawList.length > 0 ? mappedLastDrawNames : <li>No Current data</li>}
+                            {props.part.drawList.length !== 0 ? mappedLastDrawNames : <li>No Current data</li>}
                         </ul>
                     </CardBody>
                 </Card>

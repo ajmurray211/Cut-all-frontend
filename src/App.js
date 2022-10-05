@@ -22,22 +22,6 @@ function App() {
         </nav>
       </navbar>
 
-      {/* <Navbar color='primary'>
-        <NavbarBrand href="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></NavbarBrand>
-        <Nav className="me-auto" navbar>
-          <NavItem >
-            <NavLink href="/drawParts">Draw Parts</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="/usageGraph" disabled>UsageGraph </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="/jobTicket" disabled>Job Ticket </NavLink>
-          </NavItem>
-        </Nav>
-        <NavbarText>Inventory System</NavbarText>
-      </Navbar> */}
-
       <div>
         <Routes>
           <Route path='/' element={<Home />}></Route>
