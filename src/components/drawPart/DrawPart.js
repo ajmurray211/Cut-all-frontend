@@ -13,8 +13,8 @@ const DrawPart = () => {
     const [data, setData] = useState([])
     const [show, setShow] = useState(false)
 
-    // const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
-    const API_URL = 'http://127.0.0.1:8000/'
+    const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
+    // const API_URL = 'http://127.0.0.1:8000/'
 
     const getData = (url) => {
         setLoading(true)

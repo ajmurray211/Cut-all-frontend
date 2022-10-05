@@ -11,13 +11,15 @@ const Part = (props) => {
     const [putName, setPutName] = useState(props.part.name)
     const [putOnHand, setPutOnHand] = useState(props.part.onHand)
 
-    console.log(props.part.drawList.length)
-
     const handleEdit = async () => {
         const getID = await axios.put(`https://fast-meadow-65226.herokuapp.com/parts/${props.part.id}`, {
             name: putName,
             onHand: putOnHand
         })
+        toggleEdit()
+    }
+    const handleDelete = async () => {
+        const getID = await axios.delete(`https://fast-meadow-65226.herokuapp.com/parts/${props.part.id}`)
         toggleEdit()
     }
 
@@ -37,14 +39,14 @@ const Part = (props) => {
                     On hand count: {props.part.onHand}
                 </section>
                 <section id="partLastPerson" className="item">
-                    {props.part.drawList.length !== 0 ? <p>Last person to draw: {props.part.drawList.at(-1).name}</p> : <p>Last person to draw: No Data</p> }
+                    {props.part.drawList.length !== 0 ? <p>Last person to draw: {props.part.drawList.at(-1).name}</p> : <p>Last person to draw: No Data</p>}
                 </section>
                 <ButtonGroup>
                     <Button color="primary" onClick={toggleEdit}>
                         Edit
                     </Button>
                     <Button color="primary" onClick={toggle}>
-                        <img src={arrow} className={isOpen ? "down" : "left"}/>
+                        <img src={arrow} className={isOpen ? "down" : "left"} />
                     </Button>
                 </ButtonGroup>
             </li>
@@ -73,9 +75,8 @@ const Part = (props) => {
                         </FormGroup>
                     </Form>
                     <ModalFooter>
-                        <Button onClick={handleEdit}>
-                            Submit
-                        </Button>
+                        <Button color="danger" onClick={handleDelete}> Delete </Button>
+                        <Button onClick={handleEdit}>Submit</Button>
                     </ModalFooter>
                 </ModalBody>
             </Modal>
