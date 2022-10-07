@@ -18,6 +18,7 @@ const Part = (props) => {
         })
         toggleEdit()
     }
+
     const handleDelete = async () => {
         const getID = await axios.delete(`https://fast-meadow-65226.herokuapp.com/parts/${props.part.id}`)
         toggleEdit()
