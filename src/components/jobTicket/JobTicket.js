@@ -1,8 +1,25 @@
 import './jobTicket.css'
 import SignatureCanvas from 'react-signature-canvas'
 import { Form, Row, Col, Label, FormGroup, Input, Button, Table } from 'reactstrap';
+import BillingRow from './BillingRow';
+import { useState } from 'react';
 
 const JobTIcket = () => {
+    let rowNum = 1
+    let [ticketBody, setTicketBody] = useState([])
+
+    const addRow = () => {
+        let copy = [...ticketBody, rowNum]
+        setTicketBody(copy)
+    }
+
+    let mappedRows = ticketBody.map((row, index) => {
+        console.log(ticketBody)
+        return <BillingRow
+            index={index}
+        />
+    })
+
     return (
         <div id='job-ticket'>
             <Form onSubmit={console.log('submit')}>
@@ -130,19 +147,10 @@ const JobTIcket = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td><Input type='number'></Input></td>
-                            <td><Input type='number'></Input></td>
-                            <td><Input type='number'></Input></td>
-                            <td><Input type='text'></Input></td>
-                            <td><Input type='text'></Input></td>
-                            <td><Input type='number'></Input></td>
-                        </tr>
+                        {mappedRows}
                     </tbody>
                 </Table>
-                <Button onClick={(event) => event.preventDefault()}> Add row </Button>
-
+                <Button onClick={(event) => addRow()}> Add row </Button>
             </Form>
 
             <h1>Sign Here</h1>
