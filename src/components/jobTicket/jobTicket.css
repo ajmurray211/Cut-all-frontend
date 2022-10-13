@@ -4,6 +4,7 @@ h1{
 
 .sigCanvas{
     border: 5px solid black;
+    border-radius: 35px;
 }
 
 #job-ticket{

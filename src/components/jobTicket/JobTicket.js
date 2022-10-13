@@ -13,12 +13,18 @@ const JobTIcket = () => {
     const [truckNum, setTruckNum] = useState(null)
     const [date, setDate] = useState(null)
     const [address, setAddress] = useState(null)
+    const [otherWorkers, setOtherWorkers] = useState('')
     const [jobInfo, setJobInfo] = useState([])
     let rowNum = 1
 
     const addRow = () => {
         let copy = [...ticketBody, rowNum]
         setTicketBody(copy)
+    }
+
+    const addWorker = (input) => {
+        let copy = [...otherWorkers, input]
+        setOtherWorkers(copy)
     }
 
     let mappedRows = ticketBody.map((row, index) => {
@@ -30,7 +36,7 @@ const JobTIcket = () => {
 
     return (
         <div id='job-ticket'>
-            <Form onSubmit={console.log('submit')}>
+            <Form>
                 <Row>
                     <Col md={4} />
                     <Col md={3}>
@@ -77,13 +83,33 @@ const JobTIcket = () => {
                     </Col>
                     <Col md={3}>
                         <FormGroup>
-                            <Label for="otherWorkers">
-                                Other CA men on the job :
-                            </Label>
+                            <p>Other CA men on the job:</p>
+                            <Label for='rilyn'>Rilyn :</Label>
                             <Input
-                                id="otherWorkers"
+                                id="rilyn"
                                 type="checkbox"
-                                onChange={(event) => console.log(event.target.value)}
+                                onChange={(event) => addWorker(event.target.id)}
+                            >
+                            </Input>
+                            <Label for='kyle'>Kyle :</Label>
+                            <Input
+                                id="kyle"
+                                type="checkbox"
+                                onChange={(event) => addWorker(event.target.id)}
+                            >
+                            </Input>
+                            <Label for='pat'>Pat :</Label>
+                            <Input
+                                id="pat"
+                                type="checkbox"
+                                onChange={(event) => addWorker(event.target.id)}
+                            >
+                            </Input>
+                            <Label for='gordon'>Gordon :</Label>
+                            <Input
+                                id="gordon"
+                                type="checkbox"
+                                onChange={(event) => addWorker(event.target.id)}
                             >
                             </Input>
                         </FormGroup>
@@ -151,10 +177,9 @@ const JobTIcket = () => {
                         {mappedRows}
                     </tbody>
                 </Table>
-                <Button onClick={(event) => addRow()}> Add row </Button>
-                {/* <Button id='addRowBtn' onClick={(event) => addRow()}>+</Button> */}
             </Form>
 
+            <Button onClick={(event) => addRow()}> Add row </Button>
             <Button onClick={toggleModal} type='submit'>Submit</Button>
 
             <Modal isOpen={modal}>
@@ -165,6 +190,7 @@ const JobTIcket = () => {
                         <ul id='inputContainer'>
                             <li><span id='inputItem'>Who worked</span>:{worker}</li>
                             <li><span id='inputItem'>Bill to</span>:{billTo}</li>
+                            <li><span id='inputItem'>Other CA men on the job</span>:{otherWorkers}</li>
                             <li><span id='inputItem'>Truck number</span>:{truckNum}</li>
                             <li><span id='inputItem'>Date</span>:{date}</li>
                             <li><span id='inputItem'>Address</span>:{address}</li>
@@ -186,8 +212,12 @@ const JobTIcket = () => {
                         </ul>
                     </section>
 
-                    <SignatureCanvas penColor='black' id='sign'
+                    <Label for="confirmation">
+                        I have reviewed the above information and confirm the information is correct:
+                    </Label>
+                    <SignatureCanvas penColor='black' id='confirmation'
                         canvasProps={{ width: 425, height: 200, className: 'sigCanvas' }} />
+
                 </ModalBody>
                 <ModalFooter>
                     <Button onClick={toggleModal} type='submit'>Submit</Button>
