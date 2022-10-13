@@ -14,11 +14,24 @@ const JobTIcket = () => {
     const [date, setDate] = useState(null)
     const [address, setAddress] = useState(null)
     const [otherWorkers, setOtherWorkers] = useState('')
-    const [jobInfo, setJobInfo] = useState([])
-    let rowNum = 1
+    let row = {
+        'itemNum': '',
+        'qty': '',
+        'length': '',
+        'depth': '',
+        'workCode': '',
+        'equipUsed': '',
+        'amount': ''
+    }
+
+    const editRow = (i, key, val) => {
+        let copy = [...ticketBody]
+        copy[i][key] = val
+        setTicketBody[i][key](val)
+    }
 
     const addRow = () => {
-        let copy = [...ticketBody, rowNum]
+        let copy = [...ticketBody, row]
         setTicketBody(copy)
     }
 
@@ -27,11 +40,23 @@ const JobTIcket = () => {
         setOtherWorkers(copy)
     }
 
-    let mappedRows = ticketBody.map((row, index) => {
-        console.log(ticketBody)
+    const mappedRows = ticketBody.map((row, index) => {
         return <BillingRow
             index={index}
+            row={row}
+            editRow={editRow}
         />
+    })
+
+    const mappedjobInfo = ticketBody.map((row, index) => {
+        // console.log(row)
+        return (
+            <li>
+                item {index + 1}, QTY: {row.qty}, length or DIA: {row.length},
+                Depth, {row.depth}, Work code: {row.workCode}, Discription / Equipment used:
+                {row.equipUsed}, Amount: {row.amount}
+            </li>
+        )
     })
 
     return (
@@ -194,7 +219,11 @@ const JobTIcket = () => {
                             <li><span id='inputItem'>Truck number</span>:{truckNum}</li>
                             <li><span id='inputItem'>Date</span>:{date}</li>
                             <li><span id='inputItem'>Address</span>:{address}</li>
-                            <li><span id='inputItem'>Work completed</span>:{jobInfo}</li>
+                            <li><span id='inputItem'>Work completed</span>:
+                                <ul>
+                                    {mappedjobInfo}
+                                </ul>
+                            </li>
                         </ul>
                     </sction>
                     <section id='legalDisclaimer'>
@@ -206,7 +235,7 @@ const JobTIcket = () => {
                             <li>4. Water and power available within 150’ of work area. Parking for truck and power unit within 150’ of work area.</li>
                             <li>5. Traffic control, water and/or dust partition by others.</li>
                             <li>6. We reserve the right to bill all work on an hourly basis due to difficult working conditions and/or heavy reinforcing.</li>
-                            <li> 7. If for any reason are unable to work due to no fault of our own, then we must charge for stand-by time.</li>
+                            <li>7. If for any reason are unable to work due to no fault of our own, then we must charge for stand-by time.</li>
                             <li>8. Contractor is responsible for covering holes created by sawing and drilling.</li>
                             <li>9. In the event of non-payment of any amount, when due, purchaser agrees to pay all collection costs including reasonable attorney fees.</li>
                         </ul>
