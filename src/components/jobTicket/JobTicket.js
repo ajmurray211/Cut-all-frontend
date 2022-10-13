@@ -1,12 +1,14 @@
 import './jobTicket.css'
 import SignatureCanvas from 'react-signature-canvas'
-import { Form, Row, Col, Label, FormGroup, Input, Button, Table } from 'reactstrap';
+import { Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import BillingRow from './BillingRow';
 import { useState } from 'react';
 
 const JobTIcket = () => {
-    let rowNum = 1
+    const [modal, setModal] = useState(false);
+    const toggleModal = () => setModal(!modal);
     let [ticketBody, setTicketBody] = useState([])
+    let rowNum = 1
 
     const addRow = () => {
         let copy = [...ticketBody, rowNum]
@@ -137,7 +139,7 @@ const JobTIcket = () => {
                 <Table bordered striped responsive>
                     <thead>
                         <tr>
-                            <th>Quote #</th>
+                            <th>Quote item</th>
                             <th>QTY</th>
                             <th>Length or DIA</th>
                             <th>Depth</th>
@@ -153,13 +155,33 @@ const JobTIcket = () => {
                 <Button onClick={(event) => addRow()}> Add row </Button>
             </Form>
 
-            <h1>Sign Here</h1>
+            <Button onClick={toggleModal} type='submit'>Submit</Button>
 
-            <SignatureCanvas penColor='black' id='sign'
-                canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }} />
+            <Modal isOpen={modal}>
+                <ModalHeader toggle={toggleModal}>Signature form</ModalHeader>
+                <ModalBody>
+                    <h2> Standard job conditions:</h2>
+                    <ul>
+                        <li>1. Layout of work by others prior to arrival of operator.</li>
+                        <li>2. We cannot accept responsibility for damage to buried objects such as conduit, steel pipes, etc.</li>
+                        <li>3. All prices based on a maximum work height of 8’. Scaffolding supplied and erected by others unless prior arrangements are made.</li>
+                        <li>4. Water and power available within 150’ of work area. Parking for truck and power unit within 150’ of work area.</li>
+                        <li>5. Traffic control, water and/or dust partition by others.</li>
+                        <li>6. We reserve the right to bill all work on an hourly basis due to difficult working conditions and/or heavy reinforcing.</li>
+                        <li> 7. If for any reason are unable to work due to no fault of our own, then we must charge for stand-by time.</li>
+                        <li>8. Contractor is responsible for covering holes created by sawing and drilling.</li>
+                        <li>9. In the event of non-payment of any amount, when due, purchaser agrees to pay all collection costs including reasonable attorney fees.</li>
+                    </ul>
 
-            <Button type='submit'>Submit</Button>
+                    <SignatureCanvas penColor='black' id='sign'
+                        canvasProps={{ width: 425, height: 200, className: 'sigCanvas' }} />
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={toggleModal} type='submit'>Submit</Button>
+                </ModalFooter>
+            </Modal>
         </div>
+
     );
 }
 
