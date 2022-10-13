@@ -49,12 +49,11 @@ const JobTIcket = () => {
     })
 
     const mappedjobInfo = ticketBody.map((row, index) => {
-        // console.log(row)
         return (
             <li>
-                item {index + 1}, QTY: {row.qty}, length or DIA: {row.length},
-                Depth, {row.depth}, Work code: {row.workCode}, Discription / Equipment used:
-                {row.equipUsed}, Amount: {row.amount}
+               <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
+               <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
+                {row.equipUsed}, <span className='inputItem'>Amount</span>: {row.amount}
             </li>
         )
     })
@@ -213,13 +212,13 @@ const JobTIcket = () => {
                     <sction id='workerInput'>
                         <h2>Job information:</h2>
                         <ul id='inputContainer'>
-                            <li><span id='inputItem'>Who worked</span>:{worker}</li>
-                            <li><span id='inputItem'>Bill to</span>:{billTo}</li>
-                            <li><span id='inputItem'>Other CA men on the job</span>:{otherWorkers}</li>
-                            <li><span id='inputItem'>Truck number</span>:{truckNum}</li>
-                            <li><span id='inputItem'>Date</span>:{date}</li>
-                            <li><span id='inputItem'>Address</span>:{address}</li>
-                            <li><span id='inputItem'>Work completed</span>:
+                            <li><span className='inputItem'>Who worked</span>:{worker}</li>
+                            <li><span className='inputItem'>Bill to</span>:{billTo}</li>
+                            <li><span className='inputItem'>Other CA men on the job</span>:{otherWorkers}</li>
+                            <li><span className='inputItem'>Truck number</span>:{truckNum}</li>
+                            <li><span className='inputItem'>Date</span>:{date}</li>
+                            <li><span className='inputItem'>Address</span>:{address}</li>
+                            <li><span className='inputItem'>Work completed</span>:
                                 <ul>
                                     {mappedjobInfo}
                                 </ul>
