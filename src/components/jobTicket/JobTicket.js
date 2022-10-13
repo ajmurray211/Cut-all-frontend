@@ -153,6 +153,7 @@ const JobTIcket = () => {
                     </tbody>
                 </Table>
                 <Button onClick={(event) => addRow()}> Add row </Button>
+                {/* <Button id='addRowBtn' onClick={(event) => addRow()}>+</Button> */}
             </Form>
 
             <Button onClick={toggleModal} type='submit'>Submit</Button>
