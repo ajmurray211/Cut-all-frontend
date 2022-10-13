@@ -24,6 +24,14 @@ margin: 10px;
     background-color: green;
 }
 
+#inputContainer{
+    list-style: none;
+}
+
+#inputItem{
+    font-weight:700;
+}
+
 @media screen and (max-width: 425px) {
     
 }
