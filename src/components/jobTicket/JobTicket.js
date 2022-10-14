@@ -1,14 +1,16 @@
 import './jobTicket.css'
 import SignatureCanvas from 'react-signature-canvas'
-import { Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import BillingRow from './BillingRow';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 
 const JobTIcket = () => {
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal(!modal);
     const [ticketBody, setTicketBody] = useState([])
+    const [status, setStatus] = useState('');
+    const [show, setShow] = useState(false)
     const [value, setValue] = useState({
         fullName: 'TEST',
         email: 'murray.aj.murray@gmail.com',
@@ -33,14 +35,24 @@ const JobTIcket = () => {
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        console.log(value)
+        console.log(value, status)
         emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
             .then((result) => {
-                console.log(result.text);
+                setStatus(result.text);
+                setShow(true)
             }, (error) => {
-                console.log(error.text);
+                setStatus(error.text);
             });
     }
+
+    useEffect(() => {
+        if (status === 'OK') {
+            setTimeout(() => {
+                setStatus('');
+                setShow(false)
+            }, 3000);
+        }
+    }, [status]);
 
     const handleChange = (e) => {
         setValue(values => ({
@@ -80,6 +92,7 @@ const JobTIcket = () => {
 
     return (
         <div id='job-ticket'>
+            <Alert color='success' isOpen={show}>You have submitted a job ticket!</Alert>
             <Form>
                 <Row>
                     <Col md={4} />
@@ -274,6 +287,7 @@ const JobTIcket = () => {
                     <Button onClick={handleSubmit} type='submit'>Submit</Button>
                 </ModalFooter>
             </Modal>
+
         </div>
 
     );
