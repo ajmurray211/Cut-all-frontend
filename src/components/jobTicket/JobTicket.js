@@ -3,17 +3,23 @@ import SignatureCanvas from 'react-signature-canvas'
 import { Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import BillingRow from './BillingRow';
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 const JobTIcket = () => {
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal(!modal);
     const [ticketBody, setTicketBody] = useState([])
-    const [worker, setWorker] = useState('')
-    const [billTo, setBillTo] = useState('')
-    const [truckNum, setTruckNum] = useState(null)
-    const [date, setDate] = useState(null)
-    const [address, setAddress] = useState(null)
-    const [otherWorkers, setOtherWorkers] = useState('')
+    const [value, setValue] = useState({
+        fullName: 'TEST',
+        email: 'murray.aj.murray@gmail.com',
+        worker: '',
+        billTo: '',
+        otherWorkers: '',
+        truckNum: '',
+        date: '',
+        address: ''
+    })
+
     let row = {
         'itemNum': '',
         'qty': '',
@@ -22,6 +28,25 @@ const JobTIcket = () => {
         'workCode': '',
         'equipUsed': '',
         'amount': ''
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        toggleModal()
+        console.log(value)
+        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+            .then((result) => {
+                console.log(result.text);
+            }, (error) => {
+                console.log(error.text);
+            });
+    }
+
+    const handleChange = (e) => {
+        setValue(values => ({
+            ...values,
+            [e.target.name]: e.target.value
+        }))
     }
 
     const editRow = (i, key, val) => {
@@ -35,11 +60,6 @@ const JobTIcket = () => {
         setTicketBody(copy)
     }
 
-    const addWorker = (input) => {
-        let copy = [...otherWorkers, input]
-        setOtherWorkers(copy)
-    }
-
     const mappedRows = ticketBody.map((row, index) => {
         return <BillingRow
             index={index}
@@ -51,8 +71,8 @@ const JobTIcket = () => {
     const mappedjobInfo = ticketBody.map((row, index) => {
         return (
             <li>
-               <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
-               <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
+                <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
+                <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
                 {row.equipUsed}, <span className='inputItem'>Amount</span>: {row.amount}
             </li>
         )
@@ -70,10 +90,10 @@ const JobTIcket = () => {
                             </Label>
                             <Input
                                 id="employeeName"
-                                name="select"
+                                name="worker"
                                 placeholder="Who are you?"
                                 type="select"
-                                onChange={(event) => setWorker(event.target.value)}
+                                onChange={(event) => handleChange(event)}
                             >
                                 <option></option>
                                 <option>Rilyn</option>
@@ -86,7 +106,7 @@ const JobTIcket = () => {
                     </Col>
                     <Col md={2}>
                         <Label>Truck Number:</Label>
-                        <Input type='number' onChange={(event) => setTruckNum(event.target.value)}></Input>
+                        <Input name='truckNum' type='number' onChange={(event) => handleChange(event)}></Input>
                     </Col>
                 </Row>
                 <Row>
@@ -98,10 +118,10 @@ const JobTIcket = () => {
                             </Label>
                             <Input
                                 id="billingName"
-                                name="select"
+                                name="billTo"
                                 placeholder="Billing name"
                                 type="text"
-                                onChange={(event) => setBillTo(event.target.value)}
+                                onChange={(event) => handleChange(event)}
                             ></Input>
                         </FormGroup>
                     </Col>
@@ -110,30 +130,34 @@ const JobTIcket = () => {
                             <p>Other CA men on the job:</p>
                             <Label for='rilyn'>Rilyn :</Label>
                             <Input
-                                id="rilyn"
+                                value='Rilyn'
+                                name="otherWorkers"
                                 type="checkbox"
-                                onChange={(event) => addWorker(event.target.id)}
+                                onChange={(event) => handleChange(event)}
                             >
                             </Input>
                             <Label for='kyle'>Kyle :</Label>
                             <Input
-                                id="kyle"
+                                value='Kyle'
+                                name="otherWorkers"
                                 type="checkbox"
-                                onChange={(event) => addWorker(event.target.id)}
+                                onChange={(event) => handleChange(event)}
                             >
                             </Input>
                             <Label for='pat'>Pat :</Label>
                             <Input
-                                id="pat"
+                                value='Pat'
+                                name="otherWorkers"
                                 type="checkbox"
-                                onChange={(event) => addWorker(event.target.id)}
+                                onChange={(event) => handleChange(event)}
                             >
                             </Input>
                             <Label for='gordon'>Gordon :</Label>
                             <Input
-                                id="gordon"
+                                value='Gordon'
+                                name="otherWorkers"
                                 type="checkbox"
-                                onChange={(event) => addWorker(event.target.id)}
+                                onChange={(event) => handleChange(event)}
                             >
                             </Input>
                         </FormGroup>
@@ -144,9 +168,9 @@ const JobTIcket = () => {
                                 Date:
                             </Label>
                             <Input
-                                id="date"
+                                name="date"
                                 type="date"
-                                onChange={(event) => setDate(event.target.value)}
+                                onChange={(event) => handleChange(event)}
                             >
                             </Input>
                         </FormGroup>
@@ -162,10 +186,10 @@ const JobTIcket = () => {
                                 Address:
                             </Label>
                             <Input
-                                id="address"
+                                name="address"
                                 placeholder="Enter job address"
                                 type="text"
-                                onChange={(event) => setAddress(event.target.value)}
+                                onChange={(event) => handleChange(event)}
                             >
                             </Input>
                         </FormGroup>
@@ -204,7 +228,7 @@ const JobTIcket = () => {
             </Form>
 
             <Button onClick={(event) => addRow()}> Add row </Button>
-            <Button onClick={toggleModal} type='submit'>Submit</Button>
+            <Button onClick={toggleModal} >continue</Button>
 
             <Modal isOpen={modal}>
                 <ModalHeader toggle={toggleModal}>Signature form</ModalHeader>
@@ -212,12 +236,12 @@ const JobTIcket = () => {
                     <sction id='workerInput'>
                         <h2>Job information:</h2>
                         <ul id='inputContainer'>
-                            <li><span className='inputItem'>Who worked</span>:{worker}</li>
-                            <li><span className='inputItem'>Bill to</span>:{billTo}</li>
-                            <li><span className='inputItem'>Other CA men on the job</span>:{otherWorkers}</li>
-                            <li><span className='inputItem'>Truck number</span>:{truckNum}</li>
-                            <li><span className='inputItem'>Date</span>:{date}</li>
-                            <li><span className='inputItem'>Address</span>:{address}</li>
+                            <li><span className='inputItem'>Who worked</span>:{value['worker']}</li>
+                            <li><span className='inputItem'>Bill to</span>:{value['billTo']}</li>
+                            <li><span className='inputItem'>Other CA men on the job</span>:{value['otherWorkers']}</li>
+                            <li><span className='inputItem'>Truck number</span>:{value['truckNum']}</li>
+                            <li><span className='inputItem'>Date</span>:{value['date']}</li>
+                            <li><span className='inputItem'>Address</span>:{value['address']}</li>
                             <li><span className='inputItem'>Work completed</span>:
                                 <ul>
                                     {mappedjobInfo}
@@ -245,10 +269,9 @@ const JobTIcket = () => {
                     </Label>
                     <SignatureCanvas penColor='black' id='confirmation'
                         canvasProps={{ width: 425, height: 200, className: 'sigCanvas' }} />
-
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={toggleModal} type='submit'>Submit</Button>
+                    <Button onClick={handleSubmit} type='submit'>Submit</Button>
                 </ModalFooter>
             </Modal>
         </div>
