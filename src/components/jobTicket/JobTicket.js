@@ -1,8 +1,8 @@
 import './jobTicket.css'
-import SignatureCanvas from 'react-signature-canvas'
+import SignaturePad from 'react-signature-canvas'
 import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import BillingRow from './BillingRow';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 
 const JobTIcket = () => {
@@ -19,8 +19,19 @@ const JobTIcket = () => {
         otherWorkers: '',
         truckNum: '',
         date: '',
-        address: ''
+        address: '',
+        imgUrl: null,
+        jobInfo: null
     })
+
+    const sigCanvas = useRef({})
+    const save = () => {
+        setValue(values => ({
+            ...values,
+            ['imgUrl']: sigCanvas.current.getTrimmedCanvas().toDataURL(),
+            ['jobInfo']: ticketBody
+        }))
+    }
 
     let row = {
         'itemNum': '',
@@ -35,7 +46,8 @@ const JobTIcket = () => {
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        console.log(value, status)
+        save()
+        setStatus('OK')
         emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
             .then((result) => {
                 setStatus(result.text);
@@ -50,7 +62,8 @@ const JobTIcket = () => {
             setTimeout(() => {
                 setStatus('');
                 setShow(false)
-            }, 3000);
+                console.log(value, status)
+            }, 5000);
         }
     }, [status]);
 
@@ -105,7 +118,7 @@ const JobTIcket = () => {
                                 id="employeeName"
                                 name="worker"
                                 placeholder="Who are you?"
-                                type="select"
+                                type="select" 
                                 onChange={(event) => handleChange(event)}
                             >
                                 <option></option>
@@ -246,7 +259,7 @@ const JobTIcket = () => {
             <Modal isOpen={modal}>
                 <ModalHeader toggle={toggleModal}>Signature form</ModalHeader>
                 <ModalBody>
-                    <sction id='workerInput'>
+                    <section id='workerInput'>
                         <h2>Job information:</h2>
                         <ul id='inputContainer'>
                             <li><span className='inputItem'>Who worked</span>:{value['worker']}</li>
@@ -261,7 +274,7 @@ const JobTIcket = () => {
                                 </ul>
                             </li>
                         </ul>
-                    </sction>
+                    </section>
                     <section id='legalDisclaimer'>
                         <h2> Standard job conditions:</h2>
                         <ul>
@@ -280,8 +293,8 @@ const JobTIcket = () => {
                     <Label for="confirmation">
                         I have reviewed the above information and confirm the information is correct:
                     </Label>
-                    <SignatureCanvas penColor='black' id='confirmation'
-                        canvasProps={{ width: 425, height: 200, className: 'sigCanvas' }} />
+                    <SignaturePad penColor='black' id='confirmation' ref={sigCanvas}
+                        canvasProps={{ width: 425, height: 200, className: 'signatureCanvas' }} />
                 </ModalBody>
                 <ModalFooter>
                     <Button onClick={handleSubmit} type='submit'>Submit</Button>
