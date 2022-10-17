@@ -10,7 +10,9 @@ const JobTIcket = () => {
     const toggleModal = () => setModal(!modal);
     const [ticketBody, setTicketBody] = useState([])
     const [status, setStatus] = useState('');
-    const [show, setShow] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [fail, setFail] = useState(false)
+    let infoToHTML = []
     const [value, setValue] = useState({
         fullName: 'TEST',
         email: 'murray.aj.murray@gmail.com',
@@ -20,7 +22,7 @@ const JobTIcket = () => {
         truckNum: '',
         date: '',
         address: '',
-        imgUrl: null,
+        canvas: null,
         jobInfo: null
     })
 
@@ -28,8 +30,8 @@ const JobTIcket = () => {
     const save = () => {
         setValue(values => ({
             ...values,
-            ['imgUrl']: sigCanvas.current.getTrimmedCanvas().toDataURL(),
-            ['jobInfo']: ticketBody
+            ['canvas']: sigCanvas.current.getTrimmedCanvas().toDataURL(),
+            ['jobInfo']: infoToHTML.join()
         }))
     }
 
@@ -46,14 +48,16 @@ const JobTIcket = () => {
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        save()
-        setStatus('OK')
-        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+        // save()
+        // setStatus('OK')
+        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value['canvas'], 'E5-2RW9TeJyvAH3_r', {
+            content: value['canvas']
+        })
             .then((result) => {
                 setStatus(result.text);
-                setShow(true)
+                setSuccess(true)
             }, (error) => {
-                setStatus(error.text);
+                setFail('Error');
             });
     }
 
@@ -61,7 +65,14 @@ const JobTIcket = () => {
         if (status === 'OK') {
             setTimeout(() => {
                 setStatus('');
-                setShow(false)
+                setSuccess(false)
+                console.log(value, status)
+            }, 5000);
+        }
+        if (status === 'Error') {
+            setTimeout(() => {
+                setStatus('');
+                setFail(false)
                 console.log(value, status)
             }, 5000);
         }
@@ -86,6 +97,11 @@ const JobTIcket = () => {
     }
 
     const mappedRows = ticketBody.map((row, index) => {
+        let copy = [...ticketBody]
+        copy[index]['itemNum'] = index + 1
+        let line = (`<li>Quote item:${row.itemNum}, QTY: ${row.qty},  length or DIA: ${row.length}, Depth:${row.depth}
+        , Work code: ${row.workCode}, Description/ Equipment used:${row.equipUsed}, Amount:${row.amount} </li>`)
+        infoToHTML.push(line)
         return <BillingRow
             index={index}
             row={row}
@@ -105,7 +121,8 @@ const JobTIcket = () => {
 
     return (
         <div id='job-ticket'>
-            <Alert color='success' isOpen={show}>You have submitted a job ticket!</Alert>
+            <Alert color='success' isOpen={success}>You have submitted a job ticket!</Alert>
+            <Alert color='danger' isOpen={fail}>There was a problem with the submission check all the data fields!</Alert>
             <Form>
                 <Row>
                     <Col md={4} />
@@ -118,7 +135,7 @@ const JobTIcket = () => {
                                 id="employeeName"
                                 name="worker"
                                 placeholder="Who are you?"
-                                type="select" 
+                                type="select"
                                 onChange={(event) => handleChange(event)}
                             >
                                 <option></option>
@@ -275,6 +292,7 @@ const JobTIcket = () => {
                             </li>
                         </ul>
                     </section>
+
                     <section id='legalDisclaimer'>
                         <h2> Standard job conditions:</h2>
                         <ul>
@@ -297,6 +315,7 @@ const JobTIcket = () => {
                         canvasProps={{ width: 425, height: 200, className: 'signatureCanvas' }} />
                 </ModalBody>
                 <ModalFooter>
+                    <Button onClick={save} >Save</Button>
                     <Button onClick={handleSubmit} type='submit'>Submit</Button>
                 </ModalFooter>
             </Modal>
