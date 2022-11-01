@@ -29,8 +29,7 @@ nav{
 }
 
 nav p {
-position: fixed;
-right: 1vw;
+display: none;
 }
 
 .link{

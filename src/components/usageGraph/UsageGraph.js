@@ -25,6 +25,7 @@ const UsageGraph = () => {
 
     useEffect(() => {
         getData(`${API_URL}parts/?format=json`)
+        console.log(data)
     }, [])
 
     const mockdata = [

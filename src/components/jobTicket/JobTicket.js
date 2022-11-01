@@ -23,17 +23,36 @@ const JobTIcket = () => {
         date: '',
         address: '',
         canvas: null,
-        jobInfo: null
+        jobInfo: null,
+        travelBegin: null,
+        travelEnd: null,
+        travelTotal: null,
+        jobBegin: null,
+        jobEnd: null,
+        jobTotal: null,
+        wallSawing: null,
+        coreDrilling: null,
+        slabSaw: null,
+        hammerChipping: null,
+        powerBreak: null,
+        loadExcevate: null,
+        haul: null,
+        handLabor: null,
+        dumpYards: null,
+        release: null,
+        standby: null,
+        other: null,
+        downTime: null,
     })
 
-    const sigCanvas = useRef({})
-    const save = () => {
-        setValue(values => ({
-            ...values,
-            ['canvas']: sigCanvas.current.getTrimmedCanvas().toDataURL(),
-            ['jobInfo']: infoToHTML.join()
-        }))
-    }
+    // const sigCanvas = useRef({})
+    // const save = () => {
+    //     setValue(values => ({
+    //         ...values,
+    //         ['canvas']: `<img src='${sigCanvas.current.getTrimmedCanvas().toDataURL("image/png")}' />`,
+    //         ['jobInfo']: infoToHTML.join()
+    //     }))
+    // }
 
     let row = {
         'itemNum': '',
@@ -49,16 +68,17 @@ const JobTIcket = () => {
         event.preventDefault()
         toggleModal()
         // save()
-        // setStatus('OK')
-        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value['canvas'], 'E5-2RW9TeJyvAH3_r', {
-            content: value['canvas']
-        })
-            .then((result) => {
-                setStatus(result.text);
-                setSuccess(true)
-            }, (error) => {
-                setFail('Error');
-            });
+        setStatus('OK')
+        console.log(value)
+        // emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+        //     .then((result) => {
+        //         setStatus(result.text);
+        //         setSuccess(true)
+        //     }, (error) => {
+        //         setFail(true)
+        //         setStatus('Error')
+        //         console.log(error);
+        //     });
     }
 
     useEffect(() => {
@@ -69,7 +89,7 @@ const JobTIcket = () => {
                 console.log(value, status)
             }, 5000);
         }
-        if (status === 'Error') {
+        else if (status === 'Error') {
             setTimeout(() => {
                 setStatus('');
                 setFail(false)
@@ -125,7 +145,7 @@ const JobTIcket = () => {
             <Alert color='danger' isOpen={fail}>There was a problem with the submission check all the data fields!</Alert>
             <Form>
                 <Row>
-                    <Col md={4} />
+                    <Col md={3} />
                     <Col md={3}>
                         <FormGroup>
                             <Label for="employeeList">
@@ -147,13 +167,14 @@ const JobTIcket = () => {
                             </Input>
                         </FormGroup>
                     </Col>
+                    <Col md={1} />
                     <Col md={2}>
                         <Label>Truck Number:</Label>
                         <Input name='truckNum' type='number' onChange={(event) => handleChange(event)}></Input>
                     </Col>
                 </Row>
                 <Row>
-                    <Col md={2} />
+                    <Col md={3} />
                     <Col md={3}>
                         <FormGroup>
                             <Label for="employeeList">
@@ -168,7 +189,7 @@ const JobTIcket = () => {
                             ></Input>
                         </FormGroup>
                     </Col>
-                    <Col md={3}>
+                    <Col md={4}>
                         <FormGroup>
                             <p>Other CA men on the job:</p>
                             <Label for='rilyn'>Rilyn :</Label>
@@ -205,6 +226,12 @@ const JobTIcket = () => {
                             </Input>
                         </FormGroup>
                     </Col>
+
+                    <Col md={2} />
+                </Row>
+
+                <Row>
+                    <Col md={3} />
                     <Col md={3}>
                         <FormGroup>
                             <Label for="date">
@@ -218,12 +245,7 @@ const JobTIcket = () => {
                             </Input>
                         </FormGroup>
                     </Col>
-                    <Col md={2} />
-                </Row>
-
-                <Row>
-                    <Col md={4} />
-                    <Col md={2}>
+                    <Col md={4}>
                         <FormGroup>
                             <Label for="address">
                                 Address:
@@ -237,19 +259,7 @@ const JobTIcket = () => {
                             </Input>
                         </FormGroup>
                     </Col>
-                    <Col md={2}>
-                        <FormGroup>
-                            <Label for="masterTicket">
-                                Master Ticket:
-                            </Label>
-                            <Input
-                                id="masterTicket"
-                                type="checkbox"
-                                onChange={(event) => console.log(event.target.value)}
-                            >
-                            </Input>
-                        </FormGroup>
-                    </Col>
+
                 </Row>
 
                 <Table bordered striped responsive>
@@ -271,9 +281,8 @@ const JobTIcket = () => {
             </Form>
 
             <Button onClick={(event) => addRow()}> Add row </Button>
-            <Button onClick={toggleModal} >continue</Button>
 
-            <Modal isOpen={modal}>
+            <Modal isOpen={modal} size='lg'>
                 <ModalHeader toggle={toggleModal}>Signature form</ModalHeader>
                 <ModalBody>
                     <section id='workerInput'>
@@ -289,6 +298,11 @@ const JobTIcket = () => {
                                 <ul>
                                     {mappedjobInfo}
                                 </ul>
+                            </li>
+                            <li><span className='inputItem'>Hours Spent</span></li>
+                            <li>
+                                {value['travelTotal'] ? <ul>{value['travelTotal'] * 30}min were spent traveling for this job.</ul> : <li />}
+                                {value['jobTotal'] ? <ul>{value['jobTotal'] * 30}min were spent on the job site working.</ul> : <li />}
                             </li>
                         </ul>
                     </section>
@@ -308,18 +322,120 @@ const JobTIcket = () => {
                         </ul>
                     </section>
 
+                    <Input type='checkbox' required />
                     <Label for="confirmation">
-                        I have reviewed the above information and confirm the information is correct:
+                        : I have reviewed the above information and confirm the information is correct:
                     </Label>
-                    <SignaturePad penColor='black' id='confirmation' ref={sigCanvas}
-                        canvasProps={{ width: 425, height: 200, className: 'signatureCanvas' }} />
+                    <Label for="confirmation">
+                        Typing your name act as a signature
+                    </Label>
+                    <Input type='text' required />
+                    {/* <SignaturePad penColor='black' id='confirmation' ref={sigCanvas}
+                        canvasProps={{ width: 425, height: 200, className: 'signatureCanvas' }} /> */}
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={save} >Save</Button>
+                    {/* <Button onClick={save} >Save</Button> */}
                     <Button onClick={handleSubmit} type='submit'>Submit</Button>
                 </ModalFooter>
             </Modal>
 
+            <Table bordered striped responsive >
+                <thead>
+                    <h2>Time table</h2>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Begin travel</th>
+                        <th><Input type='time' name='travelBegin' onChange={handleChange}></Input></th>
+                    </tr>
+                    <tr>
+                        <th>End travel</th>
+                        <th><Input type='time' name='travelEnd' onChange={handleChange}></Input></th>
+                    </tr>
+                    <tr>
+                        <th>Total travel (min)</th>
+                        <th><Input type='number' name='travelTotal' onChange={handleChange}></Input></th>
+                    </tr>
+                    <tr>
+                        <th>Begin Job</th>
+                        <th><Input type='time' name='jobBegin' onChange={handleChange}></Input></th>
+                    </tr>
+                    <tr>
+                        <th>End job</th>
+                        <th><Input type='time' name='jobEnd' onChange={handleChange}></Input></th>
+                    </tr>
+                    <tr>
+                        <th>Total job time (min)</th>
+                        <th><Input type='number' name='jobTotal' onChange={handleChange}></Input></th>
+                    </tr>
+                </tbody>
+            </Table>
+
+            <Table bordered striped responsive >
+                <thead>
+                    <h2>Hours Spent</h2>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Wall Sawing</th>
+                        <th><input type='number' name='wallSawing' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Core drilling</th>
+                        <th><input type='number' name='coreDrilling' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Slab Saw</th>
+                        <th><input type='number' name='slabSaw' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Water control</th>
+                        <th><input type='number' name='waterControl' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>J/ Hammer chipping</th>
+                        <th><input type='number' name='hammerChipping' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Power Break</th>
+                        <th><input type='number' name='powerBreak' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Load Excevate</th>
+                        <th><input type='number' name='loadExcevate' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Haul</th>
+                        <th><input type='number' name='haul' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Hand Labor</th>
+                        <th><input type='number' name='handLabor' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Dump Yards</th>
+                        <th><input type='number' name='dumpYards' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Release</th>
+                        <th><input type='number' name='release' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Standby</th>
+                        <th><input type='number' name='standby' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Other</th>
+                        <th><input type='number' name='other' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Down Time</th>
+                        <th><input type='number' name='downTime' onChange={handleChange}></input></th>
+                    </tr>
+                </tbody>
+            </Table>
+
+            <Button onClick={toggleModal} >continue</Button>
         </div>
 
     );
