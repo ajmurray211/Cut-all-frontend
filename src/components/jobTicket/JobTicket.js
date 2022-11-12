@@ -33,6 +33,7 @@ const JobTIcket = () => {
         wallSawing: null,
         coreDrilling: null,
         slabSaw: null,
+        waterControl: null,
         hammerChipping: null,
         powerBreak: null,
         loadExcevate: null,
@@ -300,10 +301,25 @@ const JobTIcket = () => {
                                 </ul>
                             </li>
                             <li><span className='inputItem'>Hours Spent</span></li>
-                            <li>
-                                {value['travelTotal'] ? <ul>{value['travelTotal'] * 30}min were spent traveling for this job.</ul> : <li />}
-                                {value['jobTotal'] ? <ul>{value['jobTotal'] * 30}min were spent on the job site working.</ul> : <li />}
-                            </li>
+                            <ul>
+                                {value['travelTotal'] && value['travelTotal'] === 0 ? <li>{value['travelTotal'] * 30}min were spent traveling for this job.</li> : ''}
+                                {value['jobTotal'] && value['jobTotal'] === 0 ? <li>{value['jobTotal'] * 30}min were spent on the job site working.</li> : ''}
+                                <table>
+                                    <tr>{value.wallSawing ? `Wall sawing took ${value.wallSawing * 30}min.` : ''}</tr>
+                                    <tr>{value.coreDrilling ? `Core drilling took ${value.coreDrilling * 30}min.` : ''}</tr>
+                                    <tr>{value.waterControl ? `Water control took ${value.waterControl * 30}min.` : ''}</tr>
+                                    <tr>{value.slabSaw ? `Slab sawing took ${value.slabSaw * 30}min.` : ''}</tr>
+                                    <tr>{value.hammerChipping ? `Jack hammer chipping took ${value.hammerChipping * 30}min.` : ''}</tr>
+                                    <tr>{value.loadExcevate ? `Load excevate took ${value.loadExcevate * 30}min.` : ''}</tr>
+                                    <tr>{value.haul ? `Hauling took ${value.haul * 30}min.` : ''}</tr>
+                                    <tr>{value.handLabor ? `Hand labor took ${value.handLabor * 30}min.` : ''}</tr>
+                                    <tr>{value.dumpYards ? `Dump yards took ${value.dumpYards * 30}min.` : ''}</tr>
+                                    <tr>{value.release ? `Releases took ${value.release * 30}min.` : ''}</tr>
+                                    <tr>{value.standby ? `Standby took ${value.standby * 30}min.` : ''}</tr>
+                                    <tr>{value.other ? `other time took ${value.other * 30}min.` : ''}</tr>
+                                    <tr>{value.downTime ? `Down time took ${value.downTime * 30}min.` : ''}</tr>
+                                </table>
+                            </ul>
                         </ul>
                     </section>
 
@@ -322,14 +338,15 @@ const JobTIcket = () => {
                         </ul>
                     </section>
 
-                    <Input type='checkbox' required />
                     <Label for="confirmation">
-                        : I have reviewed the above information and confirm the information is correct:
+                        I have reviewed the above information and confirm the information is correct:
                     </Label>
-                    <Label for="confirmation">
-                        Typing your name act as a signature
+                    <Input name='confirmation' type='checkbox' required />
+                    <br></br>
+                    <Label for="confirmationName">
+                        Typing your name acts as an e-signature:
                     </Label>
-                    <Input type='text' required />
+                    <Input type='text' required name='confirmationName' />
                     {/* <SignaturePad penColor='black' id='confirmation' ref={sigCanvas}
                         canvasProps={{ width: 425, height: 200, className: 'signatureCanvas' }} /> */}
                 </ModalBody>
@@ -353,8 +370,8 @@ const JobTIcket = () => {
                         <th><Input type='time' name='travelEnd' onChange={handleChange}></Input></th>
                     </tr>
                     <tr>
-                        <th>Total travel (min)</th>
-                        <th><Input type='number' name='travelTotal' onChange={handleChange}></Input></th>
+                        <th>Total travel (30 min increments)</th>
+                        <th><Input min={0} type='number' name='travelTotal' onChange={handleChange}></Input></th>
                     </tr>
                     <tr>
                         <th>Begin Job</th>
@@ -365,8 +382,8 @@ const JobTIcket = () => {
                         <th><Input type='time' name='jobEnd' onChange={handleChange}></Input></th>
                     </tr>
                     <tr>
-                        <th>Total job time (min)</th>
-                        <th><Input type='number' name='jobTotal' onChange={handleChange}></Input></th>
+                        <th>Total job time (30 min incriments)</th>
+                        <th><Input min={0} type='number' name='jobTotal' onChange={handleChange}></Input></th>
                     </tr>
                 </tbody>
             </Table>
@@ -437,7 +454,6 @@ const JobTIcket = () => {
 
             <Button onClick={toggleModal} >continue</Button>
         </div>
-
     );
 }
 
