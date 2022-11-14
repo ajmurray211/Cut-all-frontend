@@ -4,6 +4,8 @@ import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, M
 import BillingRow from './BillingRow';
 import { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
+import JobDetails from './JobDetails';
+import { isCompositeComponent } from 'react-dom/test-utils';
 
 const JobTIcket = () => {
     const [modal, setModal] = useState(false);
@@ -12,6 +14,7 @@ const JobTIcket = () => {
     const [status, setStatus] = useState('');
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
+    
     let infoToHTML = []
     const [value, setValue] = useState({
         fullName: 'TEST',
@@ -44,7 +47,28 @@ const JobTIcket = () => {
         standby: null,
         other: null,
         downTime: null,
+        timeChart: null
     })
+    let times = `<section>
+    <h3>Hours Spent</h3>
+    <div id='timeBreakdown'>
+        ${value['travelTotal'] && value['travelTotal'] !== 0 ? `${value['travelTotal'] * 30}min were spent traveling for this job` : ''}
+        ${value['jobTotal'] && value['jobTotal'] !== 0 ? `${value['jobTotal'] * 30} min were spent on the job site working` : ''}
+        ${value.wallSawing ? `Wall sawing took ${value.wallSawing * 30}min.` : ''}
+        ${value.coreDrilling ? `Core drilling took ${value.coreDrilling * 30}min.` : ''}
+        ${value.waterControl ? `Water control took ${value.waterControl * 30}min.` : ''}
+        ${value.slabSaw ? `Slab sawing took ${value.slabSaw * 30}min.` : ''}
+        ${value.hammerChipping ? `Jack hammer chipping took ${value.hammerChipping * 30}min.` : ''}
+        ${value.loadExcevate ? `Load excevate took ${value.loadExcevate * 30}min.` : ''}
+        ${value.haul ? `Hauling took ${value.haul * 30}min.` : ''}
+        ${value.handLabor ? `Hand labor took ${value.handLabor * 30}min.` : ''}
+        ${value.dumpYards ? `Dump yards took ${value.dumpYards * 30}min.` : ''}
+        ${value.release ? `Releases took ${value.release * 30}min.` : ''}
+        ${value.standby ? `Standby took ${value.standby * 30}min.` : ''}
+        ${value.other ? `other time took ${value.other * 30}min.` : ''}
+        ${value.downTime ? `Down time took ${value.downTime * 30}min.` : ''}
+    </div>
+</section>`
 
     // const sigCanvas = useRef({})
     // const save = () => {
@@ -65,21 +89,34 @@ const JobTIcket = () => {
         'amount': ''
     }
 
+    const compileHTML = () => {
+        // setValue(values => ({
+        //     ...values,
+        //     timeChart: times
+        // }))
+        let combined = infoToHTML.join(' ')
+        setValue(values => ({
+            ...values,
+            jobInfo: combined,
+            timeChart: times
+        }))
+        // console.log('hit compile', combined)
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        // save()
-        setStatus('OK')
-        console.log(value)
-        // emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
-        //     .then((result) => {
-        //         setStatus(result.text);
-        //         setSuccess(true)
-        //     }, (error) => {
-        //         setFail(true)
-        //         setStatus('Error')
-        //         console.log(error);
-        //     });
+        compileHTML()
+        // setStatus('OK')
+        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+            .then((result) => {
+                setStatus(result.text);
+                setSuccess(true)
+            }, (error) => {
+                setFail(true)
+                setStatus('Error')
+                console.log(error);
+            });
     }
 
     useEffect(() => {
@@ -120,8 +157,7 @@ const JobTIcket = () => {
     const mappedRows = ticketBody.map((row, index) => {
         let copy = [...ticketBody]
         copy[index]['itemNum'] = index + 1
-        let line = (`<li>Quote item:${row.itemNum}, QTY: ${row.qty},  length or DIA: ${row.length}, Depth:${row.depth}
-        , Work code: ${row.workCode}, Description/ Equipment used:${row.equipUsed}, Amount:${row.amount} </li>`)
+        let line = (`<li>Quote item:${row.itemNum}, QTY: ${row.qty},  length or DIA: ${row.length}, Depth:${row.depth}, Work code: ${row.workCode}, Description/ Equipment used:${row.equipUsed}, Amount:${row.amount} </li>`)
         infoToHTML.push(line)
         return <BillingRow
             index={index}
@@ -285,59 +321,14 @@ const JobTIcket = () => {
 
             <Modal isOpen={modal} size='lg'>
                 <ModalHeader toggle={toggleModal}>Signature form</ModalHeader>
-                <ModalBody>
-                    <section id='workerInput'>
-                        <h2>Job information:</h2>
-                        <ul id='inputContainer'>
-                            <li><span className='inputItem'>Who worked</span>:{value['worker']}</li>
-                            <li><span className='inputItem'>Bill to</span>:{value['billTo']}</li>
-                            <li><span className='inputItem'>Other CA men on the job</span>:{value['otherWorkers']}</li>
-                            <li><span className='inputItem'>Truck number</span>:{value['truckNum']}</li>
-                            <li><span className='inputItem'>Date</span>:{value['date']}</li>
-                            <li><span className='inputItem'>Address</span>:{value['address']}</li>
-                            <li><span className='inputItem'>Work completed</span>:
-                                <ul>
-                                    {mappedjobInfo}
-                                </ul>
-                            </li>
-                            <li><span className='inputItem'>Hours Spent</span></li>
-                            <ul>
-                                {value['travelTotal'] && value['travelTotal'] === 0 ? <li>{value['travelTotal'] * 30}min were spent traveling for this job.</li> : ''}
-                                {value['jobTotal'] && value['jobTotal'] === 0 ? <li>{value['jobTotal'] * 30}min were spent on the job site working.</li> : ''}
-                                <table>
-                                    <tr>{value.wallSawing ? `Wall sawing took ${value.wallSawing * 30}min.` : ''}</tr>
-                                    <tr>{value.coreDrilling ? `Core drilling took ${value.coreDrilling * 30}min.` : ''}</tr>
-                                    <tr>{value.waterControl ? `Water control took ${value.waterControl * 30}min.` : ''}</tr>
-                                    <tr>{value.slabSaw ? `Slab sawing took ${value.slabSaw * 30}min.` : ''}</tr>
-                                    <tr>{value.hammerChipping ? `Jack hammer chipping took ${value.hammerChipping * 30}min.` : ''}</tr>
-                                    <tr>{value.loadExcevate ? `Load excevate took ${value.loadExcevate * 30}min.` : ''}</tr>
-                                    <tr>{value.haul ? `Hauling took ${value.haul * 30}min.` : ''}</tr>
-                                    <tr>{value.handLabor ? `Hand labor took ${value.handLabor * 30}min.` : ''}</tr>
-                                    <tr>{value.dumpYards ? `Dump yards took ${value.dumpYards * 30}min.` : ''}</tr>
-                                    <tr>{value.release ? `Releases took ${value.release * 30}min.` : ''}</tr>
-                                    <tr>{value.standby ? `Standby took ${value.standby * 30}min.` : ''}</tr>
-                                    <tr>{value.other ? `other time took ${value.other * 30}min.` : ''}</tr>
-                                    <tr>{value.downTime ? `Down time took ${value.downTime * 30}min.` : ''}</tr>
-                                </table>
-                            </ul>
-                        </ul>
-                    </section>
-
-                    <section id='legalDisclaimer'>
-                        <h2> Standard job conditions:</h2>
-                        <ul>
-                            <li>1. Layout of work by others prior to arrival of operator.</li>
-                            <li>2. We cannot accept responsibility for damage to buried objects such as conduit, steel pipes, etc.</li>
-                            <li>3. All prices based on a maximum work height of 8’. Scaffolding supplied and erected by others unless prior arrangements are made.</li>
-                            <li>4. Water and power available within 150’ of work area. Parking for truck and power unit within 150’ of work area.</li>
-                            <li>5. Traffic control, water and/or dust partition by others.</li>
-                            <li>6. We reserve the right to bill all work on an hourly basis due to difficult working conditions and/or heavy reinforcing.</li>
-                            <li>7. If for any reason are unable to work due to no fault of our own, then we must charge for stand-by time.</li>
-                            <li>8. Contractor is responsible for covering holes created by sawing and drilling.</li>
-                            <li>9. In the event of non-payment of any amount, when due, purchaser agrees to pay all collection costs including reasonable attorney fees.</li>
-                        </ul>
-                    </section>
-
+                <ModalBody id='jobDetails'>
+                    <JobDetails
+                        value={value}
+                        mappedjobInfo={mappedjobInfo}
+                        setValue={setValue}
+                        infoToHTML={infoToHTML}
+                    // setTimeChart= {setTimeChart}
+                    />
                     <Label for="confirmation">
                         I have reviewed the above information and confirm the information is correct:
                     </Label>
