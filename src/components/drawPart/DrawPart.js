@@ -13,40 +13,41 @@ const DrawPart = () => {
     const [data, setData] = useState([])
     const [show, setShow] = useState(false)
 
-    const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
+    // const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
+    const API_URL = 'http://localhost:8080/'
     // const API_URL = 'http://127.0.0.1:8000/'
 
     const getData = (url) => {
         setLoading(true)
         axios
             .get(url)
-            .then((response) => setData(response.data))
+            .then((response) => setData(response.data.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
-    }     
+    }
 
     // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const postData = async () => {
-        const postWorker = await axios.post(`${API_URL}workers/?name=${partName}`, {
+        const getPartNumber = await axios.get(`${API_URL}parts/search/?name=${partName}`)
+        const partNumber = getPartNumber.data.data[0]._id
+        const onHand = getPartNumber.data.data[0].onHand
+
+        const postWorker = await axios.post(`${API_URL}workers`, {
             name: postName,
             amountTaken: amountTaken,
-            dateTaken: dateTaken
+            dateTaken: dateTaken,
+            partID: partNumber
         })
-        const workerId = postWorker.data.id
+        const workerId = postWorker.data.worker._id
 
-        const getPartNumber = await axios.get(`${API_URL}parts/?name=${partName}`)
-        const partNumber = getPartNumber.data[0].id
-        const onHand = getPartNumber.data[0].onHand
         const newOnHandCount = onHand - amountTaken
 
         const drawListAddition = await axios.put(`${API_URL}parts/${partNumber}`, {
             name: partName,
-            onHand: newOnHandCount,
-            drawList: workerId
+            onHand: newOnHandCount
         })
-        const addToList = drawListAddition
 
-        if (addToList.status == 202) {
+        if (drawListAddition.status == 201) {
             setShow(true)
         }
 
@@ -70,6 +71,8 @@ const DrawPart = () => {
 
     return (
         <section>
+            <Alert color='success' isOpen={show}>You have drawn a part!</Alert>
+
             <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col md={3} />
@@ -147,7 +150,6 @@ const DrawPart = () => {
                 </Button>
             </Form>
 
-            <Alert color='success' isOpen={show}>You have drawn a part!</Alert>
         </section>
     );
 }

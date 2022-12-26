@@ -12,7 +12,7 @@ const Part = (props) => {
     const [putOnHand, setPutOnHand] = useState(props.part.onHand)
 
     const handleEdit = async () => {
-        const getID = await axios.put(`https://fast-meadow-65226.herokuapp.com/parts/${props.part.id}`, {
+        const getID = await axios.put(`http://localhost:8080/parts/${props.part._id}`, {
             name: putName,
             onHand: putOnHand
         })
@@ -20,7 +20,7 @@ const Part = (props) => {
     }
 
     const handleDelete = async () => {
-        const getID = await axios.delete(`https://fast-meadow-65226.herokuapp.com/parts/${props.part.id}`)
+        const getID = await axios.delete(`http://localhost:8080/parts/${props.part._id}`)
         toggleEdit()
     }
 

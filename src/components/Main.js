@@ -21,24 +21,26 @@ const Main = () => {
     const [postOnHand, setPostOnHand] = useState(null)
     const [postTool, setPostTool] = useState(null)
 
-    const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
+    // const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
     // const API_URL = 'http://0.0.0.0:5000/'
     // const API_URL = 'http://127.0.0.1:8000/'
+    const API_URL = 'http://localhost:8080/'
 
     const getData = (url) => {
         setLoading(true)
         axios
             .get(url)
-            .then((response) => setParts(response.data))
+            .then((response) => setParts(response.data.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
+
     }
 
     useEffect(() => {
-        if (activeSearchVal == '') {
+        if (activeSearchVal === '') {
             getData(`${API_URL}parts/?format=json`)
         } else {
-            getData(`${API_URL}parts/?format=json&${searchBy}=${activeSearchVal}`)
+            getData(`${API_URL}parts/search/?${searchBy}=${activeSearchVal}`)
         }
     }, [activeSearchVal])
 
@@ -49,7 +51,7 @@ const Main = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        getData(`${API_URL}parts/?format=json&name=${searchVal}`)
+        getData(`${API_URL}parts/search/?name=${searchVal}`)
         setSearchVal('')
     }
 
@@ -78,6 +80,7 @@ const Main = () => {
     }
 
     const mappedParts = parts.map((part) => {
+        // console.log(part)
         return (
             <Part
                 part={part}
