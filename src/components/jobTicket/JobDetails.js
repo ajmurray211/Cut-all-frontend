@@ -1,24 +1,4 @@
 const JobDetails = (props) => {
-    let times = `<section>
-            <h3>Hours Spent</h3>
-            <ul id='timeBreakdown'>
-                ${props.value['travelTotal'] && props.value['travelTotal'] !== 0 ? `${props.value['travelTotal'] * 30}min were spent traveling for this job` : ''}
-                ${props.value['jobTotal'] && props.value['jobTotal'] !== 0 ? `${props.value['jobTotal'] * 30} min were spent on the job site working` : ''}
-                ${props.value.wallSawing ? `Wall sawing took ${props.value.wallSawing * 30}min.` : ''}
-                ${props.value.coreDrilling ? `Core drilling took ${props.value.coreDrilling * 30}min.` : ''}
-                ${props.value.waterControl ? `Water control took ${props.value.waterControl * 30}min.` : ''}
-                ${props.value.slabSaw ? `Slab sawing took ${props.value.slabSaw * 30}min.` : ''}
-                ${props.value.hammerChipping ? `Jack hammer chipping took ${props.value.hammerChipping * 30}min.` : ''}
-                ${props.value.loadExcevate ? `Load excevate took ${props.value.loadExcevate * 30}min.` : ''}
-                ${props.value.haul ? `Hauling took ${props.value.haul * 30}min.` : ''}
-                ${props.value.handLabor ? `Hand labor took ${props.value.handLabor * 30}min.` : ''}
-                ${props.value.dumpYards ? `Dump yards took ${props.value.dumpYards * 30}min.` : ''}
-                ${props.value.release ? `Releases took ${props.value.release * 30}min.` : ''}
-                ${props.value.standby ? `Standby took ${props.value.standby * 30}min.` : ''}
-                ${props.value.other ? `other time took ${props.value.other * 30}min.` : ''}
-                ${props.value.downTime ? `Down time took ${props.value.downTime * 30}min.` : ''}
-            </ul>
-        </section>`
 
 return (
     <div>

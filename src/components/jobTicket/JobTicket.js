@@ -5,7 +5,6 @@ import BillingRow from './BillingRow';
 import { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import JobDetails from './JobDetails';
-import { isCompositeComponent } from 'react-dom/test-utils';
 
 const JobTIcket = () => {
     const [modal, setModal] = useState(false);
@@ -14,7 +13,6 @@ const JobTIcket = () => {
     const [status, setStatus] = useState('');
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
-    
     let infoToHTML = []
     const [value, setValue] = useState({
         fullName: 'TEST',
@@ -47,34 +45,32 @@ const JobTIcket = () => {
         standby: null,
         other: null,
         downTime: null,
-        timeChart: null
+        timeChart: null,
+        confirmationName: null
     })
-    let times = `<section>
-    <h3>Hours Spent</h3>
-    <div id='timeBreakdown'>
-        ${value['travelTotal'] && value['travelTotal'] !== 0 ? `${value['travelTotal'] * 30}min were spent traveling for this job` : ''}
-        ${value['jobTotal'] && value['jobTotal'] !== 0 ? `${value['jobTotal'] * 30} min were spent on the job site working` : ''}
-        ${value.wallSawing ? `Wall sawing took ${value.wallSawing * 30}min.` : ''}
-        ${value.coreDrilling ? `Core drilling took ${value.coreDrilling * 30}min.` : ''}
-        ${value.waterControl ? `Water control took ${value.waterControl * 30}min.` : ''}
-        ${value.slabSaw ? `Slab sawing took ${value.slabSaw * 30}min.` : ''}
-        ${value.hammerChipping ? `Jack hammer chipping took ${value.hammerChipping * 30}min.` : ''}
-        ${value.loadExcevate ? `Load excevate took ${value.loadExcevate * 30}min.` : ''}
-        ${value.haul ? `Hauling took ${value.haul * 30}min.` : ''}
-        ${value.handLabor ? `Hand labor took ${value.handLabor * 30}min.` : ''}
-        ${value.dumpYards ? `Dump yards took ${value.dumpYards * 30}min.` : ''}
-        ${value.release ? `Releases took ${value.release * 30}min.` : ''}
-        ${value.standby ? `Standby took ${value.standby * 30}min.` : ''}
-        ${value.other ? `other time took ${value.other * 30}min.` : ''}
-        ${value.downTime ? `Down time took ${value.downTime * 30}min.` : ''}
-    </div>
-</section>`
+    let times = `<div id='timeBreakdown'>
+        ${value['travelTotal'] && value['travelTotal'] !== 0 ? `${value['travelTotal'] * 30}min were spent traveling for this job` : null}
+        ${value['jobTotal'] && value['jobTotal'] !== 0 ? `${value['jobTotal'] * 30} min were spent on the job site working` : null}
+        ${value.wallSawing ? `Wall sawing took ${value.wallSawing * 30}min.` : null}
+        ${value.coreDrilling ? `Core drilling took ${value.coreDrilling * 30}min.` : null}
+        ${value.waterControl ? `Water control took ${value.waterControl * 30}min.` : null}
+        ${value.slabSaw ? `Slab sawing took ${value.slabSaw * 30}min.` : null}
+        ${value.hammerChipping ? `Jack hammer chipping took ${value.hammerChipping * 30}min.` : null}
+        ${value.loadExcevate ? `Load excevate took ${value.loadExcevate * 30}min.` : null}
+        ${value.haul ? `Hauling took ${value.haul * 30}min.` : null}
+        ${value.handLabor ? `Hand labor took ${value.handLabor * 30}min.` : null}
+        ${value.dumpYards ? `Dump yards took ${value.dumpYards * 30}min.` : null}
+        ${value.release ? `Releases took ${value.release * 30}min.` : null}
+        ${value.standby ? `Standby took ${value.standby * 30}min.` : null}
+        ${value.other ? `other time took ${value.other * 30}min.` : null}
+        ${value.downTime ? `Down time took ${value.downTime * 30}min.` : null}
+    </div > `
 
     // const sigCanvas = useRef({})
     // const save = () => {
     //     setValue(values => ({
     //         ...values,
-    //         ['canvas']: `<img src='${sigCanvas.current.getTrimmedCanvas().toDataURL("image/png")}' />`,
+    //         ['canvas']: `< img src = '${sigCanvas.current.getTrimmedCanvas().toDataURL("image/png")}' /> `,
     //         ['jobInfo']: infoToHTML.join()
     //     }))
     // }
@@ -90,17 +86,12 @@ const JobTIcket = () => {
     }
 
     const compileHTML = () => {
-        // setValue(values => ({
-        //     ...values,
-        //     timeChart: times
-        // }))
         let combined = infoToHTML.join(' ')
         setValue(values => ({
             ...values,
             jobInfo: combined,
             timeChart: times
         }))
-        // console.log('hit compile', combined)
     }
 
     const handleSubmit = (event) => {
@@ -108,6 +99,7 @@ const JobTIcket = () => {
         toggleModal()
         compileHTML()
         // setStatus('OK')
+        console.log(value)
         emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
             .then((result) => {
                 setStatus(result.text);
@@ -157,7 +149,7 @@ const JobTIcket = () => {
     const mappedRows = ticketBody.map((row, index) => {
         let copy = [...ticketBody]
         copy[index]['itemNum'] = index + 1
-        let line = (`<li>Quote item:${row.itemNum}, QTY: ${row.qty},  length or DIA: ${row.length}, Depth:${row.depth}, Work code: ${row.workCode}, Description/ Equipment used:${row.equipUsed}, Amount:${row.amount} </li>`)
+        let line = (`< li > Quote item:${ row.itemNum }, QTY: ${ row.qty },  length or DIA: ${ row.length }, Depth:${ row.depth }, Work code: ${ row.workCode }, Description / Equipment used:${ row.equipUsed }, Amount:${ row.amount } </li > `)
         infoToHTML.push(line)
         return <BillingRow
             index={index}
@@ -327,7 +319,6 @@ const JobTIcket = () => {
                         mappedjobInfo={mappedjobInfo}
                         setValue={setValue}
                         infoToHTML={infoToHTML}
-                    // setTimeChart= {setTimeChart}
                     />
                     <Label for="confirmation">
                         I have reviewed the above information and confirm the information is correct:
@@ -337,7 +328,7 @@ const JobTIcket = () => {
                     <Label for="confirmationName">
                         Typing your name acts as an e-signature:
                     </Label>
-                    <Input type='text' required name='confirmationName' />
+                    <Input type='text' required name='confirmationName' onChange={handleChange}/>
                     {/* <SignaturePad penColor='black' id='confirmation' ref={sigCanvas}
                         canvasProps={{ width: 425, height: 200, className: 'signatureCanvas' }} /> */}
                 </ModalBody>
