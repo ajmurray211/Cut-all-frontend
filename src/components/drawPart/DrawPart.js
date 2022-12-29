@@ -38,7 +38,6 @@ const DrawPart = () => {
             dateTaken: dateTaken,
             partID: partNumber
         })
-        const workerId = postWorker.data.worker._id
 
         const newOnHandCount = onHand - amountTaken
 
@@ -65,7 +64,7 @@ const DrawPart = () => {
 
     const mapParts = data.map((part) => {
         return (
-            <option>{part.name}</option>
+            <option key={part.id}>{part.name}</option>
         )
     })
 

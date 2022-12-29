@@ -83,6 +83,7 @@ const Main = () => {
         // console.log(part)
         return (
             <Part
+                key={part.id}
                 part={part}
             />
         )

@@ -97,9 +97,8 @@ const JobTIcket = () => {
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        compileHTML()
         // setStatus('OK')
-        console.log(value)
+        console.log(value, 'before email')
         emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
             .then((result) => {
                 setStatus(result.text);
@@ -116,7 +115,7 @@ const JobTIcket = () => {
             setTimeout(() => {
                 setStatus('');
                 setSuccess(false)
-                console.log(value, status)
+                console.log(value, status, 'after email')
             }, 5000);
         }
         else if (status === 'Error') {
@@ -149,7 +148,7 @@ const JobTIcket = () => {
     const mappedRows = ticketBody.map((row, index) => {
         let copy = [...ticketBody]
         copy[index]['itemNum'] = index + 1
-        let line = (`< li > Quote item:${ row.itemNum }, QTY: ${ row.qty },  length or DIA: ${ row.length }, Depth:${ row.depth }, Work code: ${ row.workCode }, Description / Equipment used:${ row.equipUsed }, Amount:${ row.amount } </li > `)
+        let line = (`< li > Quote item:${row.itemNum}, QTY: ${row.qty},  length or DIA: ${row.length}, Depth:${row.depth}, Work code: ${row.workCode}, Description / Equipment used:${row.equipUsed}, Amount:${row.amount} </li > `)
         infoToHTML.push(line)
         return <BillingRow
             index={index}
@@ -328,7 +327,7 @@ const JobTIcket = () => {
                     <Label for="confirmationName">
                         Typing your name acts as an e-signature:
                     </Label>
-                    <Input type='text' required name='confirmationName' onChange={handleChange}/>
+                    <Input type='text' required name='confirmationName' onChange={handleChange} />
                     {/* <SignaturePad penColor='black' id='confirmation' ref={sigCanvas}
                         canvasProps={{ width: 425, height: 200, className: 'signatureCanvas' }} /> */}
                 </ModalBody>
@@ -434,7 +433,10 @@ const JobTIcket = () => {
                 </tbody>
             </Table>
 
-            <Button onClick={toggleModal} >continue</Button>
+            <Button onClick={() => {
+                toggleModal()
+                compileHTML()
+            }} >continue</Button>
         </div>
     );
 }

@@ -26,7 +26,7 @@ const Part = (props) => {
 
     const mappedLastDrawNames = props.part.drawList.map((info) => {
         return (
-            <li style={{ fontSize: 20 }}>{info.name} took <span style={{ color: 'red' }}>{info.amountTaken}</span> on <span style={{ color: 'blue' }}>{info.dateTaken}</span>.</li>
+            <li key={info.id} style={{ fontSize: 20 }}>{info.name} took <span style={{ color: 'red' }}>{info.amountTaken}</span> on <span style={{ color: 'blue' }}>{info.dateTaken}</span>.</li>
         )
     })
 
