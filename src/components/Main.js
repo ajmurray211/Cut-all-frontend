@@ -112,10 +112,10 @@ const Main = () => {
                 </UncontrolledDropdown>
 
                 <UncontrolledDropdown className="me-2" id="filter-item">
-                    <DropdownToggle caret disabled> Count </DropdownToggle>
+                    <DropdownToggle caret > Count </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem name='onHandDec' value='high' onClick={filterOnHand}>High</DropdownItem>
-                        <DropdownItem name='onHandAce' value='low' onClick={filterOnHand}>Low</DropdownItem>
+                        <DropdownItem name='sort' value='dec' onClick={filterOnHand}>High</DropdownItem>
+                        <DropdownItem name='sort' value='acd' onClick={filterOnHand}>Low</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 

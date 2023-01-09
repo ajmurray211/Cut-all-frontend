@@ -1,6 +1,5 @@
 import './jobTicket.css'
-import SignaturePad from 'react-signature-canvas'
-import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, FormFeedback } from 'reactstrap';
 import BillingRow from './BillingRow';
 import { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
@@ -48,32 +47,6 @@ const JobTIcket = () => {
         timeChart: null,
         confirmationName: null
     })
-    let times = `<div id='timeBreakdown'>
-        ${value['travelTotal'] && value['travelTotal'] !== 0 ? `${value['travelTotal'] * 30}min were spent traveling for this job` : null}
-        ${value['jobTotal'] && value['jobTotal'] !== 0 ? `${value['jobTotal'] * 30} min were spent on the job site working` : null}
-        ${value.wallSawing ? `Wall sawing took ${value.wallSawing * 30}min.` : null}
-        ${value.coreDrilling ? `Core drilling took ${value.coreDrilling * 30}min.` : null}
-        ${value.waterControl ? `Water control took ${value.waterControl * 30}min.` : null}
-        ${value.slabSaw ? `Slab sawing took ${value.slabSaw * 30}min.` : null}
-        ${value.hammerChipping ? `Jack hammer chipping took ${value.hammerChipping * 30}min.` : null}
-        ${value.loadExcevate ? `Load excevate took ${value.loadExcevate * 30}min.` : null}
-        ${value.haul ? `Hauling took ${value.haul * 30}min.` : null}
-        ${value.handLabor ? `Hand labor took ${value.handLabor * 30}min.` : null}
-        ${value.dumpYards ? `Dump yards took ${value.dumpYards * 30}min.` : null}
-        ${value.release ? `Releases took ${value.release * 30}min.` : null}
-        ${value.standby ? `Standby took ${value.standby * 30}min.` : null}
-        ${value.other ? `other time took ${value.other * 30}min.` : null}
-        ${value.downTime ? `Down time took ${value.downTime * 30}min.` : null}
-    </div > `
-
-    // const sigCanvas = useRef({})
-    // const save = () => {
-    //     setValue(values => ({
-    //         ...values,
-    //         ['canvas']: `< img src = '${sigCanvas.current.getTrimmedCanvas().toDataURL("image/png")}' /> `,
-    //         ['jobInfo']: infoToHTML.join()
-    //     }))
-    // }
 
     let row = {
         'itemNum': '',
@@ -85,19 +58,21 @@ const JobTIcket = () => {
         'amount': ''
     }
 
+    // add the html varibles to values variable for emailing 
     const compileHTML = () => {
         let combined = infoToHTML.join(' ')
         setValue(values => ({
             ...values,
-            jobInfo: combined,
-            timeChart: times
+            jobInfo: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"></colgroup>
+            <tbody> ${combined} </tbody>
+            </table>`,
         }))
     }
 
+    // sends the information in an email 
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        // setStatus('OK')
         console.log(value, 'before email')
         emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
             .then((result) => {
@@ -110,23 +85,24 @@ const JobTIcket = () => {
             });
     }
 
+    // resets variables changing when status changes 
     useEffect(() => {
         if (status === 'OK') {
             setTimeout(() => {
+                console.log(value, 'after email')
                 setStatus('');
                 setSuccess(false)
-                console.log(value, status, 'after email')
             }, 5000);
         }
         else if (status === 'Error') {
             setTimeout(() => {
                 setStatus('');
                 setFail(false)
-                console.log(value, status)
             }, 5000);
         }
     }, [status]);
 
+    // saves values when inputs changed by user 
     const handleChange = (e) => {
         setValue(values => ({
             ...values,
@@ -134,12 +110,14 @@ const JobTIcket = () => {
         }))
     }
 
+    // changes values of the job row when the user changes and imput field 
     const editRow = (i, key, val) => {
         let copy = [...ticketBody]
         copy[i][key] = val
         setTicketBody[i][key](val)
     }
 
+    // allows user to add more rows 
     const addRow = () => {
         let copy = [...ticketBody, row]
         setTicketBody(copy)
@@ -148,7 +126,7 @@ const JobTIcket = () => {
     const mappedRows = ticketBody.map((row, index) => {
         let copy = [...ticketBody]
         copy[index]['itemNum'] = index + 1
-        let line = (`< li > Quote item:${row.itemNum}, QTY: ${row.qty},  length or DIA: ${row.length}, Depth:${row.depth}, Work code: ${row.workCode}, Description / Equipment used:${row.equipUsed}, Amount:${row.amount} </li > `)
+        let line = (`<tr> <td"> Quote item </td> <td"> ${row.itemNum} </td> <td"> QTY </td> <td"> ${row.qty} </td> <td"> length or DIA </td> <td"> ${row.length}</td> <td">Depth </td> <td"> ${row.depth} </td> <td"> Work code </td> <td"> ${row.workCode} </td> <td"> Description / Equipment used </td> <td">${row.equipUsed} </td> <td"> Amount </td> <td"> ${row.amount} </td> </tr>`)
         infoToHTML.push(line)
         return <BillingRow
             index={index}
@@ -319,20 +297,19 @@ const JobTIcket = () => {
                         setValue={setValue}
                         infoToHTML={infoToHTML}
                     />
-                    <Label for="confirmation">
-                        I have reviewed the above information and confirm the information is correct:
-                    </Label>
-                    <Input name='confirmation' type='checkbox' required />
-                    <br></br>
-                    <Label for="confirmationName">
-                        Typing your name acts as an e-signature:
-                    </Label>
-                    <Input type='text' required name='confirmationName' onChange={handleChange} />
-                    {/* <SignaturePad penColor='black' id='confirmation' ref={sigCanvas}
-                        canvasProps={{ width: 425, height: 200, className: 'signatureCanvas' }} /> */}
+                    <FormGroup>
+                        <Input id='confirmation' type='checkbox' onChange={(e) => console.log(e.target.checked)} />
+                        <Label for="confirmation">
+                            : I have reviewed the above information and confirm the information is correct.
+                        </Label>
+                        <br></br>
+                        <Label for="confirmationName">
+                            Typing your name acts as an e-signature:
+                        </Label>
+                        <Input type='text' name='confirmationName' id='confirmationName' onChange={handleChange} />
+                    </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                    {/* <Button onClick={save} >Save</Button> */}
                     <Button onClick={handleSubmit} type='submit'>Submit</Button>
                 </ModalFooter>
             </Modal>
@@ -440,5 +417,4 @@ const JobTIcket = () => {
         </div>
     );
 }
-
 export default JobTIcket;
