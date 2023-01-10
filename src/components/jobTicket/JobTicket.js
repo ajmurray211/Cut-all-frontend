@@ -45,7 +45,8 @@ const JobTIcket = () => {
         other: null,
         downTime: null,
         timeChart: null,
-        confirmationName: null
+        confirmationName: null,
+        CC: null
     })
 
     let row = {
@@ -230,6 +231,14 @@ const JobTIcket = () => {
                                 onChange={(event) => handleChange(event)}
                             >
                             </Input>
+                            <Label for='other'>other:</Label>
+                            <Input
+                                value='other'
+                                name="otherWorkers"
+                                type="checkbox"
+                                onChange={(event) => handleChange(event)}
+                            >
+                            </Input>
                         </FormGroup>
                     </Col>
 
@@ -298,9 +307,12 @@ const JobTIcket = () => {
                         infoToHTML={infoToHTML}
                     />
                     <FormGroup>
+                        <Label for='CC'>Email:</Label>
+                        <Input id='CC' type='text' name='CC' onChange={handleChange}/>
+                        <br></br>
                         <Input id='confirmation' type='checkbox' onChange={(e) => console.log(e.target.checked)} />
                         <Label for="confirmation">
-                            : I have reviewed the above information and confirm the information is correct.
+                            :I have reviewed the above information and confirm the information is correct.
                         </Label>
                         <br></br>
                         <Label for="confirmationName">
