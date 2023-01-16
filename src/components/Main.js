@@ -80,7 +80,6 @@ const Main = () => {
     }
 
     const mappedParts = parts.map((part) => {
-        // console.log(part)
         return (
             <Part
                 key={part.id}

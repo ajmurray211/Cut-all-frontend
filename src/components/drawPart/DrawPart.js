@@ -8,6 +8,7 @@ const DrawPart = () => {
     const [loading, setLoading] = useState(true)
     const [postName, setPostName] = useState('')
     const [amountTaken, setAmountTaken] = useState(null)
+    const [serialNumber, setSerialNumber] = useState(null)
     const [dateTaken, setDateTaken] = useState(null)
     const [partName, setpartName] = useState(null)
     const [data, setData] = useState([])
@@ -144,6 +145,21 @@ const DrawPart = () => {
                         </FormGroup>
                     </Col>
                 </Row>
+                {/* <Row>
+                    <Col md={4} />
+                    <Col md={4}>
+                        <FormGroup onChange={(event) => setSerialNumber(event.target.value)}>
+                            <Label for="serialNum">
+                                Serial number for blade/bit
+                            </Label>
+                            <Input
+                                id="serialNum"
+                                name="serialNum"
+                                type='number'
+                            />
+                        </FormGroup>
+                    </Col>
+                </Row> */}
                 <Button type='submit'>
                     Submit
                 </Button>

@@ -46,7 +46,10 @@ const JobTIcket = () => {
         downTime: null,
         timeChart: null,
         confirmationName: null,
-        CC: null
+        CC: null,
+        jobNum: null,
+        poNum: null,
+        totalPaidTime: null,
     })
 
     let row = {
@@ -62,11 +65,13 @@ const JobTIcket = () => {
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
         let combined = infoToHTML.join(' ')
+        let total = value['jobTotal'] + value['travelTotal']
         setValue(values => ({
             ...values,
             jobInfo: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"></colgroup>
             <tbody> ${combined} </tbody>
             </table>`,
+            totalPaidTime: total
         }))
     }
 
@@ -133,7 +138,6 @@ const JobTIcket = () => {
                 [e.target.name]: e.target.value
             }))
         }
-        console.log(value)
     }
 
     // changes values of the job row when the user changes and imput field 
@@ -396,59 +400,59 @@ const JobTIcket = () => {
                 <tbody>
                     <tr>
                         <th>Wall Sawing</th>
-                        <th><input type='number' name='wallSawing' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='wallSawing' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Core drilling</th>
-                        <th><input type='number' name='coreDrilling' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='coreDrilling' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Slab Saw</th>
-                        <th><input type='number' name='slabSaw' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='slabSaw' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Water control</th>
-                        <th><input type='number' name='waterControl' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='waterControl' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>J/ Hammer chipping</th>
-                        <th><input type='number' name='hammerChipping' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='hammerChipping' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Power Break</th>
-                        <th><input type='number' name='powerBreak' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='powerBreak' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Load Excevate</th>
-                        <th><input type='number' name='loadExcevate' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='loadExcevate' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Haul</th>
-                        <th><input type='number' name='haul' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='haul' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Hand Labor</th>
-                        <th><input type='number' name='handLabor' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='handLabor' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Dump Yards</th>
-                        <th><input type='number' name='dumpYards' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='dumpYards' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Release</th>
-                        <th><input type='number' name='release' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='release' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Standby</th>
-                        <th><input type='number' name='standby' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='standby' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Other</th>
-                        <th><input type='number' name='other' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='other' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Down Time</th>
-                        <th><input type='number' name='downTime' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='downTime' onChange={handleChange}></input></th>
                     </tr>
                 </tbody>
             </Table>
