@@ -1,7 +1,7 @@
 import './jobTicket.css'
-import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, FormFeedback } from 'reactstrap';
+import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import BillingRow from './BillingRow';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import JobDetails from './JobDetails';
 
@@ -105,10 +105,35 @@ const JobTIcket = () => {
 
     // saves values when inputs changed by user 
     const handleChange = (e) => {
-        setValue(values => ({
-            ...values,
-            [e.target.name]: e.target.value
-        }))
+        const findMins = (field) =>{
+            let d1 = Date.parse(`2023-01-15T${value[field]}:00.000`);
+            let d2 = Date.parse(`2023-01-15T${e.target.value}:00.000`);
+            const milliseconds = Math.abs(d1 - d2);
+            const secs = Math.floor(milliseconds / 1000);
+            const mins = Math.floor(secs / 60);
+            return mins
+        }
+        if (e.target.name === 'jobEnd') {
+            let total = findMins('jobBegin')
+            setValue(values => ({
+                ...values,
+                [e.target.name]: e.target.value,
+                jobTotal: total,
+            }))
+        } else if (e.target.name === 'travelEnd') {
+            let total = findMins('travelBegin')
+            setValue(values => ({
+                ...values,
+                [e.target.name]: e.target.value,
+                travelTotal: total,
+            }))
+        } else {
+            setValue(values => ({
+                ...values,
+                [e.target.name]: e.target.value
+            }))
+        }
+        console.log(value)
     }
 
     // changes values of the job row when the user changes and imput field 
@@ -231,7 +256,7 @@ const JobTIcket = () => {
                                 onChange={(event) => handleChange(event)}
                             >
                             </Input>
-                            <Label for='other'>other:</Label>
+                            <Label for='other'>other :</Label>
                             <Input
                                 value='other'
                                 name="otherWorkers"
@@ -278,18 +303,18 @@ const JobTIcket = () => {
                 </Row>
 
                 <Table bordered striped responsive>
-                    <thead>
+                    <thead id='info'>
                         <tr>
-                            <th>Quote item</th>
+                            {/* <th>Quote item</th> */}
                             <th>QTY</th>
                             <th>Length or DIA</th>
                             <th>Depth</th>
                             <th>Work code</th>
                             <th>Discription / equipment used</th>
-                            <th>Amount</th>
+                            {/* <th>Amount</th> */}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id='infoHolder'>
                         {mappedRows}
                     </tbody>
                 </Table>
@@ -307,8 +332,14 @@ const JobTIcket = () => {
                         infoToHTML={infoToHTML}
                     />
                     <FormGroup>
-                        <Label for='CC'>Email:</Label>
-                        <Input id='CC' type='text' name='CC' onChange={handleChange}/>
+                        <Label for='CC'>Contractor email:</Label>
+                        <Input id='CC' type='text' name='CC' onChange={handleChange} />
+                        <br></br>
+                        <Label for='CC'>PO number:</Label>
+                        <Input id='CC' type='number' name='PO' onChange={handleChange} />
+                        <br></br>
+                        <Label for='CC'>Job number:</Label>
+                        <Input id='CC' type='number' name='JobNo' onChange={handleChange} />
                         <br></br>
                         <Input id='confirmation' type='checkbox' onChange={(e) => console.log(e.target.checked)} />
                         <Label for="confirmation">
@@ -339,10 +370,10 @@ const JobTIcket = () => {
                         <th>End travel</th>
                         <th><Input type='time' name='travelEnd' onChange={handleChange}></Input></th>
                     </tr>
-                    <tr>
+                    {/* <tr>
                         <th>Total travel (30 min increments)</th>
                         <th><Input min={0} type='number' name='travelTotal' onChange={handleChange}></Input></th>
-                    </tr>
+                    </tr> */}
                     <tr>
                         <th>Begin Job</th>
                         <th><Input type='time' name='jobBegin' onChange={handleChange}></Input></th>
@@ -351,10 +382,10 @@ const JobTIcket = () => {
                         <th>End job</th>
                         <th><Input type='time' name='jobEnd' onChange={handleChange}></Input></th>
                     </tr>
-                    <tr>
+                    {/* <tr>
                         <th>Total job time (30 min incriments)</th>
                         <th><Input min={0} type='number' name='jobTotal' onChange={handleChange}></Input></th>
-                    </tr>
+                    </tr> */}
                 </tbody>
             </Table>
 
