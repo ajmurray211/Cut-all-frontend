@@ -110,7 +110,7 @@ const JobTIcket = () => {
 
     // saves values when inputs changed by user 
     const handleChange = (e) => {
-        const findMins = (field) =>{
+        const findMins = (field) => {
             let d1 = Date.parse(`2023-01-15T${value[field]}:00.000`);
             let d2 = Date.parse(`2023-01-15T${e.target.value}:00.000`);
             const milliseconds = Math.abs(d1 - d2);
@@ -138,6 +138,7 @@ const JobTIcket = () => {
                 [e.target.name]: e.target.value
             }))
         }
+        console.log(value)
     }
 
     // changes values of the job row when the user changes and imput field 
@@ -225,55 +226,56 @@ const JobTIcket = () => {
                             ></Input>
                         </FormGroup>
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                         <FormGroup>
-                            <p>Other CA men on the job:</p>
-                            <Label for='rilyn'>Rilyn :</Label>
+                            <Label for="employeeList">
+                                other CA men on the job:
+                            </Label>
                             <Input
-                                value='Rilyn'
+                                id="otherWorkers"
                                 name="otherWorkers"
-                                type="checkbox"
+                                type="select"
                                 onChange={(event) => handleChange(event)}
                             >
-                            </Input>
-                            <Label for='kyle'>Kyle :</Label>
-                            <Input
-                                value='Kyle'
-                                name="otherWorkers"
-                                type="checkbox"
-                                onChange={(event) => handleChange(event)}
-                            >
-                            </Input>
-                            <Label for='pat'>Pat :</Label>
-                            <Input
-                                value='Pat'
-                                name="otherWorkers"
-                                type="checkbox"
-                                onChange={(event) => handleChange(event)}
-                            >
-                            </Input>
-                            <Label for='gordon'>Gordon :</Label>
-                            <Input
-                                value='Gordon'
-                                name="otherWorkers"
-                                type="checkbox"
-                                onChange={(event) => handleChange(event)}
-                            >
-                            </Input>
-                            <Label for='other'>other :</Label>
-                            <Input
-                                value='other'
-                                name="otherWorkers"
-                                type="checkbox"
-                                onChange={(event) => handleChange(event)}
-                            >
+                                <option></option>
+                                <option>Gordon</option>
+                                <option>Pat</option>
+                                <option>Kyle</option>
+                                <option>Rilyn</option>
+                                <option>other</option>
                             </Input>
                         </FormGroup>
                     </Col>
-
-                    <Col md={2} />
                 </Row>
 
+                <Row>
+                    <Col md={3} />
+                    <Col md={6} className={value['otherWorkers'] == '' ? 'hide' : null}>
+                        <Table bordered striped responsive hover >
+                            <caption >
+                                <h3>Time table for other CA workers on the job</h3>
+                            </caption>
+                            <tbody>
+                                <tr>
+                                    <th>Begin travel</th>
+                                    <td><Input type='time' name='travelBegin' onChange={handleChange}></Input></td>
+                                </tr>
+                                <tr>
+                                    <th>End travel</th>
+                                    <td><Input type='time' name='travelEnd' onChange={handleChange}></Input></td>
+                                </tr>
+                                <tr>
+                                    <th>Begin Job</th>
+                                    <td><Input type='time' name='jobBegin' onChange={handleChange}></Input></td>
+                                </tr>
+                                <tr>
+                                    <th>End job</th>
+                                    <td><Input type='time' name='jobEnd' onChange={handleChange}></Input></td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </Col>
+                </Row>
                 <Row>
                     <Col md={3} />
                     <Col md={3}>
@@ -289,7 +291,7 @@ const JobTIcket = () => {
                             </Input>
                         </FormGroup>
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                         <FormGroup>
                             <Label for="address">
                                 Address:
@@ -309,13 +311,12 @@ const JobTIcket = () => {
                 <Table bordered striped responsive>
                     <thead id='info'>
                         <tr>
-                            {/* <th>Quote item</th> */}
                             <th>QTY</th>
                             <th>Length or DIA</th>
-                            <th>Depth</th>
+                            {/* <th>Serial # of blade </th> */}
+                            <th>Depth (in.)</th>
                             <th>Work code</th>
                             <th>Discription / equipment used</th>
-                            {/* <th>Amount</th> */}
                         </tr>
                     </thead>
                     <tbody id='infoHolder'>
@@ -340,10 +341,10 @@ const JobTIcket = () => {
                         <Input id='CC' type='text' name='CC' onChange={handleChange} />
                         <br></br>
                         <Label for='CC'>PO number:</Label>
-                        <Input id='CC' type='number' name='PO' onChange={handleChange} />
+                        <Input id='CC' type='text' name='PO' onChange={handleChange} />
                         <br></br>
                         <Label for='CC'>Job number:</Label>
-                        <Input id='CC' type='number' name='JobNo' onChange={handleChange} />
+                        <Input id='CC' type='text' name='JobNo' onChange={handleChange} />
                         <br></br>
                         <Input id='confirmation' type='checkbox' onChange={(e) => console.log(e.target.checked)} />
                         <Label for="confirmation">
@@ -362,9 +363,9 @@ const JobTIcket = () => {
             </Modal>
 
             <Table bordered striped responsive >
-                <thead>
-                    <h2>Time table</h2>
-                </thead>
+                <caption >
+                    <h3>Time table</h3>
+                </caption>
                 <tbody>
                     <tr>
                         <th>Begin travel</th>
@@ -374,10 +375,7 @@ const JobTIcket = () => {
                         <th>End travel</th>
                         <th><Input type='time' name='travelEnd' onChange={handleChange}></Input></th>
                     </tr>
-                    {/* <tr>
-                        <th>Total travel (30 min increments)</th>
-                        <th><Input min={0} type='number' name='travelTotal' onChange={handleChange}></Input></th>
-                    </tr> */}
+                    
                     <tr>
                         <th>Begin Job</th>
                         <th><Input type='time' name='jobBegin' onChange={handleChange}></Input></th>
@@ -386,74 +384,75 @@ const JobTIcket = () => {
                         <th>End job</th>
                         <th><Input type='time' name='jobEnd' onChange={handleChange}></Input></th>
                     </tr>
-                    {/* <tr>
-                        <th>Total job time (30 min incriments)</th>
-                        <th><Input min={0} type='number' name='jobTotal' onChange={handleChange}></Input></th>
-                    </tr> */}
+
                 </tbody>
             </Table>
 
             <Table bordered striped responsive >
                 <thead>
-                    <h2>Hours Spent</h2>
+                    <h2>Hours Spent (min)</h2>
                 </thead>
                 <tbody>
                     <tr>
                         <th>Wall Sawing</th>
-                        <th><input type='number' min={0} name='wallSawing' onChange={handleChange}></input></th>
+                        <th><input type='number'  step={15} min={0} name='wallSawing' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Core drilling</th>
-                        <th><input type='number' min={0} name='coreDrilling' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='coreDrilling' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Slab Saw</th>
-                        <th><input type='number' min={0} name='slabSaw' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='slabSaw' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Water control</th>
-                        <th><input type='number' min={0} name='waterControl' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='waterControl' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>J/ Hammer chipping</th>
-                        <th><input type='number' min={0} name='hammerChipping' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='hammerChipping' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
-                        <th>Power Break</th>
-                        <th><input type='number' min={0} name='powerBreak' onChange={handleChange}></input></th>
+                        <th>Power Break/ step={15} Mini</th>
+                        <th><input type='number' step={15} min={0} name='powerBreak' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Load Excevate</th>
-                        <th><input type='number' min={0} name='loadExcevate' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='loadExcevate' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Haul</th>
-                        <th><input type='number' min={0} name='haul' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='haul' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Hand Labor</th>
-                        <th><input type='number' min={0} name='handLabor' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='handLabor' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Dump Yards</th>
-                        <th><input type='number' min={0} name='dumpYards' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='dumpYards' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Release</th>
-                        <th><input type='number' min={0} name='release' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='release' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Standby</th>
-                        <th><input type='number' min={0} name='standby' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='standby' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Other</th>
-                        <th><input type='number' min={0} name='other' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='other' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Down Time</th>
-                        <th><input type='number' min={0} name='downTime' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='downTime' onChange={handleChange}></input></th>
                     </tr>
+                    {/* <tr>
+                        <th>Mini breaker</th>
+                        <th><input type='number' min={0} name='downTime' onChange={handleChange}></input></th>
+                    </tr> */}
                 </tbody>
             </Table>
 

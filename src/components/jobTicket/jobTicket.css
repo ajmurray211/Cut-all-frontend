@@ -33,6 +33,15 @@ margin: 10px;
     font-weight:700;
 }
 
+caption{
+    caption-side: top;
+    text-align: center;
+}
+
+.hide{
+    display: none;
+}
+
 @media screen and (max-width: 425px) {
     /* #info{
        background-color: red; 
