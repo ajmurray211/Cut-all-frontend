@@ -50,6 +50,13 @@ const JobTIcket = () => {
         jobNum: null,
         poNum: null,
         totalPaidTime: null,
+        milage: null,
+        helperTravelBegin:null,
+        helperTravelEnd:null,
+        helperTravelTotal:null,
+        helperJobBegin:null,
+        helperJobEnd:null,
+        helperJobTotal:null,
     })
 
     let row = {
@@ -131,6 +138,20 @@ const JobTIcket = () => {
                 [e.target.name]: e.target.value,
                 travelTotal: total,
             }))
+        } else if (e.target.name === 'helperTravelEnd') {
+            let total = findMins('helperTravelBegin')
+            setValue(values => ({
+                ...values,
+                [e.target.name]: e.target.value,
+                helperTravelTotal: total,
+            }))
+        } else if (e.target.name === 'helperJobEnd') {
+            let total = findMins('helperJobBegin')
+            setValue(values => ({
+                ...values,
+                [e.target.name]: e.target.value,
+                helperJobTotal: total,
+            }))
         } else if (e.target.name === 'date') {
             let splitDate = e.target.value.split('-')
             let year = splitDate.shift()
@@ -191,7 +212,7 @@ const JobTIcket = () => {
             <Form>
                 <Row>
                     <Col md={3} />
-                    <Col md={3}>
+                    <Col md={2}>
                         <FormGroup>
                             <Label for="employeeList">
                                 Employee Name:
@@ -212,7 +233,10 @@ const JobTIcket = () => {
                             </Input>
                         </FormGroup>
                     </Col>
-                    <Col md={1} />
+                    <Col md={2}>
+                        <Label>Milage:</Label>
+                        <Input name='milage' type='number' onChange={(event) => handleChange(event)}></Input>
+                    </Col>
                     <Col md={2}>
                         <Label>Truck Number:</Label>
                         <Input name='truckNum' type='number' onChange={(event) => handleChange(event)}></Input>
@@ -266,19 +290,19 @@ const JobTIcket = () => {
                             <tbody>
                                 <tr>
                                     <th>Begin travel</th>
-                                    <td><Input type='time' name='travelBegin' onChange={handleChange}></Input></td>
+                                    <td><Input type='time' name='helperTravelBegin' onChange={handleChange}></Input></td>
                                 </tr>
                                 <tr>
                                     <th>End travel</th>
-                                    <td><Input type='time' name='travelEnd' onChange={handleChange}></Input></td>
+                                    <td><Input type='time' name='helperTravelEnd' onChange={handleChange}></Input></td>
                                 </tr>
                                 <tr>
                                     <th>Begin Job</th>
-                                    <td><Input type='time' name='jobBegin' onChange={handleChange}></Input></td>
+                                    <td><Input type='time' name='helperJobBegin' onChange={handleChange}></Input></td>
                                 </tr>
                                 <tr>
                                     <th>End job</th>
-                                    <td><Input type='time' name='jobEnd' onChange={handleChange}></Input></td>
+                                    <td><Input type='time' name='helperJobEnd' onChange={handleChange}></Input></td>
                                 </tr>
                             </tbody>
                         </Table>
