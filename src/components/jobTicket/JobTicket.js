@@ -51,12 +51,12 @@ const JobTIcket = () => {
         poNum: null,
         totalPaidTime: null,
         milage: null,
-        helperTravelBegin:null,
-        helperTravelEnd:null,
-        helperTravelTotal:null,
-        helperJobBegin:null,
-        helperJobEnd:null,
-        helperJobTotal:null,
+        helperTravelBegin: null,
+        helperTravelEnd: null,
+        helperTravelTotal: null,
+        helperJobBegin: null,
+        helperJobEnd: null,
+        helperJobTotal: null,
     })
 
     let row = {
@@ -71,7 +71,7 @@ const JobTIcket = () => {
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
         let combined = infoToHTML.join(' ')
-        let total = value['jobTotal'] + value['travelTotal']
+        let total = value['jobTotal'] + value['travelTotal'] + value['helperTravelTotal'] + value['helperJobTotal']
         setValue(values => ({
             ...values,
             jobInfo: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"></colgroup>
@@ -116,6 +116,7 @@ const JobTIcket = () => {
 
     // saves values when inputs changed by user 
     const handleChange = (e) => {
+        // console.log(e)
         const findMins = (field) => {
             let d1 = Date.parse(`2023-01-15T${value[field]}:00.000`);
             let d2 = Date.parse(`2023-01-15T${e.target.value}:00.000`);
@@ -124,6 +125,7 @@ const JobTIcket = () => {
             const mins = Math.floor(secs / 60);
             return mins
         }
+        
         if (e.target.name === 'jobEnd') {
             let total = findMins('jobBegin')
             setValue(values => ({
@@ -290,19 +292,19 @@ const JobTIcket = () => {
                             <tbody>
                                 <tr>
                                     <th>Begin travel</th>
-                                    <td><Input type='time' name='helperTravelBegin' onChange={handleChange}></Input></td>
+                                    <td><Input type='time' name='helperTravelBegin' id='helper' onChange={handleChange}></Input></td>
                                 </tr>
                                 <tr>
                                     <th>End travel</th>
-                                    <td><Input type='time' name='helperTravelEnd' onChange={handleChange}></Input></td>
+                                    <td><Input type='time' name='helperTravelEnd' id='helper' onChange={handleChange}></Input></td>
                                 </tr>
                                 <tr>
                                     <th>Begin Job</th>
-                                    <td><Input type='time' name='helperJobBegin' onChange={handleChange}></Input></td>
+                                    <td><Input type='time' name='helperJobBegin' id='helper' onChange={handleChange}></Input></td>
                                 </tr>
                                 <tr>
                                     <th>End job</th>
-                                    <td><Input type='time' name='helperJobEnd' onChange={handleChange}></Input></td>
+                                    <td><Input type='time' name='helperJobEnd' id='helper' onChange={handleChange}></Input></td>
                                 </tr>
                             </tbody>
                         </Table>

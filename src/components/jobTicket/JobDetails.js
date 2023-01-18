@@ -23,19 +23,19 @@ const JobDetails = (props) => {
                 <ul id='timeBreakdown'>
                     {props.value['travelTotal'] && props.value['travelTotal'] !== 0 ? <li>{props.value['travelTotal']} min were spent traveling for this job.</li> : ''}
                     {props.value['jobTotal'] && props.value['jobTotal'] !== 0 ? <li>{props.value['jobTotal']} min were spent on the job site working.</li> : ''}
-                    {props.value.wallSawing ? <li>{`Wall sawing took ${props.value.wallSawing} min.`}</li> : ''}
-                    {props.value.coreDrilling ? <li>{`Core drilling took ${props.value.coreDrilling} min.`}</li> : ''}
-                    {props.value.waterControl ? <li>{`Water control took ${props.value.waterControl} min.`}</li> : ''}
-                    {props.value.slabSaw ? <li>{`Slab sawing took ${props.value.slabSaw} min.`}</li> : ''}
-                    {props.value.hammerChipping ? `Jack hammer chipping took ${props.value.hammerChipping} min.` : ''}
-                    {props.value.loadExcevate ? <li>{`Load excevate took ${props.value.loadExcevate} min.`}</li> : ''}
-                    {props.value.haul ? <li>{`Hauling took ${props.value.haul} min.`}</li> : ''}
-                    {props.value.handLabor ? <li>{`Hand labor took ${props.value.handLabor} min.`}</li> : ''}
-                    {props.value.dumpYards ? <li>{`Dump yards took ${props.value.dumpYards} min.`}</li> : ''}
-                    {props.value.release ? <li>{`Releases took ${props.value.release} min.`}</li> : ''}
-                    {props.value.standby ? <li>{`Standby took ${props.value.standby} min.`}</li> : ''}
-                    {props.value.other ? `other time took ${props.value.other} min.` : ''}
-                    {props.value.downTime ? <li>{`Down time took ${props.value.downTime} min.`}</li> : ''}
+                    {props.value.wallSawing ? <li>{`Wall sawing took ${props.value.wallSawing} hrs.`}</li> : ''}
+                    {props.value.coreDrilling ? <li>{`Core drilling took ${props.value.coreDrilling} hrs.`}</li> : ''}
+                    {props.value.waterControl ? <li>{`Water control took ${props.value.waterControl} hrs.`}</li> : ''}
+                    {props.value.slabSaw ? <li>{`Slab sawing took ${props.value.slabSaw} hrs.`}</li> : ''}
+                    {props.value.hammerChipping ? `Jack hammer chipping took ${props.value.hammerChipping} hrs.` : ''}
+                    {props.value.loadExcevate ? <li>{`Load excevate took ${props.value.loadExcevate} hrs.`}</li> : ''}
+                    {props.value.haul ? <li>{`Hauling took ${props.value.haul} hrs.`}</li> : ''}
+                    {props.value.handLabor ? <li>{`Hand labor took ${props.value.handLabor} hrs.`}</li> : ''}
+                    {props.value.dumpYards ? <li>{`Dump yards took ${props.value.dumpYards} hrs.`}</li> : ''}
+                    {props.value.release ? <li>{`Releases took ${props.value.release} hrs.`}</li> : ''}
+                    {props.value.standby ? <li>{`Standby took ${props.value.standby} hrs.`}</li> : ''}
+                    {props.value.other ? `other time took ${props.value.other} hrs.` : ''}
+                    {props.value.downTime ? <li>{`Down time took ${props.value.downTime} hrs.`}</li> : ''}
                 </ul>
             </section>
 
@@ -62,7 +62,7 @@ const JobDetails = (props) => {
                 <Input id='CC' type='text' name='poNum' onChange={props.handleChange} />
                 <br></br>
                 <Label for='CC'>Job number:</Label>
-                <Input id='CC' type='text' name='JobNum' onChange={props.handleChange} />
+                <Input id='CC' type='text' name='jobNum' onChange={props.handleChange} />
                 <br></br>
                 <Input id='confirmation' type='checkbox' onChange={(e) => console.log(e.target.checked)} />
                 <Label for="confirmation">
