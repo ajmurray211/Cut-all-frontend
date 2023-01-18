@@ -12,13 +12,15 @@ const UsageGraph = () => {
     const toggle = () => setDropdownOpen((prevState) => !prevState);
     const [activeSort, setActiveSort] = useState('')
 
-    const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
+    // const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
+    const API_URL = 'http://localhost:8080/'
+
 
     const getData = (url) => {
         setLoading(true)
         axios
             .get(url)
-            .then((response) => setData(response.data))
+            .then((response) => setData(response.data.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
     }
@@ -73,6 +75,7 @@ const UsageGraph = () => {
     )
 
     const mappedParts = data.map((item) => {
+        console.log(item)
         return (
             <DropdownItem action id={item.name} onClick={() => setActiveSort(`${item.name}`)} href=''>{`${item.name}`}</DropdownItem>
         )

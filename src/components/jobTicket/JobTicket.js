@@ -59,7 +59,6 @@ const JobTIcket = () => {
         'depth': '',
         'workCode': '',
         'equipUsed': '',
-        'amount': ''
     }
 
     // add the html varibles to values variable for emailing 
@@ -132,6 +131,15 @@ const JobTIcket = () => {
                 [e.target.name]: e.target.value,
                 travelTotal: total,
             }))
+        } else if (e.target.name === 'date') {
+            let splitDate = e.target.value.split('-')
+            let year = splitDate.shift()
+            splitDate.push(year)
+            let reFormatedDate = splitDate.join('/')
+            setValue(values => ({
+                ...values,
+                [e.target.name]: reFormatedDate
+            }))
         } else {
             setValue(values => ({
                 ...values,
@@ -157,7 +165,7 @@ const JobTIcket = () => {
     const mappedRows = ticketBody.map((row, index) => {
         let copy = [...ticketBody]
         copy[index]['itemNum'] = index + 1
-        let line = (`<tr> <td"> Quote item </td> <td"> ${row.itemNum} </td> <td"> QTY </td> <td"> ${row.qty} </td> <td"> length or DIA </td> <td"> ${row.length}</td> <td">Depth </td> <td"> ${row.depth} </td> <td"> Work code </td> <td"> ${row.workCode} </td> <td"> Description / Equipment used </td> <td">${row.equipUsed} </td> <td"> Amount </td> <td"> ${row.amount} </td> </tr>`)
+        let line = (`<tr> <td"> Quote item </td> <td"> ${row.itemNum} </td> <td"> QTY </td> <td"> ${row.qty} </td> <td"> length or DIA </td> <td"> ${row.length}</td> <td">Depth </td> <td"> ${row.depth} </td> <td"> Work code </td> <td"> ${row.workCode} </td> <td"> Description / Equipment used </td> <td">${row.equipUsed} </td></tr>`)
         infoToHTML.push(line)
         return <BillingRow
             index={index}
@@ -171,7 +179,7 @@ const JobTIcket = () => {
             <li>
                 <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
                 <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
-                {row.equipUsed}, <span className='inputItem'>Amount</span>: {row.amount}
+                {row.equipUsed}
             </li>
         )
     })
@@ -335,27 +343,9 @@ const JobTIcket = () => {
                         mappedjobInfo={mappedjobInfo}
                         setValue={setValue}
                         infoToHTML={infoToHTML}
+                        handleChange={handleChange}
                     />
-                    <FormGroup>
-                        <Label for='CC'>Contractor email:</Label>
-                        <Input id='CC' type='text' name='CC' onChange={handleChange} />
-                        <br></br>
-                        <Label for='CC'>PO number:</Label>
-                        <Input id='CC' type='text' name='PO' onChange={handleChange} />
-                        <br></br>
-                        <Label for='CC'>Job number:</Label>
-                        <Input id='CC' type='text' name='JobNo' onChange={handleChange} />
-                        <br></br>
-                        <Input id='confirmation' type='checkbox' onChange={(e) => console.log(e.target.checked)} />
-                        <Label for="confirmation">
-                            :I have reviewed the above information and confirm the information is correct.
-                        </Label>
-                        <br></br>
-                        <Label for="confirmationName">
-                            Typing your name acts as an e-signature:
-                        </Label>
-                        <Input type='text' name='confirmationName' id='confirmationName' onChange={handleChange} />
-                    </FormGroup>
+
                 </ModalBody>
                 <ModalFooter>
                     <Button onClick={handleSubmit} type='submit'>Submit</Button>
@@ -375,7 +365,7 @@ const JobTIcket = () => {
                         <th>End travel</th>
                         <th><Input type='time' name='travelEnd' onChange={handleChange}></Input></th>
                     </tr>
-                    
+
                     <tr>
                         <th>Begin Job</th>
                         <th><Input type='time' name='jobBegin' onChange={handleChange}></Input></th>
@@ -395,7 +385,11 @@ const JobTIcket = () => {
                 <tbody>
                     <tr>
                         <th>Wall Sawing</th>
-                        <th><input type='number'  step={15} min={0} name='wallSawing' onChange={handleChange}></input></th>
+                        <th><input type='number' step={15} min={0} name='wallSawing' onChange={handleChange}></input></th>
+                    </tr>
+                    <tr>
+                        <th>Hand Sawing</th>
+                        <th><input type='number' step={15} min={0} name='handSawing' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Core drilling</th>
@@ -414,7 +408,7 @@ const JobTIcket = () => {
                         <th><input type='number' step={15} min={0} name='hammerChipping' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
-                        <th>Power Break/ step={15} Mini</th>
+                        <th>Power Break/ Mini</th>
                         <th><input type='number' step={15} min={0} name='powerBreak' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
@@ -423,7 +417,14 @@ const JobTIcket = () => {
                     </tr>
                     <tr>
                         <th>Haul</th>
-                        <th><input type='number' step={15} min={0} name='haul' onChange={handleChange}></input></th>
+                        <th>
+                            {/* <div> */}
+                            <input type='number' step={15} min={0} name='haul' onChange={handleChange}></input>
+                            {/* <div class="spinners">
+                                <button class="spinner increment" onClick={(e) => console.log(e)}>&#9650;</button>
+                                <button class="spinner decrement">&#9660;</button>
+                            </div> */}
+                        </th>
                     </tr>
                     <tr>
                         <th>Hand Labor</th>
