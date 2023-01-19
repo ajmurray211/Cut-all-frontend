@@ -21,10 +21,8 @@ const Main = () => {
     const [postOnHand, setPostOnHand] = useState(null)
     const [postTool, setPostTool] = useState(null)
 
-    // const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
-    // const API_URL = 'http://0.0.0.0:5000/'
-    // const API_URL = 'http://127.0.0.1:8000/'
-    const API_URL = 'http://localhost:8080/'
+    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+    // const API_URL = 'http://localhost:8080/'
 
     const getData = (url) => {
         setLoading(true)

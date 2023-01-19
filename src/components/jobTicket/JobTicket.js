@@ -4,6 +4,7 @@ import BillingRow from './BillingRow';
 import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import JobDetails from './JobDetails';
+import TimeSheet from './TimeSheet';
 
 const JobTIcket = () => {
     const [modal, setModal] = useState(false);
@@ -117,43 +118,45 @@ const JobTIcket = () => {
     // saves values when inputs changed by user 
     const handleChange = (e) => {
         // console.log(e)
-        const findMins = (field) => {
+        const findTimes = (field) => {
             let d1 = Date.parse(`2023-01-15T${value[field]}:00.000`);
             let d2 = Date.parse(`2023-01-15T${e.target.value}:00.000`);
             const milliseconds = Math.abs(d1 - d2);
             const secs = Math.floor(milliseconds / 1000);
             const mins = Math.floor(secs / 60);
-            return mins
+            const minutes = mins % 60
+            const hours = Math.floor(mins / 60);
+            return {
+                mins: mins,
+                hours: hours,
+                minutes: minutes,
+                combined: `${hours}hr. ${minutes}min.`
+            }
         }
-        
-        if (e.target.name === 'jobEnd') {
-            let total = findMins('jobBegin')
+
+        const changeVal = (total) => {
             setValue(values => ({
                 ...values,
                 [e.target.name]: e.target.value,
                 jobTotal: total,
             }))
+        }
+
+        if (e.target.name === 'jobEnd') {
+            let total = findTimes('jobBegin')
+            changeVal(total)
         } else if (e.target.name === 'travelEnd') {
-            let total = findMins('travelBegin')
-            setValue(values => ({
-                ...values,
-                [e.target.name]: e.target.value,
-                travelTotal: total,
-            }))
+            let total = findTimes('travelBegin')
+            changeVal(total)
+
         } else if (e.target.name === 'helperTravelEnd') {
-            let total = findMins('helperTravelBegin')
-            setValue(values => ({
-                ...values,
-                [e.target.name]: e.target.value,
-                helperTravelTotal: total,
-            }))
+            let total = findTimes('helperTravelBegin')
+            changeVal(total)
+
         } else if (e.target.name === 'helperJobEnd') {
-            let total = findMins('helperJobBegin')
-            setValue(values => ({
-                ...values,
-                [e.target.name]: e.target.value,
-                helperJobTotal: total,
-            }))
+            let total = findTimes('helperJobBegin')
+            changeVal(total)
+
         } else if (e.target.name === 'date') {
             let splitDate = e.target.value.split('-')
             let year = splitDate.shift()
@@ -169,7 +172,7 @@ const JobTIcket = () => {
                 [e.target.name]: e.target.value
             }))
         }
-        console.log(value)
+        // console.log(value)
     }
 
     // changes values of the job row when the user changes and imput field 
@@ -285,29 +288,9 @@ const JobTIcket = () => {
                 <Row>
                     <Col md={3} />
                     <Col md={6} className={value['otherWorkers'] == '' ? 'hide' : null}>
-                        <Table bordered striped responsive hover >
-                            <caption >
-                                <h3>Time table for other CA workers on the job</h3>
-                            </caption>
-                            <tbody>
-                                <tr>
-                                    <th>Begin travel</th>
-                                    <td><Input type='time' name='helperTravelBegin' id='helper' onChange={handleChange}></Input></td>
-                                </tr>
-                                <tr>
-                                    <th>End travel</th>
-                                    <td><Input type='time' name='helperTravelEnd' id='helper' onChange={handleChange}></Input></td>
-                                </tr>
-                                <tr>
-                                    <th>Begin Job</th>
-                                    <td><Input type='time' name='helperJobBegin' id='helper' onChange={handleChange}></Input></td>
-                                </tr>
-                                <tr>
-                                    <th>End job</th>
-                                    <td><Input type='time' name='helperJobEnd' id='helper' onChange={handleChange}></Input></td>
-                                </tr>
-                            </tbody>
-                        </Table>
+                        <TimeSheet
+                         handleChange={handleChange}
+                        />
                     </Col>
                 </Row>
                 <Row>
@@ -378,31 +361,9 @@ const JobTIcket = () => {
                 </ModalFooter>
             </Modal>
 
-            <Table bordered striped responsive >
-                <caption >
-                    <h3>Time table</h3>
-                </caption>
-                <tbody>
-                    <tr>
-                        <th>Begin travel</th>
-                        <th><Input type='time' name='travelBegin' onChange={handleChange}></Input></th>
-                    </tr>
-                    <tr>
-                        <th>End travel</th>
-                        <th><Input type='time' name='travelEnd' onChange={handleChange}></Input></th>
-                    </tr>
-
-                    <tr>
-                        <th>Begin Job</th>
-                        <th><Input type='time' name='jobBegin' onChange={handleChange}></Input></th>
-                    </tr>
-                    <tr>
-                        <th>End job</th>
-                        <th><Input type='time' name='jobEnd' onChange={handleChange}></Input></th>
-                    </tr>
-
-                </tbody>
-            </Table>
+            <TimeSheet
+            handleChange={handleChange}
+            />
 
             <Table bordered striped responsive >
                 <thead>
