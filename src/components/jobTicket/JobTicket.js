@@ -1,7 +1,8 @@
 import './jobTicket.css'
+import Multiselect from 'multiselect-react-dropdown';
 import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import BillingRow from './BillingRow';
 import { useState, useEffect } from 'react';
+import BillingRow from './BillingRow';
 import emailjs from '@emailjs/browser';
 import JobDetails from './JobDetails';
 import TimeSheet from './TimeSheet';
@@ -13,24 +14,17 @@ const JobTIcket = () => {
     const [status, setStatus] = useState('');
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
-    let infoToHTML = []
     const [value, setValue] = useState({
         fullName: 'TEST',
         email: 'murray.aj.murray@gmail.com',
         worker: '',
         billTo: '',
-        otherWorkers: '',
+        otherWorkers: [],
         truckNum: '',
         date: '',
         address: '',
         canvas: null,
         jobInfo: null,
-        travelBegin: null,
-        travelEnd: null,
-        travelTotal: null,
-        jobBegin: null,
-        jobEnd: null,
-        jobTotal: null,
         wallSawing: null,
         coreDrilling: null,
         slabSaw: null,
@@ -50,8 +44,14 @@ const JobTIcket = () => {
         CC: null,
         jobNum: null,
         poNum: null,
-        totalPaidTime: null,
         milage: null,
+        totalPaidTime: null,
+        travelBegin: null,
+        travelEnd: null,
+        travelTotal: null,
+        jobBegin: null,
+        jobEnd: null,
+        jobTotal: null,
         helperTravelBegin: null,
         helperTravelEnd: null,
         helperTravelTotal: null,
@@ -59,20 +59,13 @@ const JobTIcket = () => {
         helperJobEnd: null,
         helperJobTotal: null,
     })
-
-    let row = {
-        'itemNum': '',
-        'qty': '',
-        'length': '',
-        'depth': '',
-        'workCode': '',
-        'equipUsed': '',
-    }
+    let infoToHTML = []
+    let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
 
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
         let combined = infoToHTML.join(' ')
-        let total = value['jobTotal'] + value['travelTotal'] + value['helperTravelTotal'] + value['helperJobTotal']
+        let total = `${value['jobTotal'].hours + value['travelTotal'].hours}hrs. ${value['jobTotal'].minutes + value['travelTotal'].minutes}min.`
         setValue(values => ({
             ...values,
             jobInfo: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"></colgroup>
@@ -87,7 +80,7 @@ const JobTIcket = () => {
         event.preventDefault()
         toggleModal()
         console.log(value, 'before email')
-        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+        emailjs.send('service_v3kf86l', 'template_mdw8cd7', (value, test), 'E5-2RW9TeJyvAH3_r')
             .then((result) => {
                 setStatus(result.text);
                 setSuccess(true)
@@ -116,47 +109,59 @@ const JobTIcket = () => {
     }, [status]);
 
     // saves values when inputs changed by user 
-    const handleChange = (e) => {
-        // console.log(e)
-        const findTimes = (field) => {
-            let d1 = Date.parse(`2023-01-15T${value[field]}:00.000`);
-            let d2 = Date.parse(`2023-01-15T${e.target.value}:00.000`);
-            const milliseconds = Math.abs(d1 - d2);
-            const secs = Math.floor(milliseconds / 1000);
-            const mins = Math.floor(secs / 60);
-            const minutes = mins % 60
-            const hours = Math.floor(mins / 60);
-            return {
-                mins: mins,
-                hours: hours,
-                minutes: minutes,
-                combined: `${hours}hr. ${minutes}min.`
-            }
+    const findTimes = (e, field) => {
+        let d1 = Date.parse(`2023-01-15T${value[field]}:00.000`);
+        let d2 = Date.parse(`2023-01-15T${e.target.value}:00.000`);
+        const milliseconds = Math.abs(d1 - d2);
+        const secs = Math.floor(milliseconds / 1000);
+        const mins = Math.floor(secs / 60);
+        const minutes = mins % 60
+        const hours = Math.floor(mins / 60);
+        return {
+            mins: mins,
+            hours: hours,
+            minutes: minutes,
+            combined: `${hours}hr. ${minutes}min.`
         }
+    }
 
-        const changeVal = (total) => {
+    const handleSelect = (selectedList) => {
+        setValue((values) => ({
+            ...values,
+            otherWorkers: selectedList
+        }))
+    };
+
+    const handleRemove = (selectedList) => {
+        setValue((values) => ({
+            ...values,
+            otherWorkers: selectedList
+        }))
+    };
+
+    const handleChange = (e) => {
+        const changeVal = (total, field) => {
+            let copy = { ...total }
+            console.log(copy)
             setValue(values => ({
                 ...values,
                 [e.target.name]: e.target.value,
-                jobTotal: total,
+                [field]: total,
             }))
         }
 
         if (e.target.name === 'jobEnd') {
-            let total = findTimes('jobBegin')
-            changeVal(total)
+            let total = findTimes(e, 'jobBegin')
+            changeVal(total, 'jobTotal')
         } else if (e.target.name === 'travelEnd') {
-            let total = findTimes('travelBegin')
-            changeVal(total)
-
-        } else if (e.target.name === 'helperTravelEnd') {
-            let total = findTimes('helperTravelBegin')
-            changeVal(total)
-
-        } else if (e.target.name === 'helperJobEnd') {
-            let total = findTimes('helperJobBegin')
-            changeVal(total)
-
+            let total = findTimes(e, 'travelBegin')
+            changeVal(total, 'travelTotal')
+        } else if (e.target.name === 'otherWorkers') {
+            let selected = [...e.target.selectedOptions].map(i => i.value)
+            setValue(values => ({
+                ...values,
+                [e.target.name]: selected
+            }))
         } else if (e.target.name === 'date') {
             let splitDate = e.target.value.split('-')
             let year = splitDate.shift()
@@ -172,7 +177,7 @@ const JobTIcket = () => {
                 [e.target.name]: e.target.value
             }))
         }
-        // console.log(value)
+        console.log(value)
     }
 
     // changes values of the job row when the user changes and imput field 
@@ -184,6 +189,14 @@ const JobTIcket = () => {
 
     // allows user to add more rows 
     const addRow = () => {
+        let row = {
+            'itemNum': '',
+            'qty': '',
+            'length': '',
+            'depth': '',
+            'workCode': '',
+            'equipUsed': '',
+        }
         let copy = [...ticketBody, row]
         setTicketBody(copy)
     }
@@ -263,35 +276,27 @@ const JobTIcket = () => {
                             ></Input>
                         </FormGroup>
                     </Col>
-                    <Col md={3}>
-                        <FormGroup>
-                            <Label for="employeeList">
-                                other CA men on the job:
-                            </Label>
-                            <Input
-                                id="otherWorkers"
-                                name="otherWorkers"
-                                type="select"
-                                onChange={(event) => handleChange(event)}
-                            >
-                                <option></option>
-                                <option>Gordon</option>
-                                <option>Pat</option>
-                                <option>Kyle</option>
-                                <option>Rilyn</option>
-                                <option>other</option>
-                            </Input>
-                        </FormGroup>
+                    <Col md={4}>
+                        <Multiselect
+                            showArrow
+                            isObject={false}
+                            options={workersList} 
+                            selectedValues={value['otherWorkers']} 
+                            onSelect={handleSelect} 
+                            onRemove={handleRemove}
+                        />
                     </Col>
                 </Row>
 
                 <Row>
-                    <Col md={3} />
-                    <Col md={6} className={value['otherWorkers'] == '' ? 'hide' : null}>
-                        <TimeSheet
-                         handleChange={handleChange}
-                        />
-                    </Col>
+                    <TimeSheet
+                        className={value['otherWorkers'].length == 0 ? 'hide' : null}
+                        namesList={value['otherWorkers']}
+                        value={value}
+                        setValue={setValue}
+                    // handleChange={handleChange}
+                    />
+
                 </Row>
                 <Row>
                     <Col md={3} />
@@ -361,9 +366,29 @@ const JobTIcket = () => {
                 </ModalFooter>
             </Modal>
 
-            <TimeSheet
-            handleChange={handleChange}
-            />
+            <Table bordered striped responsive hover >
+                <caption >
+                    <h3>Time table</h3>
+                </caption>
+                <tbody>
+                    <tr>
+                        <th>Begin travel</th>
+                        <td><Input type='time' name='travelBegin' onChange={handleChange}></Input></td>
+                    </tr>
+                    <tr>
+                        <th>End travel</th>
+                        <td><Input type='time' name='travelEnd' onChange={handleChange}></Input></td>
+                    </tr>
+                    <tr>
+                        <th>Begin Job</th>
+                        <td><Input type='time' name='jobBegin' onChange={handleChange}></Input></td>
+                    </tr>
+                    <tr>
+                        <th>End job</th>
+                        <td><Input type='time' name='jobEnd' onChange={handleChange}></Input></td>
+                    </tr>
+                </tbody>
+            </Table>
 
             <Table bordered striped responsive >
                 <thead>
