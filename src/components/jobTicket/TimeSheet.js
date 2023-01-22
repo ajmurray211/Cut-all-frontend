@@ -1,9 +1,39 @@
 import { Input, Table, Col } from 'reactstrap';
+import { useState } from 'react'
 
 const TimeSheet = (props) => {
     let mappedNames = ''
+    const [helpers, setHelpers] = useState({
+        Rilyn: {},
+        Kyle: {},
+        Pat: {},
+        Gordon: {},
+        Other: {}
+    })
 
-    // console.log(props.namesList)
+    const [data, setData] = useState({
+        milage:null,
+        jobBegin: null,
+        jobEnd: null,
+        travelBegin: null,
+        travelEnd: null,
+    })
+
+    const handleChange = (e) => {
+        setData((values) => ({
+            ...values,
+            [e.target.name]: e.target.value
+        }))
+        setHelpers((values) => ({
+            ...values,
+            [e.target.id]: data
+        }))
+        props.setValue(values => ({
+            ...values,
+            helperTimes: helpers
+        }))
+    }
+
     if (props.namesList) {
         mappedNames = props.namesList.map((name) => {
             return (
@@ -14,20 +44,24 @@ const TimeSheet = (props) => {
                         </caption>
                         <tbody>
                             <tr>
+                                <th>Milage</th>
+                                <td><Input type='number' name='milage' id={name} onChange={handleChange}></Input></td>
+                            </tr>
+                            <tr>
                                 <th>Begin travel</th>
-                                <td><Input type='time' name='helperTravelBegin' id={name} onChange={props.handleChange}></Input></td>
+                                <td><Input type='time' name='travelBegin' id={name} onChange={handleChange}></Input></td>
                             </tr>
                             <tr>
                                 <th>End travel</th>
-                                <td><Input type='time' name='helperTravelEnd' id={name} onChange={props.handleChange}></Input></td>
+                                <td><Input type='time' name='travelEnd' id={name} onChange={handleChange}></Input></td>
                             </tr>
                             <tr>
                                 <th>Begin Job</th>
-                                <td><Input type='time' name='helperJobBegin' id={name} onChange={props.handleChange}></Input></td>
+                                <td><Input type='time' name='jobBegin' id={name} onChange={handleChange}></Input></td>
                             </tr>
                             <tr>
                                 <th>End job</th>
-                                <td><Input type='time' name='helperJobEnd' id={name} onChange={props.handleChange}></Input></td>
+                                <td><Input type='time' name='jobEnd' id={name} onChange={handleChange}></Input></td>
                             </tr>
                         </tbody>
                     </Table>
