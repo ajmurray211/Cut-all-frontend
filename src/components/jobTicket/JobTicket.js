@@ -15,7 +15,6 @@ const JobTIcket = () => {
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
     const [value, setValue] = useState({
-        fullName: 'TEST',
         email: 'murray.aj.murray@gmail.com',
         worker: '',
         billTo: '',
@@ -23,7 +22,6 @@ const JobTIcket = () => {
         truckNum: '',
         date: '',
         address: '',
-        canvas: null,
         jobInfo: null,
         wallSawing: null,
         coreDrilling: null,
@@ -52,12 +50,7 @@ const JobTIcket = () => {
         jobBegin: null,
         jobEnd: null,
         jobTotal: null,
-        helperTravelBegin: null,
-        helperTravelEnd: null,
-        helperTravelTotal: null,
-        helperJobBegin: null,
-        helperJobEnd: null,
-        helperJobTotal: null,
+        helperTimes: null, 
     })
     let infoToHTML = []
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
@@ -68,7 +61,7 @@ const JobTIcket = () => {
         let total = `${value['jobTotal'].hours + value['travelTotal'].hours}hrs. ${value['jobTotal'].minutes + value['travelTotal'].minutes}min.`
         setValue(values => ({
             ...values,
-            jobInfo: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"></colgroup>
+            jobInfo: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:14%;"></colgroup>
             <tbody> ${combined} </tbody>
             </table>`,
             totalPaidTime: total
@@ -80,7 +73,7 @@ const JobTIcket = () => {
         event.preventDefault()
         toggleModal()
         console.log(value, 'before email')
-        emailjs.send('service_v3kf86l', 'template_mdw8cd7', (value, test), 'E5-2RW9TeJyvAH3_r')
+        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
             .then((result) => {
                 setStatus(result.text);
                 setSuccess(true)
@@ -109,9 +102,9 @@ const JobTIcket = () => {
     }, [status]);
 
     // saves values when inputs changed by user 
-    const findTimes = (e, field) => {
-        let d1 = Date.parse(`2023-01-15T${value[field]}:00.000`);
-        let d2 = Date.parse(`2023-01-15T${e.target.value}:00.000`);
+    const findTimes = (start, end) => {
+        let d1 = Date.parse(`2023-01-15T${start}:00.000`);
+        let d2 = Date.parse(`2023-01-15T${end}:00.000`);
         const milliseconds = Math.abs(d1 - d2);
         const secs = Math.floor(milliseconds / 1000);
         const mins = Math.floor(secs / 60);
@@ -151,10 +144,10 @@ const JobTIcket = () => {
         }
 
         if (e.target.name === 'jobEnd') {
-            let total = findTimes(e, 'jobBegin')
+            let total = findTimes(value['jobBegin'], e.target.value)
             changeVal(total, 'jobTotal')
         } else if (e.target.name === 'travelEnd') {
-            let total = findTimes(e, 'travelBegin')
+            let total = findTimes(value['travelBegin'], e.target.value )
             changeVal(total, 'travelTotal')
         } else if (e.target.name === 'otherWorkers') {
             let selected = [...e.target.selectedOptions].map(i => i.value)
@@ -277,12 +270,13 @@ const JobTIcket = () => {
                         </FormGroup>
                     </Col>
                     <Col md={4}>
+                        <p>Other CA men on the job</p>
                         <Multiselect
                             showArrow
                             isObject={false}
-                            options={workersList} 
-                            selectedValues={value['otherWorkers']} 
-                            onSelect={handleSelect} 
+                            options={workersList}
+                            selectedValues={value['otherWorkers']}
+                            onSelect={handleSelect}
                             onRemove={handleRemove}
                         />
                     </Col>
@@ -294,6 +288,7 @@ const JobTIcket = () => {
                         namesList={value['otherWorkers']}
                         value={value}
                         setValue={setValue}
+                        findTimes={findTimes}
                     // handleChange={handleChange}
                     />
 
@@ -358,6 +353,7 @@ const JobTIcket = () => {
                         setValue={setValue}
                         infoToHTML={infoToHTML}
                         handleChange={handleChange}
+                        findTimes ={findTimes}
                     />
 
                 </ModalBody>
@@ -397,75 +393,68 @@ const JobTIcket = () => {
                 <tbody>
                     <tr>
                         <th>Wall Sawing</th>
-                        <th><input type='number' step={15} min={0} name='wallSawing' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='wallSawing' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Hand Sawing</th>
-                        <th><input type='number' step={15} min={0} name='handSawing' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='handSawing' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Core drilling</th>
-                        <th><input type='number' step={15} min={0} name='coreDrilling' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='coreDrilling' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Slab Saw</th>
-                        <th><input type='number' step={15} min={0} name='slabSaw' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='slabSaw' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Water control</th>
-                        <th><input type='number' step={15} min={0} name='waterControl' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='waterControl' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>J/ Hammer chipping</th>
-                        <th><input type='number' step={15} min={0} name='hammerChipping' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='hammerChipping' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Power Break/ Mini</th>
-                        <th><input type='number' step={15} min={0} name='powerBreak' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='powerBreak' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Load Excevate</th>
-                        <th><input type='number' step={15} min={0} name='loadExcevate' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='loadExcevate' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Haul</th>
-                        <th>
-                            {/* <div> */}
-                            <input type='number' step={15} min={0} name='haul' onChange={handleChange}></input>
-                            {/* <div class="spinners">
-                                <button class="spinner increment" onClick={(e) => console.log(e)}>&#9650;</button>
-                                <button class="spinner decrement">&#9660;</button>
-                            </div> */}
-                        </th>
+                        <th><input type='number' min={0} name='haul' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Hand Labor</th>
-                        <th><input type='number' step={15} min={0} name='handLabor' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='handLabor' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Dump Yards</th>
-                        <th><input type='number' step={15} min={0} name='dumpYards' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='dumpYards' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Release</th>
-                        <th><input type='number' step={15} min={0} name='release' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='release' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Standby</th>
-                        <th><input type='number' step={15} min={0} name='standby' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='standby' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Other</th>
-                        <th><input type='number' step={15} min={0} name='other' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='other' onChange={handleChange}></input></th>
                     </tr>
                     <tr>
                         <th>Down Time</th>
-                        <th><input type='number' step={15} min={0} name='downTime' onChange={handleChange}></input></th>
+                        <th><input type='number' min={0} name='downTime' onChange={handleChange}></input></th>
                     </tr>
-                    {/* <tr>
+                    <tr>
                         <th>Mini breaker</th>
                         <th><input type='number' min={0} name='downTime' onChange={handleChange}></input></th>
-                    </tr> */}
+                    </tr>
                 </tbody>
             </Table>
 

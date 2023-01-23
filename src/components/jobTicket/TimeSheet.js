@@ -44,10 +44,6 @@ const TimeSheet = (props) => {
                         </caption>
                         <tbody>
                             <tr>
-                                <th>Milage</th>
-                                <td><Input type='number' name='milage' id={name} onChange={handleChange}></Input></td>
-                            </tr>
-                            <tr>
                                 <th>Begin travel</th>
                                 <td><Input type='time' name='travelBegin' id={name} onChange={handleChange}></Input></td>
                             </tr>
@@ -62,6 +58,10 @@ const TimeSheet = (props) => {
                             <tr>
                                 <th>End job</th>
                                 <td><Input type='time' name='jobEnd' id={name} onChange={handleChange}></Input></td>
+                            </tr>
+                            <tr>
+                                <th>Milage</th>
+                                <td><Input type='number' min={0} name='milage' id={name} onChange={handleChange}></Input></td>
                             </tr>
                         </tbody>
                     </Table>

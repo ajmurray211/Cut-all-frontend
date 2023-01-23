@@ -1,6 +1,23 @@
-import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Label, FormGroup, Input } from 'reactstrap';
 
 const JobDetails = (props) => {
+
+    let helpersParsedData = []
+    if (props.value.helperTimes) {
+        for (let name in props.value.helperTimes) {
+            if (Object.keys(props.value['helperTimes'][name]).length != 0) {
+                let totalJob = props.findTimes(props.value['helperTimes'][name].jobBegin, props.value['helperTimes'][name].jobEnd)
+                let totalTravel = props.findTimes(props.value['helperTimes'][name].travelBegin, props.value['helperTimes'][name].travelEnd)
+                helpersParsedData.push([name, totalJob, totalTravel])
+            }
+        }
+    }
+    let mappedHelpers = helpersParsedData.map((worker) => {
+        // console.log(worker)
+        return (
+            <li>{worker[0]}: traveled for {worker[2].combined} and worked for {worker[1].combined}</li>
+        )
+    })
 
     return (
         <div>
@@ -9,7 +26,6 @@ const JobDetails = (props) => {
                 <ul id='inputContainer'>
                     <li><span className='inputItem'>Who worked</span>:{props.value['worker']}</li>
                     <li><span className='inputItem'>Bill to</span>:{props.value['billTo']}</li>
-                    <li><span className='inputItem'>Other CA men on the job</span>:{props.value['otherWorkers']}</li>
                     <li><span className='inputItem'>Truck number</span>:{props.value['truckNum']}</li>
                     <li><span className='inputItem'>Date</span>:{props.value['date']}</li>
                     <li><span className='inputItem'>Address</span>:{props.value['address']}</li>
@@ -18,11 +34,17 @@ const JobDetails = (props) => {
                             {props.mappedjobInfo}
                         </ul>
                     </li>
+                    <li> <span className='inputItem'>Other CA men on the job and total times.</span>
+                        <ul>
+                            {mappedHelpers}
+                        </ul>
+                    </li>
                 </ul>
+
                 <h3>Hours Spent</h3>
                 <ul id='timeBreakdown'>
-                    {props.value['travelTotal'] && props.value['travelTotal'] !== 0 ? <li>{props.value['travelTotal']} min were spent traveling for this job.</li> : ''}
-                    {props.value['jobTotal'] && props.value['jobTotal'] !== 0 ? <li>{props.value['jobTotal']} min were spent on the job site working.</li> : ''}
+                    {props.value['travelTotal'] && props.value['travelTotal'].mins !== 0 ? <li>{props.value['travelTotal'].combined} min were spent traveling for this job.</li> : ''}
+                    {props.value['jobTotal'] && props.value['jobTotal'].mins !== 0 ? <li>{props.value['jobTotal'].combined} were spent on the job site working.</li> : ''}
                     {props.value.wallSawing ? <li>{`Wall sawing took ${props.value.wallSawing} hrs.`}</li> : ''}
                     {props.value.coreDrilling ? <li>{`Core drilling took ${props.value.coreDrilling} hrs.`}</li> : ''}
                     {props.value.waterControl ? <li>{`Water control took ${props.value.waterControl} hrs.`}</li> : ''}

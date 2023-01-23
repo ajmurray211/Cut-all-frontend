@@ -69,6 +69,10 @@ const DrawPart = () => {
         )
     })
 
+    const handleChange = (e) => {
+        console.log(e)
+    }
+
     return (
         <section>
             <Alert color='success' isOpen={show}>You have drawn a part!</Alert>
@@ -164,7 +168,6 @@ const DrawPart = () => {
                     Submit
                 </Button>
             </Form>
-
         </section>
     );
 }
