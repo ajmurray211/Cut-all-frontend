@@ -5,8 +5,8 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import TicketInfo from '../TicketInfo'
 
 const Ledger = () => {
-    // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-    const API_URL = 'http://localhost:8080/'
+    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+    // const API_URL = 'http://localhost:8080/'
 
     const [tickets, setTickets] = useState([])
     const [error, setError] = useState(null)
@@ -42,7 +42,7 @@ const Ledger = () => {
     return (
         <div>
             <h1>List of job tickets on file</h1>
-            {mappedTickets}
+            {tickets.length ? mappedTickets: 'No tickets currently stored'}
             <Modal id="ticketInfo" isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Ticket information</ModalHeader>
                 <TicketInfo
