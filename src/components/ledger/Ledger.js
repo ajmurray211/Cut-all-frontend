@@ -1,5 +1,7 @@
-import axios from "axios";
+import axios from "axios"
 import { useState, useEffect } from "react";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import TicketInfo from '../TicketInfo'
 
 const Ledger = () => {
     // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
@@ -8,6 +10,10 @@ const Ledger = () => {
     const [tickets, setTickets] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [activeTicket, setActiveTicket] = useState(null)
+
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
 
     const getData = (url) => {
         setLoading(true)
@@ -23,17 +29,35 @@ const Ledger = () => {
     }, [])
 
     let mappedTickets = tickets.map((ticket) => {
-        return(
-            <li>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date}</li>
+        return (
+            <li><Button onClick={() => {
+                setActiveTicket(ticket)
+                toggle()
+            }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date}</Button></li>
         )
     })
+    console.log(activeTicket)
 
     return (
-        <>
-        <h1>List of job tickets on file</h1>
-        {mappedTickets}
-        </>
-        
+        <div>
+            <h1>List of job tickets on file</h1>
+            {mappedTickets}
+            <Modal id="ticketInfo" isOpen={modal} toggle={toggle}>
+                <ModalHeader toggle={toggle}>Ticket information</ModalHeader>
+                <TicketInfo
+                    value={activeTicket}
+                />
+                <ModalFooter>
+                    <Button color="primary" onClick={toggle}>
+                        Print
+                    </Button>{' '}
+                    <Button color="secondary" onClick={toggle}>
+                        close
+                    </Button>
+                </ModalFooter>
+            </Modal>
+        </div>
+
     );
 }
 

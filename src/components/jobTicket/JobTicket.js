@@ -42,7 +42,6 @@ const JobTIcket = () => {
         standby: null,
         other: null,
         downTime: null,
-        timeChart: null,
         confirmationName: null,
         CC: null,
         jobNum: null,
