@@ -63,7 +63,7 @@ const JobTIcket = () => {
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
         let combined = infoToHTML.join(' ')
-        let total = `${value['jobTotal'].hours + value['travelTotal'].hours}hrs. ${value['jobTotal'].minutes + value['travelTotal'].minutes}min.`
+        let total = `${value['jobTotal'].hours + (value['travelTotal'] != null ? value['travelTotal'].hours : 0)}hrs. ${value['jobTotal'].minutes + (value.travelTotal != null ? value['travelTotal'].minutes : 0)}min.`
         setValue(values => ({
             ...values,
             jobInfo: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:14%;"></colgroup>
@@ -71,6 +71,7 @@ const JobTIcket = () => {
             </table>`,
             totalPaidTime: total
         }))
+        console.log('compile html', value)
     }
 
     // sends the information in an email 
