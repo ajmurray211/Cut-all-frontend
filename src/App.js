@@ -11,18 +11,16 @@ import Ledger from './components/ledger/Ledger';
 function App() {
   return (
     <div className="App">
-      <navbar>
-        <nav>
-          <Link to="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></Link>
-          <section className='link-container'>
-            <Link className='link' to='/drawParts'>Draw parts</Link>
-            <Link className='link' to='/usageGraph'>Usage Graph</Link>
-            <Link className='link' to='/jobTicket'>Job ticket</Link>
-            <Link className='link' to='/ledger'>Ledger</Link>
-          </section>
-          <p>Inventory system</p>
-        </nav>
-      </navbar>
+      <nav>
+        <Link to="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></Link>
+        <section className='link-container'>
+          <Link className='link' to='/drawParts'>Draw parts</Link>
+          <Link className='link' to='/usageGraph'>Usage Graph</Link>
+          <Link className='link' to='/jobTicket'>Job ticket</Link>
+          <Link className='link' to='/ledger'>Ledger</Link>
+        </section>
+        <p>Inventory system</p>
+      </nav>
 
       <div>
         <Routes>
