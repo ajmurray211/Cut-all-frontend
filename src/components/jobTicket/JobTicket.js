@@ -6,8 +6,13 @@ import BillingRow from './BillingRow';
 import emailjs from '@emailjs/browser';
 import JobDetails from './JobDetails';
 import TimeSheet from './TimeSheet';
+import axios from 'axios';
 
 const JobTIcket = () => {
+
+    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+    // const API_URL = 'http://localhost:8080/'
+
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal(!modal);
     const [ticketBody, setTicketBody] = useState([])
@@ -73,6 +78,7 @@ const JobTIcket = () => {
         event.preventDefault()
         toggleModal()
         console.log(value, 'before email')
+        postTicket()
         emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
             .then((result) => {
                 setStatus(result.text);
@@ -84,6 +90,13 @@ const JobTIcket = () => {
             });
     }
 
+    const postTicket = () => {
+        axios.post(`${API_URL}ticket`, {
+            ...value
+        })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err))
+    }
     // resets variables changing when status changes 
     useEffect(() => {
         if (status === 'OK') {
@@ -126,6 +139,7 @@ const JobTIcket = () => {
     };
 
     const handleRemove = (selectedList) => {
+        console.log(selectedList)
         setValue((values) => ({
             ...values,
             otherWorkers: selectedList
@@ -170,7 +184,7 @@ const JobTIcket = () => {
                 [e.target.name]: e.target.value
             }))
         }
-        console.log(value)
+        // console.log(value)
     }
 
     // changes values of the job row when the user changes and imput field 
@@ -459,7 +473,7 @@ const JobTIcket = () => {
             </Table>
             <section>
                 <h2>Other job details:</h2>
-                <textarea id='detailsArea' name='detailsNotCovered' onChange={handleChange}/>
+                <textarea id='detailsArea' name='detailsNotCovered' onChange={handleChange} />
             </section>
 
             <Button onClick={() => {
