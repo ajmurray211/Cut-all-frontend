@@ -31,7 +31,6 @@ const Main = () => {
             .then((response) => setParts(response.data.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
-
     }
 
     useEffect(() => {
