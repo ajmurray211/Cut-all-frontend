@@ -61,6 +61,11 @@ const JobDetails = (props) => {
                 </ul>
             </section>
 
+            <section>
+                <h3>Other job details</h3>
+                <p>{props.value.detailsNotCovered}</p>
+            </section>
+
             <section id='legalDisclaimer'>
                 <h2> Standard job conditions:</h2>
                 <ul>

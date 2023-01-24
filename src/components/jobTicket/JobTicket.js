@@ -50,7 +50,7 @@ const JobTIcket = () => {
         jobBegin: null,
         jobEnd: null,
         jobTotal: null,
-        helperTimes: null, 
+        helperTimes: null,
     })
     let infoToHTML = []
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
@@ -147,7 +147,7 @@ const JobTIcket = () => {
             let total = findTimes(value['jobBegin'], e.target.value)
             changeVal(total, 'jobTotal')
         } else if (e.target.name === 'travelEnd') {
-            let total = findTimes(value['travelBegin'], e.target.value )
+            let total = findTimes(value['travelBegin'], e.target.value)
             changeVal(total, 'travelTotal')
         } else if (e.target.name === 'otherWorkers') {
             let selected = [...e.target.selectedOptions].map(i => i.value)
@@ -353,7 +353,7 @@ const JobTIcket = () => {
                         setValue={setValue}
                         infoToHTML={infoToHTML}
                         handleChange={handleChange}
-                        findTimes ={findTimes}
+                        findTimes={findTimes}
                     />
 
                 </ModalBody>
@@ -457,6 +457,10 @@ const JobTIcket = () => {
                     </tr>
                 </tbody>
             </Table>
+            <section>
+                <h2>Other job details:</h2>
+                <textarea id='detailsArea' name='detailsNotCovered' onChange={handleChange}/>
+            </section>
 
             <Button onClick={() => {
                 toggleModal()
