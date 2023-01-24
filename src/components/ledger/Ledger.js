@@ -1,3 +1,4 @@
+import './ledger.css'
 import axios from "axios"
 import { useState, useEffect } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -30,7 +31,7 @@ const Ledger = () => {
 
     let mappedTickets = tickets.map((ticket) => {
         return (
-            <li><Button onClick={() => {
+            <li className='ticket'><Button onClick={() => {
                 setActiveTicket(ticket)
                 toggle()
             }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date}</Button></li>
@@ -48,7 +49,7 @@ const Ledger = () => {
                     value={activeTicket}
                 />
                 <ModalFooter>
-                    <Button color="primary" onClick={toggle}>
+                    <Button disabled color="primary" onClick={toggle}>
                         Print
                     </Button>{' '}
                     <Button color="secondary" onClick={toggle}>

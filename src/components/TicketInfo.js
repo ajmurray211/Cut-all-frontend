@@ -18,7 +18,7 @@ const TicketInfo = (props) => {
     })
 
     return (
-        <div>
+        <div id='mainBody'>
             <section id='workerInput'>
                 <h2>Job information:</h2>
                 <ul id='inputContainer'>
