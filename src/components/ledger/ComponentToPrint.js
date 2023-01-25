@@ -1,8 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 
 const MyComponentToPrint = forwardRef((props, ref) => {
-    console.log(props.value)
-
     const handlePrint = () => {
         window.print()
     }
@@ -85,14 +83,14 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                     <li>Contractor is responsible for covering holes created by sawing and drilling.</li>
                     <li>In the event of non-payment of any amount, when due, purchaser agrees to pay all collection costs including reasonable attorney fees.</li>
                 </ul>
-                <seciton id='confirmationDetails'>
+                <section id='confirmationDetails'>
                     <ul>
                         {props.value.poNum ? <li>{`PO #: ${props.value.poNum}.`}</li> : ''}
                         {props.value.poNum ? <li>{`Job #: ${props.value.jobNum}.`}</li> : ''}
                         {props.value.poNum ? <li>{`Email sent to: ${props.value.CC}`}</li> : ''}
                     </ul>
                     I {props.value.confirmationName} have read and agreed to the details and conditions of the job ticket above on behalf of {props.value.billTo}.
-                </seciton>
+                </section>
             </section>
         </div>
     )
