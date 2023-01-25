@@ -3,7 +3,7 @@ import { Form, Row, Col, FormGroup, Label, Input, Button, Alert } from 'reactstr
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const DrawPart = () => {
+const DrawPart = (props) => {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [postName, setPostName] = useState('')
@@ -13,10 +13,6 @@ const DrawPart = () => {
     const [partName, setpartName] = useState(null)
     const [data, setData] = useState([])
     const [show, setShow] = useState(false)
-
-    // const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
-    const API_URL = 'http://localhost:8080/'
-    // const API_URL = 'http://127.0.0.1:8000/'
 
     const getData = (url) => {
         setLoading(true)
@@ -29,11 +25,11 @@ const DrawPart = () => {
 
     // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const postData = async () => {
-        const getPartNumber = await axios.get(`${API_URL}parts/search/?name=${partName}`)
+        const getPartNumber = await axios.get(`${props.API_URL}parts/search/?name=${partName}`)
         const partNumber = getPartNumber.data.data[0]._id
         const onHand = getPartNumber.data.data[0].onHand
 
-        const postWorker = await axios.post(`${API_URL}workers`, {
+        const postWorker = await axios.post(`${props.API_URL}workers`, {
             name: postName,
             amountTaken: amountTaken,
             dateTaken: dateTaken,
@@ -42,7 +38,7 @@ const DrawPart = () => {
 
         const newOnHandCount = onHand - amountTaken
 
-        const drawListAddition = await axios.put(`${API_URL}parts/${partNumber}`, {
+        const drawListAddition = await axios.put(`${props.API_URL}parts/${partNumber}`, {
             name: partName,
             onHand: newOnHandCount
         })
@@ -60,7 +56,7 @@ const DrawPart = () => {
     }
 
     useEffect(() => {
-        getData(`${API_URL}parts/?format=json`)
+        getData(`${props.API_URL}parts/?format=json`)
     }, [])
 
     const mapParts = data.map((part) => {

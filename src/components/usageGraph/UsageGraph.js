@@ -4,17 +4,13 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Responsi
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const UsageGraph = () => {
+const UsageGraph = (props) => {
     const [data, setData] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const toggle = () => setDropdownOpen((prevState) => !prevState);
     const [activeSort, setActiveSort] = useState('')
-
-    // const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
-    const API_URL = 'http://localhost:8080/'
-
 
     const getData = (url) => {
         setLoading(true)
@@ -26,7 +22,7 @@ const UsageGraph = () => {
     }
 
     useEffect(() => {
-        getData(`${API_URL}parts/?format=json`)
+        getData(`${props.API_URL}parts/?format=json`)
         console.log(data)
     }, [])
 

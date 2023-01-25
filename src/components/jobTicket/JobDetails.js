@@ -1,5 +1,5 @@
 import { Label, FormGroup, Input } from 'reactstrap';
-import TicketInfo from '../TicketInfo';
+import TicketInfo from './TicketInfo';
 
 const JobDetails = (props) => {
     return(

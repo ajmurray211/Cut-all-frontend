@@ -8,7 +8,7 @@ import {
 import axios from "axios";
 import searchicon from "../Assets/searchicon.png";
 
-const Main = () => {
+const Main = (props) => {
     const [searchVal, setSearchVal] = useState('')
     const [activeSearchVal, setActiveSearchVal] = useState('')
     const [searchBy, setSearchBy] = useState('')
@@ -21,9 +21,6 @@ const Main = () => {
     const [postOnHand, setPostOnHand] = useState(null)
     const [postTool, setPostTool] = useState(null)
 
-    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-    // const API_URL = 'http://localhost:8080/'
-
     const getData = (url) => {
         setLoading(true)
         axios
@@ -35,9 +32,9 @@ const Main = () => {
 
     useEffect(() => {
         if (activeSearchVal === '') {
-            getData(`${API_URL}parts/?format=json`)
+            getData(`${props.API_URL}parts/?format=json`)
         } else {
-            getData(`${API_URL}parts/search/?${searchBy}=${activeSearchVal}`)
+            getData(`${props.API_URL}parts/search/?${searchBy}=${activeSearchVal}`)
         }
     }, [activeSearchVal])
 
@@ -48,7 +45,7 @@ const Main = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        getData(`${API_URL}parts/search/?name=${searchVal}`)
+        getData(`${props.API_URL}parts/search/?name=${searchVal}`)
         setSearchVal('')
     }
 
@@ -58,7 +55,7 @@ const Main = () => {
     }
 
     const handlePost = () => {
-        fetch(`${API_URL}parts/`, {
+        fetch(`${props.API_URL}parts/`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -70,7 +67,7 @@ const Main = () => {
                 tool: postTool
             })
         });
-        getData(`${API_URL}parts/?format=json`)
+        getData(`${props.API_URL}parts/?format=json`)
         setPostName('')
         setPostOnHand(null)
         toggleModal()
@@ -119,7 +116,7 @@ const Main = () => {
                     Add Item
                 </Button>
 
-                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${API_URL}parts/?format=json`)}>
+                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${props.API_URL}parts/?format=json`)}>
                     Refresh
                 </Button>
             </section>

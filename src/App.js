@@ -9,6 +9,9 @@ import JobTIcket from './components/jobTicket/JobTicket';
 import Ledger from './components/ledger/Ledger';
 
 function App() {
+  const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+  // const API_URL = 'http://localhost:8080/'
+
   return (
     <div className="App">
       <nav>
@@ -24,11 +27,21 @@ function App() {
 
       <div>
         <Routes>
-          <Route path='/' element={<Home />}></Route>
-          <Route path='/drawParts' element={<DrawPart />}></Route>
-          <Route path='/usageGraph' element={<UsageGraph />}></Route>
-          <Route path='/jobTicket' element={<JobTIcket />}></Route>
-          <Route path='/ledger' element={<Ledger />}></Route>
+          <Route path='/' element={<Home
+            API_URL={API_URL}
+          />}></Route>
+          <Route path='/drawParts' element={<DrawPart
+            API_URL={API_URL}
+          />}></Route>
+          <Route path='/usageGraph' element={<UsageGraph
+            API_URL={API_URL}
+          />}></Route>
+          <Route path='/jobTicket' element={<JobTIcket
+            API_URL={API_URL}
+          />}></Route>
+          <Route path='/ledger' element={<Ledger
+            API_URL={API_URL}
+          />}></Route>
         </Routes>
       </div>
     </div>

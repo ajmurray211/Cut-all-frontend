@@ -8,10 +8,7 @@ import JobDetails from './JobDetails';
 import TimeSheet from './TimeSheet';
 import axios from 'axios';
 
-const JobTIcket = () => {
-
-    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-    // const API_URL = 'http://localhost:8080/'
+const JobTIcket = (props) => {
 
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal(!modal);
@@ -91,7 +88,7 @@ const JobTIcket = () => {
     }
 
     const postTicket = () => {
-        axios.post(`${API_URL}ticket`, {
+        axios.post(`${props.API_URL}ticket`, {
             ...value
         })
             .then((res) => console.log(res))
