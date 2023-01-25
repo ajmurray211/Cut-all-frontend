@@ -5,8 +5,8 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import MyWrappedComponent from './ComponentToPrint';
 
 const Ledger = () => {
-    // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-    const API_URL = 'http://localhost:8080/'
+    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+    // const API_URL = 'http://localhost:8080/'
 
     const [tickets, setTickets] = useState([])
     const [error, setError] = useState(null)
