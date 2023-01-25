@@ -76,15 +76,15 @@ const JobTIcket = (props) => {
         toggleModal()
         console.log(value, 'before email')
         postTicket()
-        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
-            .then((result) => {
-                setStatus(result.text);
-                setSuccess(true)
-            }, (error) => {
-                setFail(true)
-                setStatus('Error')
-                console.log(error);
-            });
+        // emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+        //     .then((result) => {
+        //         setStatus(result.text);
+        //         setSuccess(true)
+        //     }, (error) => {
+        //         setFail(true)
+        //         setStatus('Error')
+        //         console.log(error);
+        //     });
     }
 
     const postTicket = () => {
@@ -181,7 +181,7 @@ const JobTIcket = (props) => {
                 [e.target.name]: e.target.value
             }))
         }
-        // console.log(value)
+        console.log(value)
     }
 
     // changes values of the job row when the user changes and imput field 

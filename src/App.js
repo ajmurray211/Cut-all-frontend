@@ -1,6 +1,5 @@
 import './App.css';
 import Home from './components/Main';
-import { Navbar, NavItem, NavLink, Nav, NavbarBrand, NavbarText } from 'reactstrap';
 import { Link, Route, Routes } from 'react-router-dom';
 import logo from './Assets/cut-all-logo.png';
 import DrawPart from './components/drawPart/DrawPart';
@@ -9,8 +8,8 @@ import JobTIcket from './components/jobTicket/JobTicket';
 import Ledger from './components/ledger/Ledger';
 
 function App() {
-  const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-  // const API_URL = 'http://localhost:8080/'
+  // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+  const API_URL = 'http://localhost:8080/'
 
   return (
     <div className="App">
@@ -27,21 +26,11 @@ function App() {
 
       <div>
         <Routes>
-          <Route path='/' element={<Home
-            API_URL={API_URL}
-          />}></Route>
-          <Route path='/drawParts' element={<DrawPart
-            API_URL={API_URL}
-          />}></Route>
-          <Route path='/usageGraph' element={<UsageGraph
-            API_URL={API_URL}
-          />}></Route>
-          <Route path='/jobTicket' element={<JobTIcket
-            API_URL={API_URL}
-          />}></Route>
-          <Route path='/ledger' element={<Ledger
-            API_URL={API_URL}
-          />}></Route>
+          <Route path='/' element={<Home API_URL={API_URL}/>}/>
+          <Route path='/drawParts' element={<DrawPart API_URL={API_URL}/>}/>
+          <Route path='/usageGraph' element={<UsageGraph API_URL={API_URL}/>}/>
+          <Route path='/jobTicket' element={<JobTIcket API_URL={API_URL}/>}/>
+          <Route path='/ledger' element={<Ledger API_URL={API_URL}/>}/>
         </Routes>
       </div>
     </div>

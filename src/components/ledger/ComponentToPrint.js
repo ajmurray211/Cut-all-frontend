@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 
 const MyComponentToPrint = forwardRef((props, ref) => {
+    console.log(props.value)
     const handlePrint = () => {
         window.print()
     }
@@ -9,12 +10,28 @@ const MyComponentToPrint = forwardRef((props, ref) => {
         handlePrint
     }));
 
+    const findTimes = (start, end) => {
+        let d1 = Date.parse(`2023-01-15T${start}:00.000`);
+        let d2 = Date.parse(`2023-01-15T${end}:00.000`);
+        const milliseconds = Math.abs(d1 - d2);
+        const secs = Math.floor(milliseconds / 1000);
+        const mins = Math.floor(secs / 60);
+        const minutes = mins % 60
+        const hours = Math.floor(mins / 60);
+        return {
+            mins: mins,
+            hours: hours,
+            minutes: minutes,
+            combined: `${hours}hr. ${minutes}min.`
+        }
+    }
+
     let helpersParsedData = []
     if (props.value.helperTimes) {
         for (let name in props.value.helperTimes) {
             if (Object.keys(props.value['helperTimes'][name]).length != 0) {
-                let totalJob = props.findTimes(props.value['helperTimes'][name].jobBegin, props.value['helperTimes'][name].jobEnd)
-                let totalTravel = props.findTimes(props.value['helperTimes'][name].travelBegin, props.value['helperTimes'][name].travelEnd)
+                let totalJob = findTimes(props.value['helperTimes'][name].jobBegin, props.value['helperTimes'][name].jobEnd)
+                let totalTravel = findTimes(props.value['helperTimes'][name].travelBegin, props.value['helperTimes'][name].travelEnd)
                 helpersParsedData.push([name, totalJob, totalTravel])
             }
         }
@@ -50,7 +67,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
 
                 <h3>Hours Spent</h3>
                 <ul id='timeBreakdown'>
-                    {props.value['travelTotal'] && props.value['travelTotal'].mins !== 0 ? <li>{props.value['travelTotal'].combined} min were spent traveling for this job.</li> : ''}
+                    {props.value['travelTotal'] && props.value['travelTotal'].mins !== 0 ? <li>{props.value['travelTotal'].combined} were spent traveling for this job.</li> : ''}
                     {props.value['jobTotal'] && props.value['jobTotal'].mins !== 0 ? <li>{props.value['jobTotal'].combined} were spent on the job site working.</li> : ''}
                     {props.value.wallSawing ? <li>{`Wall sawing took ${props.value.wallSawing} hrs.`}</li> : ''}
                     {props.value.coreDrilling ? <li>{`Core drilling took ${props.value.coreDrilling} hrs.`}</li> : ''}
