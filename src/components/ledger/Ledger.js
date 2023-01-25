@@ -1,20 +1,20 @@
 import './ledger.css'
 import axios from "axios"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import TicketInfo from '../TicketInfo'
+import MyWrappedComponent from './ComponentToPrint';
 
 const Ledger = () => {
-    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-    // const API_URL = 'http://localhost:8080/'
+    // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+    const API_URL = 'http://localhost:8080/'
 
     const [tickets, setTickets] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [activeTicket, setActiveTicket] = useState(null)
-
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
+    const componentRef = useRef(null);
 
     const getData = (url) => {
         setLoading(true)
@@ -37,27 +37,26 @@ const Ledger = () => {
             }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date}</Button></li>
         )
     })
-    console.log(activeTicket)
 
     return (
         <div>
             <h1>List of job tickets on file</h1>
-            {tickets.length ? mappedTickets: 'No tickets currently stored'}
-            <Modal id="ticketInfo" isOpen={modal} toggle={toggle}>
+            {tickets.length ? mappedTickets : 'No tickets currently stored'}
+
+            <Modal fullscreen className='modal-width' id='mainModal' isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Ticket information</ModalHeader>
-                <TicketInfo
-                    value={activeTicket}
-                />
+                <ModalBody  id="ticketInfo">
+                    <MyWrappedComponent value={activeTicket} ref={componentRef} />
+                </ModalBody>
                 <ModalFooter>
-                    <Button disabled color="primary" onClick={toggle}>
-                        Print
-                    </Button>{' '}
+                    <Button color='primary' onClick={() => componentRef.current.handlePrint()}>Print</Button>
                     <Button color="secondary" onClick={toggle}>
                         close
                     </Button>
                 </ModalFooter>
             </Modal>
         </div>
+
 
     );
 }
