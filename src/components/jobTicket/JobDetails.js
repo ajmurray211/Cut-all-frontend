@@ -1,6 +1,9 @@
 import { Label, FormGroup, Input } from 'reactstrap';
+import { useState } from 'react';
 
 const JobDetails = (props) => {
+    const [confirmation, setConfirmation] = useState(true);
+    const toggle = () => setConfirmation(!confirmation);
 
     let helpersParsedData = []
     if (props.value.helperTimes) {
@@ -18,6 +21,7 @@ const JobDetails = (props) => {
             <li>{worker[0]}: traveled for {worker[2].combined} and worked for {worker[1].combined}</li>
         )
     })
+    
     return (
         <div id='mainBody'>
             <section id='workerInput'>
@@ -61,7 +65,7 @@ const JobDetails = (props) => {
             </section>
 
             <section>
-                <h3>Other job details</h3>
+                {props.value.detailsNotCovered ? <h3>Other job details</h3> : ''}
                 <p>{props.value.detailsNotCovered}</p>
             </section>
 
@@ -89,7 +93,7 @@ const JobDetails = (props) => {
                 <Label for='CC'>Job number:</Label>
                 <Input id='CC' type='text' name='jobNum' onChange={props.handleChange} />
                 <br></br>
-                <Input id='confirmation' type='checkbox' onChange={(e) => console.log(e.target.checked)} />
+                <Input id='confirmation' type='checkbox' onClick={toggle} />
                 <Label for="confirmation">
                     :I have reviewed the above information and confirm the information is correct.
                 </Label>
@@ -97,12 +101,9 @@ const JobDetails = (props) => {
                 <Label for="confirmationName">
                     Typing your name acts as an e-signature:
                 </Label>
-                <Input type='text' name='confirmationName' id='confirmationName' onChange={props.handleChange} />
+                <Input disabled={confirmation} type='text' name='confirmationName' id='confirmationName' onChange={props.handleChange} />
             </FormGroup>
         </div>
-
-
-
     )
 }
 

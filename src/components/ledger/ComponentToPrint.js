@@ -83,7 +83,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                     {props.value.other ? <li>{`other time took ${props.value.other} hrs.`}</li> : ''}
                     {props.value.downTime ? <li>{`Down time took ${props.value.downTime} hrs.`}</li> : ''}
                 </ul>
-                <h3>Other job details</h3>
+                {props.value.detailsNotCovered ? <h3>Other job details</h3> : ''}
                 <p>{props.value.detailsNotCovered}</p>
 
             </section>
