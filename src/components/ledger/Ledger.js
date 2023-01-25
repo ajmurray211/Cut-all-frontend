@@ -5,8 +5,8 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import MyWrappedComponent from './ComponentToPrint';
 
 const Ledger = () => {
-    // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-    const API_URL = 'http://localhost:8080/'
+    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+    // const API_URL = 'http://localhost:8080/'
 
     const [tickets, setTickets] = useState([])
     const [error, setError] = useState(null)
@@ -84,7 +84,7 @@ const Ledger = () => {
             >
                 <ModalHeader>Nested Modal title</ModalHeader>
                 <ModalBody>
-                    Are you sure that you want to delete {activeTicket ? activeTicket.worker : ''}s job ticket for {activeTicket ? activeTicket.billTo : ''} on {activeTicket ? activeTicket.date : ''}. Once deleted it will be gone forever.
+                    Are you sure that you want to delete {activeTicket ? activeTicket.worker : ''}s job ticket for {activeTicket ? activeTicket.billTo : ''} completed on {activeTicket ? activeTicket.date : ''}. Once deleted it will be gone forever.
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onClick={toggleNested}>

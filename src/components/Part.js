@@ -4,6 +4,9 @@ import axios from "axios";
 import arrow from '../Assets/arrow.png'
 
 const Part = (props) => {
+    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+    // const API_URL = 'http://localhost:8080/'
+
     const [isOpen, setIsOpen] = useState(false)
     const toggle = () => setIsOpen(!isOpen);
     const [modalOpen, setModalOpen] = useState(false)
@@ -12,7 +15,7 @@ const Part = (props) => {
     const [putOnHand, setPutOnHand] = useState(props.part.onHand)
 
     const handleEdit = async () => {
-        const getID = await axios.put(`http://localhost:8080/parts/${props.part._id}`, {
+        const getID = await axios.put(`${API_URL}${props.part._id}`, {
             name: putName,
             onHand: putOnHand
         })
@@ -20,7 +23,7 @@ const Part = (props) => {
     }
 
     const handleDelete = async () => {
-        const getID = await axios.delete(`http://localhost:8080/parts/${props.part._id}`)
+        const getID = await axios.delete(`${API_URL}${props.part._id}`)
         toggleEdit()
     }
 
