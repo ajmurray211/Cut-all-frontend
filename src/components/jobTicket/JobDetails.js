@@ -2,13 +2,14 @@ import { Label, FormGroup, Input } from 'reactstrap';
 import { useState } from 'react';
 
 const JobDetails = (props) => {
+    console.log(props.value)
     const [confirmation, setConfirmation] = useState(true);
     const toggle = () => setConfirmation(!confirmation);
 
     let helpersParsedData = []
     if (props.value.helperTimes) {
         for (let name in props.value.helperTimes) {
-            if (Object.keys(props.value['helperTimes'][name]).length != 0) {
+            if (Object.keys(props.value['helperTimes'][name]).length !== 0) {
                 let totalJob = props.findTimes(props.value['helperTimes'][name].jobBegin, props.value['helperTimes'][name].jobEnd)
                 let totalTravel = props.findTimes(props.value['helperTimes'][name].travelBegin, props.value['helperTimes'][name].travelEnd)
                 helpersParsedData.push([name, totalJob, totalTravel])
@@ -21,7 +22,18 @@ const JobDetails = (props) => {
             <li>{worker[0]}: traveled for {worker[2].combined} and worked for {worker[1].combined}</li>
         )
     })
-    
+
+    const mappedjobInfo = props.value.jobInfo.map((row, index) => {
+        return (
+            <li>
+                <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
+                <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
+                {row.equipUsed}
+            </li>
+        )
+    })
+
+
     return (
         <div id='mainBody'>
             <section id='workerInput'>
@@ -34,7 +46,7 @@ const JobDetails = (props) => {
                     <li><span className='inputItem'>Address</span>:{props.value['address']}</li>
                     <li><span className='inputItem'>Work completed</span>:
                         <ul>
-                            {props.mappedjobInfo}
+                            {mappedjobInfo}
                         </ul>
                     </li>
                     <li> <span className='inputItem'>Other CA men on the job and total times.</span>

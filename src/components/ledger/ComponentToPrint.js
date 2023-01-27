@@ -43,9 +43,19 @@ const MyComponentToPrint = forwardRef((props, ref) => {
         )
     })
 
+    const mappedjobInfo = props.value.jobInfo.map((row, index) => {
+        return (
+            <li>
+                <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
+                <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
+                {row.equipUsed}
+            </li>
+        )
+    })
+
     return (
         <div id='ticketBody' ref={ref} >
-            <section id='workerInput'>
+            <section className='half' id='left'>
                 <h2>Job information:</h2>
                 <ul id='inputContainer'>
                     <li><span className='inputItem'>Who worked</span>:{props.value['worker']}</li>
@@ -55,7 +65,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                     <li><span className='inputItem'>Address</span>:{props.value['address']}</li>
                     <li><span className='inputItem'>Work completed</span>:
                         <ul>
-                            {props.mappedjobInfo}
+                            {mappedjobInfo}
                         </ul>
                     </li>
                     <li> <span className='inputItem'>Other CA men on the job and total times.</span>
@@ -87,8 +97,14 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                 <p>{props.value.detailsNotCovered}</p>
 
             </section>
-            <section id='legalDisclaimer'>
-                <h2> Standard job conditions:</h2>
+            <section className='half' id='right'>
+                <ul>
+                    {props.value.jobBegin ? <li>Job time: {props.value.jobBegin} - {props.value.jobEnd}. totaling {props.value.jobTotal.combined}</li> : ''}
+                    {props.value.travelBegin ? <li>Travel time: {props.value.travelBegin} - {props.value.travelEnd}. totaling {props.value.travelTotal.combined}</li> : ''}
+                    {/* {props.value.totalPaidTime ? <li>Travel time: {props.value.travelBegin} - {props.value.travelEnd}. totaling {props.value.travelTotal.combined}</li> : ''} */}
+                </ul>
+
+                {/* <h2> Standard job conditions:</h2>
                 <ul>
                     <li>Layout of work by others prior to arrival of operator.</li>
                     <li>We cannot accept responsibility for damage to buried objects such as conduit, steel pipes, etc.</li>
@@ -99,12 +115,12 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                     <li>If for any reason are unable to work due to no fault of our own, then we must charge for stand-by time.</li>
                     <li>Contractor is responsible for covering holes created by sawing and drilling.</li>
                     <li>In the event of non-payment of any amount, when due, purchaser agrees to pay all collection costs including reasonable attorney fees.</li>
-                </ul>
+                </ul> */}
                 <section id='confirmationDetails'>
                     <ul>
                         {props.value.poNum ? <li>{`PO #: ${props.value.poNum}.`}</li> : ''}
-                        {props.value.poNum ? <li>{`Job #: ${props.value.jobNum}.`}</li> : ''}
-                        {props.value.poNum ? <li>{`Email sent to: ${props.value.CC}`}</li> : ''}
+                        {props.value.jobNum ? <li>{`Job #: ${props.value.jobNum}.`}</li> : ''}
+                        {props.value.CC ? <li>{`Email sent to: ${props.value.CC}`}</li> : ''}
                     </ul>
                     I {props.value.confirmationName} have read and agreed to the details and conditions of the job ticket above on behalf of {props.value.billTo}.
                 </section>

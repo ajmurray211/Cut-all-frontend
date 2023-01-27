@@ -2,8 +2,8 @@ import './jobTicket.css'
 import Multiselect from 'multiselect-react-dropdown';
 import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { useState, useEffect } from 'react';
-import BillingRow from './BillingRow';
 import emailjs from '@emailjs/browser';
+import BillingRow from './BillingRow';
 import JobDetails from './JobDetails';
 import TimeSheet from './TimeSheet';
 import axios from 'axios';
@@ -24,7 +24,8 @@ const JobTIcket = (props) => {
         truckNum: '',
         date: '',
         address: '',
-        jobInfo: null,
+        jobInfoHTML: null,
+        jobInfo: [],
         wallSawing: null,
         coreDrilling: null,
         slabSaw: null,
@@ -58,13 +59,17 @@ const JobTIcket = (props) => {
 
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
+        // let total = '-'
         let combined = infoToHTML.join(' ')
-        let total = `${value['jobTotal'].hours + (value['travelTotal'] != null ? value['travelTotal'].hours : 0)}hrs. ${value['jobTotal'].minutes + (value.travelTotal != null ? value['travelTotal'].minutes : 0)}min.`
+        // if (value.jobTotal) {
+            let total = `${value['jobTotal'].hours + (value['travelTotal'] != null ? value['travelTotal'].hours : 0)}hrs. ${value['jobTotal'].minutes + (value.travelTotal != null ? value['travelTotal'].minutes : 0)}min.`
+        // }
         setValue(values => ({
             ...values,
-            jobInfo: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:14%;"></colgroup>
+            jobInfoHTML: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:14%;"></colgroup>
             <tbody> ${combined} </tbody>
             </table>`,
+            jobInfo: ticketBody,
             totalPaidTime: total
         }))
         console.log('compile html', value)
@@ -76,15 +81,15 @@ const JobTIcket = (props) => {
         toggleModal()
         console.log(value, 'before email')
         postTicket()
-        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
-            .then((result) => {
-                setStatus(result.text);
-                setSuccess(true)
-            }, (error) => {
-                setFail(true)
-                setStatus('Error')
-                console.log(error);
-            });
+        // emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+        //     .then((result) => {
+        //         setStatus(result.text);
+        //         setSuccess(true)
+        //     }, (error) => {
+        //         setFail(true)
+        //         setStatus('Error')
+                // console.log(error);
+        //     });
     }
 
     const postTicket = () => {
@@ -136,7 +141,6 @@ const JobTIcket = (props) => {
     };
 
     const handleRemove = (selectedList) => {
-        console.log(selectedList)
         setValue((values) => ({
             ...values,
             otherWorkers: selectedList
@@ -145,8 +149,6 @@ const JobTIcket = (props) => {
 
     const handleChange = (e) => {
         const changeVal = (total, field) => {
-            let copy = { ...total }
-            console.log(copy)
             setValue(values => ({
                 ...values,
                 [e.target.name]: e.target.value,
@@ -181,14 +183,13 @@ const JobTIcket = (props) => {
                 [e.target.name]: e.target.value
             }))
         }
-        console.log(value)
     }
 
     // changes values of the job row when the user changes and imput field 
     const editRow = (i, key, val) => {
         let copy = [...ticketBody]
         copy[i][key] = val
-        setTicketBody[i][key](val)
+        setTicketBody(copy)
     }
 
     // allows user to add more rows 
@@ -206,8 +207,6 @@ const JobTIcket = (props) => {
     }
 
     const mappedRows = ticketBody.map((row, index) => {
-        let copy = [...ticketBody]
-        copy[index]['itemNum'] = index + 1
         let line = (`<tr> <td"> Quote item </td> <td"> ${row.itemNum} </td> <td"> QTY </td> <td"> ${row.qty} </td> <td"> length or DIA </td> <td"> ${row.length}</td> <td">Depth </td> <td"> ${row.depth} </td> <td"> Work code </td> <td"> ${row.workCode} </td> <td"> Description / Equipment used </td> <td">${row.equipUsed} </td></tr>`)
         infoToHTML.push(line)
         return <BillingRow
@@ -215,16 +214,6 @@ const JobTIcket = (props) => {
             row={row}
             editRow={editRow}
         />
-    })
-
-    const mappedjobInfo = ticketBody.map((row, index) => {
-        return (
-            <li>
-                <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
-                <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
-                {row.equipUsed}
-            </li>
-        )
     })
 
     return (
@@ -300,7 +289,6 @@ const JobTIcket = (props) => {
                         value={value}
                         setValue={setValue}
                         findTimes={findTimes}
-                    // handleChange={handleChange}
                     />
 
                 </Row>
@@ -353,16 +341,15 @@ const JobTIcket = (props) => {
                 </Table>
             </Form>
 
-            <Button onClick={(event) => addRow()}> Add row </Button>
+            <Button onClick={addRow}> Add row </Button>
 
             <Modal isOpen={modal} size='lg'>
                 <ModalHeader toggle={toggleModal}>Signature form</ModalHeader>
                 <ModalBody id='jobDetails'>
                     <JobDetails
                         value={value}
-                        mappedjobInfo={mappedjobInfo}
+                        ticketBody={ticketBody}
                         setValue={setValue}
-                        infoToHTML={infoToHTML}
                         handleChange={handleChange}
                         findTimes={findTimes}
                     />

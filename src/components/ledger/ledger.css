@@ -10,11 +10,15 @@
     list-style: none;
 }
 
+.half{
+    width: 50%;
+    font-size: medium;
+}
 
 #workerInput{
     padding-right: 20px;
 }
 
-#confirmationDetails ul{
+.half#right ul{
     list-style: none;
 }
