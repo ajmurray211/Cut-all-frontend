@@ -60,27 +60,27 @@ const MyComponentToPrint = forwardRef((props, ref) => {
     return (
         <div id='ticketBody' ref={ref} >
             <section className='half' id='left'>
-                <h3>Job information:</h3>
+                <h3>Job Information:</h3>
                 <ul id='inputContainer'>
                     <Table
                         size='sm'
                         bordered>
                         <tbody>
                             <tr>
-                                <td>Truck num</td>
+                                <td>Truck Num.</td>
                                 <td>{props.value.truckNum}</td>
-                                <td>Job times</td>
+                                <td>Job Times</td>
                                 <td>{props.value.jobBegin} - {props.value.jobEnd}</td>
                             </tr>
                             <tr>
                                 <td>Address</td>
                                 <td>{props.value.address}</td>
-                                <td>Travel times</td>
+                                <td>Travel Times</td>
                                 <td>{props.value.travelBegin} - {props.value.travelEnd}</td>
                             </tr>
                         </tbody>
                     </Table>
-                    <li><span className='inputItem'>Work completed</span>:
+                    <li><span className='inputItem'>Work Completed</span>:
                         <Table
                             title='Work Completed'
                             bordered
@@ -92,8 +92,8 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                                     <th>QTY</th>
                                     <th>Length/DIA</th>
                                     <th>Depth</th>
-                                    <th>work code</th>
-                                    <th>description / Equip. used</th>
+                                    <th>Work Code</th>
+                                    <th>Description / Equip. Used</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -108,10 +108,10 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                             bordered>
                             <thead>
                                 <tr>
-                                    <th>name</th>
-                                    <th>Travel time</th>
-                                    <th>Job time</th>
-                                    <th>Total time</th>
+                                    <th>Name</th>
+                                    <th>Travel Time</th>
+                                    <th>Job Time</th>
+                                    <th>Total Time</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -120,7 +120,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                             </tbody>
                         </Table>
                     </li>
-                    {props.value.detailsNotCovered ? <h3>Other job details</h3> : ''}
+                    {props.value.detailsNotCovered ? <h3>Other Job Details</h3> : ''}
                     <p>{props.value.detailsNotCovered}</p>
 
                 </ul>
