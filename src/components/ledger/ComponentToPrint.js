@@ -1,4 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
+import { Table } from 'reactstrap';
 
 const MyComponentToPrint = forwardRef((props, ref) => {
     console.log(props.value)
@@ -38,84 +39,121 @@ const MyComponentToPrint = forwardRef((props, ref) => {
     }
 
     let mappedHelpers = helpersParsedData.map((worker) => {
+        let totalMins = worker[1].mins + worker[2].mins
+        const minutes = totalMins % 60
+        const hours = Math.floor(totalMins / 60);
         return (
-            <li>{worker[0]}: traveled for {worker[2].combined} and worked for {worker[1].combined}</li>
+            <tr className='helperInfoLine'>
+                <td> {worker[0]} </td> <td> {worker[2].combined} </td> <td> {worker[1].combined} </td><td>{hours}hr. {minutes}.min</td>
+            </tr>
         )
     })
 
     const mappedjobInfo = props.value.jobInfo.map((row, index) => {
         return (
-            <li>
-                <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
-                <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
-                {row.equipUsed}
-            </li>
+            <tr className='jobInfoLine'>
+                <td> {row.qty} </td> <td> {row.length} </td> <td> {row.depth} </td> <td> {row.workCode} </td>  <td> {row.equipUsed} </td>
+            </tr>
         )
     })
 
     return (
         <div id='ticketBody' ref={ref} >
             <section className='half' id='left'>
-                <h2>Job information:</h2>
+                <h3>Job information:</h3>
                 <ul id='inputContainer'>
-                    <li><span className='inputItem'>Who worked</span>:{props.value['worker']}</li>
-                    <li><span className='inputItem'>Bill to</span>:{props.value['billTo']}</li>
-                    <li><span className='inputItem'>Truck number</span>:{props.value['truckNum']}</li>
-                    <li><span className='inputItem'>Date</span>:{props.value['date']}</li>
-                    <li><span className='inputItem'>Address</span>:{props.value['address']}</li>
+                    <Table
+                        size='sm'
+                        bordered>
+                        <tbody>
+                            <tr>
+                                <td>Truck num</td>
+                                <td>{props.value.truckNum}</td>
+                                <td>Job times</td>
+                                <td>{props.value.jobBegin} - {props.value.jobEnd}</td>
+                            </tr>
+                            <tr>
+                                <td>Address</td>
+                                <td>{props.value.address}</td>
+                                <td>Travel times</td>
+                                <td>{props.value.travelBegin} - {props.value.travelEnd}</td>
+                            </tr>
+                        </tbody>
+                    </Table>
                     <li><span className='inputItem'>Work completed</span>:
-                        <ul>
-                            {mappedjobInfo}
-                        </ul>
+                        <Table
+                            title='Work Completed'
+                            bordered
+                            size='sm'
+                            responsive
+                        >
+                            <thead>
+                                <tr>
+                                    <th>QTY</th>
+                                    <th>Length/DIA</th>
+                                    <th>Depth</th>
+                                    <th>work code</th>
+                                    <th>description / Equip. used</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {mappedjobInfo}
+                            </tbody>
+
+                        </Table>
                     </li>
-                    <li> <span className='inputItem'>Other CA men on the job and total times.</span>
-                        <ul>
-                            {mappedHelpers}
-                        </ul>
+                    <li> <span className='inputItem'>CA men on the job and their times.</span>
+                        <Table
+                            size='sm'
+                            bordered>
+                            <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>Travel time</th>
+                                    <th>Job time</th>
+                                    <th>Total time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>{props.value.worker}</td>  <td>{props.value.travelTotal.combined}</td>  <td>{props.value.jobTotal.combined}</td>  <td>{props.value.totalPaidTime}</td></tr>
+                                {mappedHelpers}
+                            </tbody>
+                        </Table>
                     </li>
+                    {props.value.detailsNotCovered ? <h3>Other job details</h3> : ''}
+                    <p>{props.value.detailsNotCovered}</p>
+
                 </ul>
 
-                <h3>Hours Spent</h3>
-                <ul id='timeBreakdown'>
-                    {props.value['travelTotal'] && props.value['travelTotal'].mins !== 0 ? <li>{props.value['travelTotal'].combined} were spent traveling for this job.</li> : ''}
-                    {props.value['jobTotal'] && props.value['jobTotal'].mins !== 0 ? <li>{props.value['jobTotal'].combined} were spent on the job site working.</li> : ''}
-                    {props.value.wallSawing ? <li>{`Wall sawing took ${props.value.wallSawing} hrs.`}</li> : ''}
-                    {props.value.coreDrilling ? <li>{`Core drilling took ${props.value.coreDrilling} hrs.`}</li> : ''}
-                    {props.value.waterControl ? <li>{`Water control took ${props.value.waterControl} hrs.`}</li> : ''}
-                    {props.value.slabSaw ? <li>{`Slab sawing took ${props.value.slabSaw} hrs.`}</li> : ''}
-                    {props.value.hammerChipping ? `Jack hammer chipping took ${props.value.hammerChipping} hrs.` : ''}
-                    {props.value.loadExcevate ? <li>{`Load excevate took ${props.value.loadExcevate} hrs.`}</li> : ''}
-                    {props.value.haul ? <li>{`Hauling took ${props.value.haul} hrs.`}</li> : ''}
-                    {props.value.handLabor ? <li>{`Hand labor took ${props.value.handLabor} hrs.`}</li> : ''}
-                    {props.value.dumpYards ? <li>{`Dump yards took ${props.value.dumpYards} hrs.`}</li> : ''}
-                    {props.value.release ? <li>{`Releases took ${props.value.release} hrs.`}</li> : ''}
-                    {props.value.standby ? <li>{`Standby took ${props.value.standby} hrs.`}</li> : ''}
-                    {props.value.other ? <li>{`other time took ${props.value.other} hrs.`}</li> : ''}
-                    {props.value.downTime ? <li>{`Down time took ${props.value.downTime} hrs.`}</li> : ''}
-                </ul>
-                {props.value.detailsNotCovered ? <h3>Other job details</h3> : ''}
-                <p>{props.value.detailsNotCovered}</p>
 
             </section>
             <section className='half' id='right'>
-                <ul>
-                    {props.value.jobBegin ? <li>Job time: {props.value.jobBegin} - {props.value.jobEnd}. totaling {props.value.jobTotal.combined}</li> : ''}
-                    {props.value.travelBegin ? <li>Travel time: {props.value.travelBegin} - {props.value.travelEnd}. totaling {props.value.travelTotal.combined}</li> : ''}
-                    {/* {props.value.totalPaidTime ? <li>Travel time: {props.value.travelBegin} - {props.value.travelEnd}. totaling {props.value.travelTotal.combined}</li> : ''} */}
-                </ul>
+                <Table
+                    bordered
+                    size="sm"
+                >
+                    <thead>
+                        <tr>
+                            <th>Hours Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>{props.value.wallSawing ? <th>{`Wall sawing took ${props.value.wallSawing} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.coreDrilling ? <th>{`Core drilling took ${props.value.coreDrilling} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.waterControl ? <th>{`Water control took ${props.value.waterControl} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.slabSaw ? <th>{`Slab sawing took ${props.value.slabSaw} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.hammerChipping ? `Jack hammer chipping took ${props.value.hammerChipping} hrs.` : ''} </tr>
+                        <tr>{props.value.loadExcevate ? <th>{`Load excevate took ${props.value.loadExcevate} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.haul ? <th>{`Hauling took ${props.value.haul} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.handLabor ? <th>{`Hand labor took ${props.value.handLabor} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.dumpYards ? <th>{`Dump yards took ${props.value.dumpYards} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.release ? <th>{`Releases took ${props.value.release} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.standby ? <th>{`Standby took ${props.value.standby} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.other ? <th>{`other time took ${props.value.other} hrs.`}</th> : ''} </tr>
+                        <tr>{props.value.downTime ? <th>{`Down time took ${props.value.downTime} hrs.`}</th> : ''} </tr>
+                    </tbody>
+                </Table>
 
-                {/* <h2> Standard job conditions:</h2>
-                <ul>
-                    <li>Layout of work by others prior to arrival of operator.</li>
-                    <li>We cannot accept responsibility for damage to buried objects such as conduit, steel pipes, etc.</li>
-                    <li>All prices based on a maximum work height of 8’. Scaffolding supplied and erected by others unless prior arrangements are made.</li>
-                    <li>Water and power available within 150’ of work area. Parking for truck and power unit within 150’ of work area.</li>
-                    <li>Traffic control, water and/or dust partition by others.</li>
-                    <li>We reserve the right to bill all work on an hourly basis due to difficult working conditions and/or heavy reinforcing.</li>
-                    <li>If for any reason are unable to work due to no fault of our own, then we must charge for stand-by time.</li>
-                    <li>Contractor is responsible for covering holes created by sawing and drilling.</li>
-                    <li>In the event of non-payment of any amount, when due, purchaser agrees to pay all collection costs including reasonable attorney fees.</li>
-                </ul> */}
                 <section id='confirmationDetails'>
                     <ul>
                         {props.value.poNum ? <li>{`PO #: ${props.value.poNum}.`}</li> : ''}

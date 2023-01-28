@@ -3,6 +3,7 @@ import axios from "axios"
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import MyWrappedComponent from './ComponentToPrint';
+import logo from '../../Assets/cut-all-logo.png'
 
 const Ledger = (props) => {
 
@@ -62,7 +63,7 @@ const Ledger = (props) => {
             {tickets.length ? mappedTickets : 'No tickets currently stored'}
 
             <Modal fullscreen className='modal-width' id='mainModal' isOpen={modal} toggle={toggle}>
-                <ModalHeader toggle={toggle}>Ticket information</ModalHeader>
+                <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}` : 'Ticket Info'} </ModalHeader>
                 <ModalBody id="ticketInfo">
                     <MyWrappedComponent value={activeTicket} ref={componentRef} />
                 </ModalBody>
