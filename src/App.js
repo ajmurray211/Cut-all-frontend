@@ -8,8 +8,8 @@ import JobTIcket from './components/jobTicket/JobTicket';
 import Ledger from './components/ledger/Ledger';
 
 function App() {
-  // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-  const API_URL = 'http://localhost:8080/'
+  const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+  // const API_URL = 'http://localhost:8080/'
 
   return (
     <div className="App">
