@@ -246,11 +246,11 @@ const JobTIcket = (props) => {
                     </Col>
                     <Col md={2}>
                         <Label>Milage:</Label>
-                        <Input name='milage' type='number' onChange={(event) => handleChange(event)}></Input>
+                        <Input name='milage' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
                     </Col>
                     <Col md={2}>
                         <Label>Truck Number:</Label>
-                        <Input name='truckNum' type='number' onChange={(event) => handleChange(event)}></Input>
+                        <Input name='truckNum' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
                     </Col>
                 </Row>
                 <Row>

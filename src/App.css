@@ -115,6 +115,13 @@ li.part{
   padding-top: 15px;
 }
 
+.toolTracker{
+  display: flex;
+  justify-items: center;
+  justify-content: space-around;
+  margin: 2vw;
+}
+
 /* styles for phone view */
 @media screen and (max-width: 425px){
   section{
