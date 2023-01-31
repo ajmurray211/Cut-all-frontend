@@ -59,14 +59,17 @@ const JobTIcket = (props) => {
 
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
-        // let total = '-'
+        let total = '-'
         let combined = infoToHTML.join(' ')
-        // if (value.jobTotal) {
-            let total = `${value['jobTotal'].hours + (value['travelTotal'] != null ? value['travelTotal'].hours : 0)}hrs. ${value['jobTotal'].minutes + (value.travelTotal != null ? value['travelTotal'].minutes : 0)}min.`
-        // }
+        if (value.jobTotal) {
+        let total = `${value['jobTotal'].hours + (value['travelTotal'] != null ? value['travelTotal'].hours : 0)}hrs. ${value['jobTotal'].minutes + (value.travelTotal != null ? value['travelTotal'].minutes : 0)}min.`
+        }
         setValue(values => ({
             ...values,
-            jobInfoHTML: `<table  style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:14%;"></colgroup>
+            jobInfoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
+            <thead> 
+            <tr> <th>QTY</th> <th>Length/DIA</th> <th>Depth</th> <th>Work Code</th> <th>Description / Equip. Used</th> <th>Blade serial #</th> </tr>
+            </thead>
             <tbody> ${combined} </tbody>
             </table>`,
             jobInfo: ticketBody,
@@ -195,19 +198,19 @@ const JobTIcket = (props) => {
     // allows user to add more rows 
     const addRow = () => {
         let row = {
-            'itemNum': '',
             'qty': '',
             'length': '',
             'depth': '',
             'workCode': '',
             'equipUsed': '',
+            'serialNum': '',
         }
         let copy = [...ticketBody, row]
         setTicketBody(copy)
     }
 
     const mappedRows = ticketBody.map((row, index) => {
-        let line = (`<tr> <td"> Quote item </td> <td"> ${row.itemNum} </td> <td"> QTY </td> <td"> ${row.qty} </td> <td"> length or DIA </td> <td"> ${row.length}</td> <td">Depth </td> <td"> ${row.depth} </td> <td"> Work code </td> <td"> ${row.workCode} </td> <td"> Description / Equipment used </td> <td">${row.equipUsed} </td></tr>`)
+        let line = (`<tr> <td"> ${row.qty} </td> <td"> ${row.length}</td> <td"> ${row.depth} </td> <td"> ${row.workCode} </td>  <td">${row.equipUsed} </td> <td">${row.serialNum}</td> </tr>`)
         infoToHTML.push(line)
         return <BillingRow
             index={index}
@@ -290,7 +293,6 @@ const JobTIcket = (props) => {
                         setValue={setValue}
                         findTimes={findTimes}
                     />
-
                 </Row>
                 <Row>
                     <Col md={3} />
@@ -321,7 +323,6 @@ const JobTIcket = (props) => {
                             </Input>
                         </FormGroup>
                     </Col>
-
                 </Row>
 
                 <Table bordered striped responsive>
@@ -329,10 +330,10 @@ const JobTIcket = (props) => {
                         <tr>
                             <th>QTY</th>
                             <th>Length or DIA</th>
-                            {/* <th>Serial # of blade </th> */}
                             <th>Depth (in.)</th>
                             <th>Work code</th>
                             <th>Discription / equipment used</th>
+                            <th>Serial # of blade </th>
                         </tr>
                     </thead>
                     <tbody id='infoHolder'>

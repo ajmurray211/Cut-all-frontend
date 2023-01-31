@@ -115,7 +115,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>{props.value.worker}</td>  <td>{props.value.travelTotal ? props.value.travelTotal.combined : '-'}</td>  <td>{props.value.jobTotal.combined}</td>  <td>{props.value.totalPaidTime}</td></tr>
+                                <tr><td>{props.value.worker}</td>  <td>{props.value.travelTotal ? props.value.travelTotal.combined : '-'}</td>  <td>{props.value.travelTotal ? props.value.jobTotal.combined : '-'}</td>  <td>{props.value.totalPaidTime}</td></tr>
                                 {mappedHelpers}
                             </tbody>
                         </Table>
