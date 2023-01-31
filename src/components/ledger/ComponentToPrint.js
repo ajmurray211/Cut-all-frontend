@@ -52,7 +52,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
     const mappedjobInfo = props.value.jobInfo.map((row, index) => {
         return (
             <tr className='jobInfoLine'>
-                <td> {row.qty} </td> <td> {row.length} </td> <td> {row.depth} </td> <td> {row.workCode} </td>  <td> {row.equipUsed} </td>
+                <td> {row.qty} </td> <td> {row.length} </td> <td> {row.depth} </td> <td> {row.workCode} </td>  <td> {row.equipUsed} </td> <td>{row.serialNum}</td>
             </tr>
         )
     })
@@ -94,6 +94,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                                     <th>Depth</th>
                                     <th>Work Code</th>
                                     <th>Description / Equip. Used</th>
+                                    <th>Blade serial #</th>
                                 </tr>
                             </thead>
                             <tbody>
