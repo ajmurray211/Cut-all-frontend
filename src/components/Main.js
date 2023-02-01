@@ -78,6 +78,7 @@ const Main = (props) => {
             <Part
                 key={part.id}
                 part={part}
+                API_URL = {props.API_URL}
             />
         )
     })

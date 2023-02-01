@@ -21,7 +21,7 @@ const Part = (props) => {
     }
 
     const handleDelete = async () => {
-        const getID = await axios.delete(`${props.API_URL}${props.part._id}`)
+        const getID = await axios.delete(`${props.API_URL}parts/${props.part._id}`)
         toggleEdit()
     }
 
