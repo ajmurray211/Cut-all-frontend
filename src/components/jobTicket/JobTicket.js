@@ -9,10 +9,10 @@ import TimeSheet from './TimeSheet';
 import axios from 'axios';
 
 const JobTIcket = (props) => {
-
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal(!modal);
     const [ticketBody, setTicketBody] = useState([])
+    const [ticketNum, setTicketNum] = useState([])
     const [status, setStatus] = useState('');
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
@@ -57,18 +57,23 @@ const JobTIcket = (props) => {
     let infoToHTML = []
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
 
+    // set the current ticket number that will be logged when submitted
+    // axios
+    //     .get(`${props.API_URL}ticket/topTicketNum`)
+    //     .then((response) => setTicketNum(response.data[0].ticketNum + 1))
+
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
         let total = '-'
         let combined = infoToHTML.join(' ')
         if (value.jobTotal) {
-        let total = `${value['jobTotal'].hours + (value['travelTotal'] != null ? value['travelTotal'].hours : 0)}hrs. ${value['jobTotal'].minutes + (value.travelTotal != null ? value['travelTotal'].minutes : 0)}min.`
+            let total = `${value['jobTotal'].hours + (value['travelTotal'] != null ? value['travelTotal'].hours : 0)}hrs. ${value['jobTotal'].minutes + (value.travelTotal != null ? value['travelTotal'].minutes : 0)}min.`
         }
         setValue(values => ({
             ...values,
             jobInfoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
             <thead> 
-            <tr> <th>QTY</th> <th>Length/DIA</th> <th>Depth</th> <th>Work Code</th> <th>Description / Equip. Used</th> <th>Blade serial #</th> </tr>
+            <tr> <th>QTY</th> <th>Length/DIA</th> <th>Depth</th> <th>Work Code</th> <th>Description</th> <th>Blade serial #</th> </tr>
             </thead>
             <tbody> ${combined} </tbody>
             </table>`,
@@ -332,7 +337,7 @@ const JobTIcket = (props) => {
                             <th>Length or DIA</th>
                             <th>Depth (in.)</th>
                             <th>Work code</th>
-                            <th>Discription / equipment used</th>
+                            <th>Discription</th>
                             <th>Serial # of blade </th>
                         </tr>
                     </thead>
@@ -345,7 +350,7 @@ const JobTIcket = (props) => {
             <Button onClick={addRow}> Add row </Button>
 
             <Modal isOpen={modal} size='lg'>
-                <ModalHeader toggle={toggleModal}>Signature form</ModalHeader>
+                <ModalHeader toggle={toggleModal}>Signature form for ticket {ticketNum}</ModalHeader>
                 <ModalBody id='jobDetails'>
                     <JobDetails
                         value={value}

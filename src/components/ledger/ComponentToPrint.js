@@ -33,18 +33,19 @@ const MyComponentToPrint = forwardRef((props, ref) => {
             if (Object.keys(props.value['helperTimes'][name]).length != 0) {
                 let totalJob = findTimes(props.value['helperTimes'][name].jobBegin, props.value['helperTimes'][name].jobEnd)
                 let totalTravel = findTimes(props.value['helperTimes'][name].travelBegin, props.value['helperTimes'][name].travelEnd)
-                helpersParsedData.push([name, totalJob, totalTravel])
+                helpersParsedData.push([name, totalJob, totalTravel, props.value['helperTimes'][name]])
             }
         }
     }
 
     let mappedHelpers = helpersParsedData.map((worker) => {
+        console.log(worker)
         let totalMins = worker[1].mins + worker[2].mins
         const minutes = totalMins % 60
         const hours = Math.floor(totalMins / 60);
         return (
             <tr className='helperInfoLine'>
-                <td> {worker[0]} </td> <td> {worker[2].combined} </td> <td> {worker[1].combined} </td><td>{hours}hr. {minutes}.min</td>
+                <td> {worker[0]} </td> <td> {worker[3].travelBegin} - {worker[3].travelEnd} </td> <td> {worker[3].jobBegin} - {worker[3].jobEnd} </td><td>{hours}hr. {minutes}.min</td> <td>{worker[3].milage}</td>
             </tr>
         )
     })
@@ -113,21 +114,19 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                                     <th>Travel Time</th>
                                     <th>Job Time</th>
                                     <th>Total Time</th>
+                                    <th>Milage</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>{props.value.worker}</td>  <td>{props.value.travelTotal ? props.value.travelTotal.combined : '-'}</td>  <td>{props.value.travelTotal ? props.value.jobTotal.combined : '-'}</td>  <td>{props.value.totalPaidTime}</td></tr>
+                                <tr><td>{props.value.worker}</td>  <td>{props.value.travelEnd ? `${props.value.travelBegin} - ${props.value.travelEnd}` : '-'}</td>  <td>{props.value.jobEnd ? `${props.value.jobBegin} - ${props.value.jobEnd}` : '-'}</td>  <td>{props.value.totalPaidTime}</td> <td>{props.value.milage}</td></tr>
                                 {mappedHelpers}
                             </tbody>
                         </Table>
                     </li>
-                    {props.value.detailsNotCovered ? <h3>Other Job Details</h3> : ''}
-                    <p>{props.value.detailsNotCovered}</p>
 
                 </ul>
-
-
             </section>
+
             <section className='half' id='right'>
                 <Table
                     bordered
@@ -154,6 +153,8 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                         <tr>{props.value.downTime ? <th>{`Down time took ${props.value.downTime} hrs.`}</th> : ''} </tr>
                     </tbody>
                 </Table>
+                {props.value.detailsNotCovered ? <h3>Other Job Details</h3> : ''}
+                <p>{props.value.detailsNotCovered}</p>
 
                 <section id='confirmationDetails'>
                     <ul>

@@ -24,9 +24,8 @@
 }
 
 #left{
-    width: 95%;
+    width: 100%;
 }
-
 
 .jobInfoLine{
     list-style: numbers;
@@ -35,7 +34,6 @@
 #ticketLogo{
     height: 50px;
     width: 60px;
-    /* position: left; */
 }
 
 @page {

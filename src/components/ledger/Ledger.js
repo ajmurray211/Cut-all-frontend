@@ -45,7 +45,7 @@ const Ledger = (props) => {
             <li className='ticket'><Button onClick={() => {
                 setActiveTicket(ticket)
                 toggle()
-            }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date}</Button></li>
+            }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date} Ticket # {ticket.ticketNum? ticket.ticketNum : '-----'}</Button></li>
         )
     })
 
@@ -63,7 +63,7 @@ const Ledger = (props) => {
             {tickets.length ? mappedTickets : 'No tickets currently stored'}
 
             <Modal fullscreen className='modal-width' id='mainModal' isOpen={modal} toggle={toggle}>
-                <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}` : 'Ticket Info'} </ModalHeader>
+                <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
                 <ModalBody id="ticketInfo">
                     <MyWrappedComponent value={activeTicket} ref={componentRef} />
                 </ModalBody>
