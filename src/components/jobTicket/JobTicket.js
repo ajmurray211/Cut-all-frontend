@@ -64,10 +64,14 @@ const JobTIcket = (props) => {
 
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
+        let totalMins = 0
         let total = '-'
         let combined = infoToHTML.join(' ')
         if (value.jobTotal) {
-            let total = `${value['jobTotal'].hours + (value['travelTotal'] != null ? value['travelTotal'].hours : 0)}hrs. ${value['jobTotal'].minutes + (value.travelTotal != null ? value['travelTotal'].minutes : 0)}min.`
+            value.travelTotal != null ? totalMins = value.jobTotal.mins + value.travelTotal.mins : totalMins = value.jobTotal.mins
+            let hr = Math.floor(totalMins / 60); 
+            let min = totalMins % 60
+            total = `${hr}hrs. ${min}mins.`
         }
         setValue(values => ({
             ...values,

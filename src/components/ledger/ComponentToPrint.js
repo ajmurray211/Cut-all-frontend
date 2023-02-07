@@ -1,4 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Table } from 'reactstrap';
 
 const MyComponentToPrint = forwardRef((props, ref) => {
@@ -70,14 +71,14 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                             <tr>
                                 <td>Truck Num.</td>
                                 <td>{props.value.truckNum}</td>
-                                <td>Job Times</td>
-                                <td>{props.value.jobBegin} - {props.value.jobEnd}</td>
+                                {/* <td>Job Times</td>
+                                <td>{props.value.jobBegin} - {props.value.jobEnd}</td> */}
                             </tr>
                             <tr>
                                 <td>Address</td>
                                 <td>{props.value.address}</td>
-                                <td>Travel Times</td>
-                                <td>{props.value.travelBegin} - {props.value.travelEnd}</td>
+                                {/* <td>Travel Times</td>
+                                <td>{props.value.travelBegin} - {props.value.travelEnd}</td> */}
                             </tr>
                         </tbody>
                     </Table>
