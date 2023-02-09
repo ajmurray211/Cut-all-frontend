@@ -1,18 +1,20 @@
 import './ledger.css'
 import axios from "axios"
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { useState, useEffect, useRef } from "react";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import MyWrappedComponent from './ComponentToPrint';
 import logo from '../../Assets/cut-all-logo.png'
+import searchicon from "../../Assets/searchicon.png";
 
 const Ledger = (props) => {
-
     const [tickets, setTickets] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [activeTicket, setActiveTicket] = useState(null)
     const [modal, setModal] = useState(false);
     const componentRef = useRef(null);
+    const [searchVal, setSearchVal] = useState('')
+    const [searchBy, setSearchBy] = useState(null)
 
     // controls for modals 
     const [nestedModal, setNestedModal] = useState(false);
@@ -27,6 +29,7 @@ const Ledger = (props) => {
         setCloseAll(true);
     }
 
+    // gathering data functions
     const getData = (url) => {
         setLoading(true)
         axios
@@ -37,18 +40,14 @@ const Ledger = (props) => {
     }
 
     useEffect(() => {
-        getData(`${props.API_URL}ticket`)
-    }, [])
+        if (searchVal === '') {
+            getData(`${props.API_URL}ticket`)
+        } else {
+            getData(`${props.API_URL}ticket/search/?${searchBy}=${searchVal}`)
+        }
+    }, [searchVal])
 
-    let mappedTickets = tickets.map((ticket) => {
-        return (
-            <li className='ticket'><Button onClick={() => {
-                setActiveTicket(ticket)
-                toggle()
-            }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date} Ticket # {ticket.ticketNum? ticket.ticketNum : '-----'}</Button></li>
-        )
-    })
-
+    // other functions
     const handleDelete = () => {
         axios
             .delete(`${props.API_URL}ticket/${activeTicket._id}`)
@@ -57,13 +56,60 @@ const Ledger = (props) => {
         getData(`${props.API_URL}ticket`)
     }
 
+    const handleSearch = (e) => {
+        setSearchBy(e.target.name)
+        setSearchVal(e.target.value)
+    }
+
+    // mapping data 
+    let mappedTickets = tickets.map((ticket) => {
+        return (
+            <li className='ticket'><Button onClick={() => {
+                setActiveTicket(ticket)
+                toggle()
+            }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date} Ticket # {ticket.ticketNum ? ticket.ticketNum : '-----'}</Button></li>
+        )
+    })
+    
     return (
         <div>
             <h1>List of job tickets on file</h1>
+            <section className="d-flex p-5 justify-content-center" id="filter-bar">
+                <form className="me-2" id="filter-item"  > {/*  onSubmit={handleSubmit} */}
+                    <input className="searchbar" type='text' placeholder="Search by name or ticket #" onChange={() => { console.log('hit') }} /> {/*  value={searchVal} */}
+                    <button className="search-submit" type="submit">
+                        <img src={searchicon} alt="Search Icon" />
+                    </button>
+                </form>
+
+                <UncontrolledDropdown className="me-2" id="filter-item">
+                    <DropdownToggle caret> Workers </DropdownToggle>
+                    <DropdownMenu>
+                        <DropdownItem name='worker' value='Rilyn' onClick={handleSearch}>Rilyn</DropdownItem>
+                        <DropdownItem name='worker' value='Kyle' onClick={handleSearch}>Kyle</DropdownItem>
+                        <DropdownItem name='worker' value='Pat' onClick={handleSearch}>Pat</DropdownItem>
+                        <DropdownItem name='worker' value='Gordon' onClick={handleSearch}>Gordon</DropdownItem>
+                        <DropdownItem name='worker' value='Other' onClick={handleSearch}>Other</DropdownItem>
+                    </DropdownMenu>
+                </UncontrolledDropdown>
+
+                <UncontrolledDropdown className="me-2" id="filter-item">
+                    <DropdownToggle caret > Ticket # </DropdownToggle>
+                    <DropdownMenu>
+                        <DropdownItem name='sort' value='dec' onClick={handleSearch}>High</DropdownItem>
+                        <DropdownItem name='sort' value='acd' onClick={handleSearch}>Low</DropdownItem>
+                    </DropdownMenu>
+                </UncontrolledDropdown>
+
+                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${props.API_URL}ticket`)}>
+                    Refresh
+                </Button>
+            </section>
+
             {tickets.length ? mappedTickets : 'No tickets currently stored'}
 
             <Modal fullscreen className='modal-width' id='mainModal' isOpen={modal} toggle={toggle}>
-                <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
+                <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
                 <ModalBody id="ticketInfo">
                     <MyWrappedComponent value={activeTicket} ref={componentRef} />
                 </ModalBody>
