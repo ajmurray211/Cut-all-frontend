@@ -92,7 +92,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                             <thead>
                                 <tr>
                                     <th>QTY</th>
-                                    <th>Length/DIA</th>
+                                    <th>Length / DIA</th>
                                     <th>Depth</th>
                                     <th>Work Code</th>
                                     <th>Description / Equip. Used</th>

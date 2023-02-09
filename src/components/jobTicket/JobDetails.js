@@ -18,6 +18,7 @@ const JobDetails = (props) => {
     }
 
     let mappedHelpers = helpersParsedData.map((worker) => {
+        console.log(worker)
         return (
             <li>{worker[0]}: traveled for {worker[2].combined} and worked for {worker[1].combined}</li>
         )

@@ -122,6 +122,12 @@ li.part{
   margin: 2vw;
 }
 
+.ledger#ticketContainer{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
 /* styles for phone view */
 @media screen and (max-width: 425px){
   section{

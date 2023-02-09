@@ -15,6 +15,11 @@ const Ledger = (props) => {
     const componentRef = useRef(null);
     const [searchVal, setSearchVal] = useState('')
     const [searchBy, setSearchBy] = useState(null)
+    const [rilynTickets, setRilynTickets] = useState([])
+    const [kyleTickets, setKyleTickets] = useState([])
+    const [patTickets, setPatTickets] = useState([])
+    const [gordonTickets, setGordonTickets] = useState([])
+    const [otherTickets, setOtherTickets] = useState([])
 
     // controls for modals 
     const [nestedModal, setNestedModal] = useState(false);
@@ -63,6 +68,13 @@ const Ledger = (props) => {
 
     // mapping data 
     let mappedTickets = tickets.map((ticket) => {
+        switch (ticket.worker){
+            case 'Rilyn':
+                let copy = [...rilynTickets]
+                copy.push(ticket)
+                // setRilynTickets(copy)
+                break
+        }
         return (
             <li className='ticket'><Button onClick={() => {
                 setActiveTicket(ticket)
@@ -70,7 +82,7 @@ const Ledger = (props) => {
             }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date} Ticket # {ticket.ticketNum ? ticket.ticketNum : '-----'}</Button></li>
         )
     })
-    
+
     return (
         <div>
             <h1>List of job tickets on file</h1>
@@ -106,7 +118,30 @@ const Ledger = (props) => {
                 </Button>
             </section>
 
-            {tickets.length ? mappedTickets : 'No tickets currently stored'}
+            <section className='ledger split' id='ticketContainer'>
+                <section>
+                    <h1>Rilyn</h1>
+                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                </section>
+                <section>
+                    <h1>Pat</h1>
+                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                </section>
+                <section>
+                    <h1>Kyle</h1>
+                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                </section>
+                <section>
+                    <h1>Other</h1>
+                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                </section>
+                <section>
+                    <h1>Gordon</h1>
+                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                </section>
+            </section>
+
+            {/* {tickets.length ? mappedTickets : 'No tickets currently stored'} */}
 
             <Modal fullscreen className='modal-width' id='mainModal' isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
