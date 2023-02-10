@@ -16,6 +16,26 @@
 
 nav{
   margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* justify-content: space-around; */
+  background-color: rgb(12, 100, 253);
+}
+
+.link-container{
+  display: flex;
+  flex-direction: column;
+}
+
+nav p {
+display: none;
+}
+
+.link{
+  color: black;
+  text-decoration: none;
+  padding: 9px;
 }
 
 /* body styling */
@@ -91,6 +111,23 @@ li.part{
   transform: rotateZ(-90deg)
 }
 
+#partLastPerson{
+  padding-top: 15px;
+}
+
+.toolTracker{
+  display: flex;
+  justify-items: center;
+  justify-content: space-around;
+  margin: 2vw;
+}
+
+.ledger#ticketContainer{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
 /* styles for phone view */
 @media screen and (max-width: 425px){
   section{
@@ -110,6 +147,10 @@ li.part{
   }
 
   #partLastPerson{
+    display: none;
+  }
+
+  nav p{
     display: none;
   }
 

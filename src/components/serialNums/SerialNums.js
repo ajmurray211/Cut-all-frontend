@@ -1,9 +1,8 @@
-import './drawPart.css'
 import { Form, Row, Col, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const DrawPart = (props) => {
+const SerialNums = (props) => {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [postName, setPostName] = useState('')
@@ -56,7 +55,7 @@ const DrawPart = (props) => {
     }
 
     useEffect(() => {
-        getData(`${props.API_URL}parts/?format=json`)
+        getData(`${props.API_URL}serialNums/?format=json`)
     }, [])
 
     const mapParts = data.map((part) => {
@@ -79,7 +78,7 @@ const DrawPart = (props) => {
                     <Col md={3}>
                         <FormGroup>
                             <Label for="employeeList">
-                                Employee drawing part:
+                                Manufactures:
                             </Label>
                             <Input
                                 id="employeeName"
@@ -89,11 +88,15 @@ const DrawPart = (props) => {
                                 onChange={(event) => setPostName(event.target.value)}
                             >
                                 <option></option>
-                                <option >Rilyn</option>
-                                <option>Kyle</option>
-                                <option>Pat</option>
-                                <option>Gordon</option>
-                                <option>Kim</option>
+                                <option >Dixi diamond</option>
+                                <option>Con cut</option>
+                                <option>Blades direct</option>
+                                <option>Pro Link</option>
+                                <option>Hilti</option>
+                                <option>ICF</option>
+                                <option>Cut and core store</option>
+                                <option>Four core biz</option>
+                                <option>Diamond product</option>
                             </Input>
                         </FormGroup>
                     </Col>
@@ -116,51 +119,37 @@ const DrawPart = (props) => {
                 </Row>
 
                 <Row>
-                    <Col md={4} />
-                    <Col md={2}>
-                        <FormGroup onChange={(event) => setAmountTaken(event.target.value)}>
-                            <Label for="amount">
-                                Amount
-                            </Label>
+                    <Col md={3} />
+                    <Col md={3}>
+                        <FormGroup>
+                            <Label for="partLabel"> Spec number or serial: </Label>
                             <Input
-                                id="amount"
-                                name="amount"
-                                type='number'
-                                placeholder='0'
-                                min={0}
-                                max={3}
-                            />
+                                id="serialOrSpec"
+                                name="serialOrSpec"
+                                placeholder="What is the serial or spec number?"
+                                type="text"
+                                onChange={(event) => setpartName(event.target.value)}
+                            >
+                                <option></option>
+                                {mapParts}
+                            </Input>
                         </FormGroup>
                     </Col>
-                    <Col md={2}>
+                    <Col md={3}>
                         <FormGroup onChange={(event) => setDateTaken(event.target.value)}>
-                            <Label for="dateGroup">
-                                Date
+                            <Label for="cutallSerial">
+                                Cutall serial #
                             </Label>
                             <Input
-                                id="dateGroup"
-                                name="dateGroup"
-                                type='date'
+                                id="cutallSerial"
+                                name="cutallSerial"
+                                type='text'
+                                placeholder='New cutall serial number'
                             />
                         </FormGroup>
                     </Col>
                 </Row>
-                {/* <Row>
-                    <Col md={4} />
-                    <Col md={4}>
-                        <FormGroup onChange={(event) => setSerialNumber(event.target.value)}>
-                            <Label for="serialNum">
-                                Serial number for blade/bit
-                            </Label>
-                            <Input
-                                id="serialNum"
-                                name="serialNum"
-                                type='number'
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row> */}
-                <Button type='submit'>
+                <Button type='submit' color='primary'>
                     Submit
                 </Button>
             </Form>
@@ -168,4 +157,4 @@ const DrawPart = (props) => {
     );
 }
 
-export default DrawPart;
+export default SerialNums;

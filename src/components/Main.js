@@ -8,7 +8,7 @@ import {
 import axios from "axios";
 import searchicon from "../Assets/searchicon.png";
 
-const Main = () => {
+const Main = (props) => {
     const [searchVal, setSearchVal] = useState('')
     const [activeSearchVal, setActiveSearchVal] = useState('')
     const [searchBy, setSearchBy] = useState('')
@@ -21,24 +21,20 @@ const Main = () => {
     const [postOnHand, setPostOnHand] = useState(null)
     const [postTool, setPostTool] = useState(null)
 
-    const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
-    // const API_URL = 'http://0.0.0.0:5000/'
-    // const API_URL = 'http://127.0.0.1:8000/'
-
     const getData = (url) => {
         setLoading(true)
         axios
             .get(url)
-            .then((response) => setParts(response.data))
+            .then((response) => setParts(response.data.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
     }
 
     useEffect(() => {
-        if (activeSearchVal == '') {
-            getData(`${API_URL}parts/?format=json`)
+        if (activeSearchVal === '') {
+            getData(`${props.API_URL}parts/?format=json`)
         } else {
-            getData(`${API_URL}parts/?format=json&${searchBy}=${activeSearchVal}`)
+            getData(`${props.API_URL}parts/search/?${searchBy}=${activeSearchVal}`)
         }
     }, [activeSearchVal])
 
@@ -49,7 +45,7 @@ const Main = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        getData(`${API_URL}parts/?format=json&name=${searchVal}`)
+        getData(`${props.API_URL}parts/search/?name=${searchVal}`)
         setSearchVal('')
     }
 
@@ -59,7 +55,7 @@ const Main = () => {
     }
 
     const handlePost = () => {
-        fetch(`${API_URL}parts/`, {
+        fetch(`${props.API_URL}parts/`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -71,7 +67,7 @@ const Main = () => {
                 tool: postTool
             })
         });
-        getData(`${API_URL}parts/?format=json`)
+        getData(`${props.API_URL}parts/?format=json`)
         setPostName('')
         setPostOnHand(null)
         toggleModal()
@@ -80,7 +76,9 @@ const Main = () => {
     const mappedParts = parts.map((part) => {
         return (
             <Part
+                key={part.id}
                 part={part}
+                API_URL = {props.API_URL}
             />
         )
     })
@@ -108,10 +106,10 @@ const Main = () => {
                 </UncontrolledDropdown>
 
                 <UncontrolledDropdown className="me-2" id="filter-item">
-                    <DropdownToggle caret disabled> Count </DropdownToggle>
+                    <DropdownToggle caret > Count </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem name='onHandDec' value='high' onClick={filterOnHand}>High</DropdownItem>
-                        <DropdownItem name='onHandAce' value='low' onClick={filterOnHand}>Low</DropdownItem>
+                        <DropdownItem name='sort' value='dec' onClick={filterOnHand}>High</DropdownItem>
+                        <DropdownItem name='sort' value='acd' onClick={filterOnHand}>Low</DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
@@ -119,7 +117,7 @@ const Main = () => {
                     Add Item
                 </Button>
 
-                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${API_URL}parts/?format=json`)}>
+                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${props.API_URL}parts/?format=json`)}>
                     Refresh
                 </Button>
             </section>

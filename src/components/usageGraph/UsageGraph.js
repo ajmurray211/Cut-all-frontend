@@ -4,7 +4,7 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Responsi
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const UsageGraph = () => {
+const UsageGraph = (props) => {
     const [data, setData] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -12,19 +12,18 @@ const UsageGraph = () => {
     const toggle = () => setDropdownOpen((prevState) => !prevState);
     const [activeSort, setActiveSort] = useState('')
 
-    const API_URL = 'https://fast-meadow-65226.herokuapp.com/'
-
     const getData = (url) => {
         setLoading(true)
         axios
             .get(url)
-            .then((response) => setData(response.data))
+            .then((response) => setData(response.data.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
     }
 
     useEffect(() => {
-        getData(`${API_URL}parts/?format=json`)
+        getData(`${props.API_URL}parts/?format=json`)
+        console.log(data)
     }, [])
 
     const mockdata = [
@@ -72,6 +71,7 @@ const UsageGraph = () => {
     )
 
     const mappedParts = data.map((item) => {
+        console.log(item)
         return (
             <DropdownItem action id={item.name} onClick={() => setActiveSort(`${item.name}`)} href=''>{`${item.name}`}</DropdownItem>
         )
