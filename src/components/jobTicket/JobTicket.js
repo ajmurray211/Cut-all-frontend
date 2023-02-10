@@ -1,6 +1,8 @@
 import './jobTicket.css'
 import Multiselect from 'multiselect-react-dropdown';
+import FormGroupMUI from '@mui/material/FormGroup'
 import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Switch, FormControlLabel, FormLabel, FormControl } from '@mui/material';
 import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import BillingRow from './BillingRow';
@@ -53,6 +55,9 @@ const JobTIcket = (props) => {
         jobEnd: null,
         jobTotal: null,
         helperTimes: null,
+        ticketNum: null,
+        jobPerQuote: true,
+        workAdded: false
     })
     let infoToHTML = []
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
@@ -69,10 +74,11 @@ const JobTIcket = (props) => {
         let combined = infoToHTML.join(' ')
         if (value.jobTotal) {
             value.travelTotal != null ? totalMins = value.jobTotal.mins + value.travelTotal.mins : totalMins = value.jobTotal.mins
-            let hr = Math.floor(totalMins / 60); 
+            let hr = Math.floor(totalMins / 60);
             let min = totalMins % 60
             total = `${hr}hrs. ${min}mins.`
         }
+
         setValue(values => ({
             ...values,
             jobInfoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
@@ -264,6 +270,10 @@ const JobTIcket = (props) => {
                         <Label>Truck Number:</Label>
                         <Input name='truckNum' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
                     </Col>
+                    <Col md={2}>
+                        <Label>Ticket Number:</Label>
+                        <Input name='ticketNum' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
+                    </Col>
                 </Row>
                 <Row>
                     <Col md={3} />
@@ -394,6 +404,7 @@ const JobTIcket = (props) => {
                 </tbody>
             </Table>
 
+
             <Table bordered striped responsive >
                 <thead>
                     <h2>Hours Spent (min)</h2>
@@ -469,6 +480,18 @@ const JobTIcket = (props) => {
                 <h2>Other job details:</h2>
                 <textarea id='detailsArea' name='detailsNotCovered' onChange={handleChange} />
             </section>
+            <FormGroupMUI row>
+                <FormControlLabel
+                    labelPlacement="top"
+                    control={<Switch name='jobPerQuote' defaultChecked onClick={() => {setValue({...value, jobPerQuote: !value.jobPerQuote})}} />}
+                    label="Job per Quote"
+                />
+                <FormControlLabel
+                    labelPlacement="top"
+                    control={<Switch name='workAdded' onClick={() => {setValue({...value, workAdded: !value.workAdded})}} />}
+                    label="Work added"
+                />
+            </FormGroupMUI>
 
             <Button onClick={() => {
                 toggleModal()
