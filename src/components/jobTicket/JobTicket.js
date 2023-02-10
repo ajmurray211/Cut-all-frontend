@@ -53,6 +53,7 @@ const JobTIcket = (props) => {
         jobEnd: null,
         jobTotal: null,
         helperTimes: null,
+        ticketNum: null
     })
     let infoToHTML = []
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
@@ -73,6 +74,7 @@ const JobTIcket = (props) => {
             let min = totalMins % 60
             total = `${hr}hrs. ${min}mins.`
         }
+
         setValue(values => ({
             ...values,
             jobInfoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
@@ -263,6 +265,10 @@ const JobTIcket = (props) => {
                     <Col md={2}>
                         <Label>Truck Number:</Label>
                         <Input name='truckNum' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
+                    </Col>
+                    <Col md={2}>
+                        <Label>Ticket Number:</Label>
+                        <Input name='ticketNum' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
                     </Col>
                 </Row>
                 <Row>
