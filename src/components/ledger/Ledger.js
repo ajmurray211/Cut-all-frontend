@@ -1,6 +1,6 @@
 import './ledger.css'
 import axios from "axios"
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import MyWrappedComponent from './ComponentToPrint';
 import logo from '../../Assets/cut-all-logo.png'
@@ -66,29 +66,73 @@ const Ledger = (props) => {
         setSearchVal(e.target.value)
     }
 
-    // mapping data 
-    let mappedTickets = tickets.map((ticket) => {
-        switch (ticket.worker){
+    const handleSplitTickets = (worker, ticket) => {
+        switch (worker) {
+            case 'Pat':
+                if (!patTickets.find(t => t.id === ticket.id)) {
+                    setPatTickets(patTickets => [...patTickets, ticket]);
+                }
+                break;
             case 'Rilyn':
-                let copy = [...rilynTickets]
-                copy.push(ticket)
-                // setRilynTickets(copy)
-                break
+                if (!rilynTickets.find(t => t.id === ticket.id)) {
+                    setRilynTickets(rilynTickets => [...rilynTickets, ticket]);
+                }
+                break;
+            case 'Kyle':
+                if (!kyleTickets.find(t => t.id === ticket.id)) {
+                    setKyleTickets(kyleTickets => [...kyleTickets, ticket]);
+                }
+                break;
+            case 'Gordon':
+                if (!gordonTickets.find(t => t.id === ticket.id)) {
+                    setGordonTickets(gordonTickets => [...gordonTickets, ticket]);
+                }
+                break;
+            case 'Other':
+                if (!otherTickets.find(t => t.id === ticket.id)) {
+                    setOtherTickets(otherTickets => [...otherTickets, ticket]);
+                }
+                break;
+            default:
+                break;
         }
-        return (
-            <li className='ticket'><Button onClick={() => {
-                setActiveTicket(ticket)
-                toggle()
-            }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date} Ticket # {ticket.ticketNum ? ticket.ticketNum : '-----'}</Button></li>
-        )
-    })
+    }
+
+    useEffect(() => {
+        for (let i = 0; i < tickets.length; i++) {
+            const ticket = tickets[i];
+            if (ticket.worker === 'Pat') {
+                handleSplitTickets('Pat', ticket);
+            } else if (ticket.worker === 'Rilyn') {
+                handleSplitTickets('Rilyn', ticket);
+            } else if (ticket.worker === 'Gordon') {
+                handleSplitTickets('Gordon', ticket);
+            } else if (ticket.worker === 'Kyle') {
+                handleSplitTickets('Kyle', ticket);
+            } else if (ticket.worker === 'Other') {
+                handleSplitTickets('Other', ticket);
+            }
+        }
+    }, [tickets]);
+
+    let mappedSeperateTickets = (who) => {
+        let mapped = who.map((ticket) => {
+            return (
+                <li className='ticket'><Button onClick={() => {
+                    setActiveTicket(ticket)
+                    toggle()
+                }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date} Ticket # {ticket.ticketNum ? ticket.ticketNum : '-----'}</Button></li>
+            )
+        })
+        return mapped
+    }
 
     return (
         <div>
             <h1>List of job tickets on file</h1>
-            <section className="d-flex p-5 justify-content-center" id="filter-bar">
-                <form className="me-2" id="filter-item"  > {/*  onSubmit={handleSubmit} */}
-                    <input className="searchbar" type='text' placeholder="Search by name or ticket #" onChange={() => { console.log('hit') }} /> {/*  value={searchVal} */}
+            {/* <section className="d-flex p-5 justify-content-center" id="filter-bar">
+                <form className="me-2" id="filter-item"  > 
+                    <input className="searchbar" type='text' placeholder="Search by name or ticket #" onChange={() => { console.log('hit') }} />
                     <button className="search-submit" type="submit">
                         <img src={searchicon} alt="Search Icon" />
                     </button>
@@ -116,32 +160,30 @@ const Ledger = (props) => {
                 <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${props.API_URL}ticket`)}>
                     Refresh
                 </Button>
-            </section>
+            </section> */}
 
             <section className='ledger split' id='ticketContainer'>
                 <section>
                     <h1>Rilyn</h1>
-                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                    {rilynTickets.length ? mappedSeperateTickets(rilynTickets) : 'No tickets currently stored'}
                 </section>
                 <section>
                     <h1>Pat</h1>
-                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                    {patTickets.length ? mappedSeperateTickets(patTickets) : 'No tickets currently stored'}
                 </section>
                 <section>
                     <h1>Kyle</h1>
-                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                    {kyleTickets.length ? mappedSeperateTickets(kyleTickets) : 'No tickets currently stored'}
                 </section>
                 <section>
                     <h1>Other</h1>
-                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                    {otherTickets.length ? mappedSeperateTickets(otherTickets) : 'No tickets currently stored'}
                 </section>
                 <section>
                     <h1>Gordon</h1>
-                    {tickets.length ? mappedTickets : 'No tickets currently stored'}
+                    {gordonTickets.length ? mappedSeperateTickets(gordonTickets) : 'No tickets currently stored'}
                 </section>
             </section>
-
-            {/* {tickets.length ? mappedTickets : 'No tickets currently stored'} */}
 
             <Modal fullscreen className='modal-width' id='mainModal' isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
