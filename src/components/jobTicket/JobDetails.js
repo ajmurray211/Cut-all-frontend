@@ -1,4 +1,4 @@
-import { Label, FormGroup, Input } from 'reactstrap';
+import { Label, FormGroup, Input, Table } from 'reactstrap';
 import { useState } from 'react';
 
 const JobDetails = (props) => {
@@ -26,11 +26,9 @@ const JobDetails = (props) => {
 
     const mappedjobInfo = props.value.jobInfo.map((row, index) => {
         return (
-            <li>
-                <span className='inputItem'> item</span> {index + 1}, <span className='inputItem'> QTY </span>: {row.qty}, <span className='inputItem'>length or DIA</span>: {row.length},
-                <span className='inputItem'> Depth </span>: {row.depth}, <span className='inputItem'>Work code</span>: {row.workCode}, <span className='inputItem'>Discription / Equipment used</span>:
-                {row.equipUsed}
-            </li>
+            <tr>
+                <td> {row.qty} </td> <td>{row.length}</td><td> {row.depth} </td><td>{row.workCode}</td><td>{row.equipUsed}</td> 
+            </tr>
         )
     })
 
@@ -46,9 +44,19 @@ const JobDetails = (props) => {
                     <li><span className='inputItem'>Date</span>:{props.value['date']}</li>
                     <li><span className='inputItem'>Address</span>:{props.value['address']}</li>
                     <li><span className='inputItem'>Work completed</span>:
-                        <ul>
-                            {mappedjobInfo}
-                        </ul>
+                    <Table bordered responsive striped>
+                        <thead>
+                            <th>Qty</th>
+                            <th>Length</th>
+                            <th>item</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                        </thead>
+                        <tbody>
+                        {mappedjobInfo}
+
+                        </tbody>
+                    </Table>
                     </li>
                     <li> <span className='inputItem'>Other CA men on the job and total times.</span>
                         <ul>
