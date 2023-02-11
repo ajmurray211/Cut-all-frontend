@@ -14,7 +14,6 @@ const JobTIcket = (props) => {
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal(!modal);
     const [ticketBody, setTicketBody] = useState([])
-    const [ticketNum, setTicketNum] = useState([])
     const [status, setStatus] = useState('');
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
@@ -63,9 +62,19 @@ const JobTIcket = (props) => {
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
 
     // set the current ticket number that will be logged when submitted
-    // axios
-    //     .get(`${props.API_URL}ticket/topTicketNum`)
-    //     .then((response) => setTicketNum(response.data[0].ticketNum + 1))
+    useEffect(() => {
+        axios
+            .get(`${props.API_URL}ticket/topTicketNum`)
+            .then((res) => {
+                console.log(value)
+                // let number = res.data[0].ticketNum !== null ? number = res.data[0].ticketNum + 1 : number = 1
+                let number = res.data[0].ticketNum + 1
+                setValue(values => ({
+                    ...values,
+                    ticketNum: number
+                }))
+            })
+    }, [])
 
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
@@ -272,7 +281,7 @@ const JobTIcket = (props) => {
                     </Col>
                     <Col md={2}>
                         <Label>Ticket Number:</Label>
-                        <Input name='ticketNum' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
+                        <Input name='ticketNum' type='number' defaultValue={value.ticketNum} min={0} onChange={(event) => handleChange(event)}></Input>
                     </Col>
                 </Row>
                 <Row>
@@ -321,6 +330,7 @@ const JobTIcket = (props) => {
                                 Date:
                             </Label>
                             <Input
+                                defaultValue={new Date()}
                                 name="date"
                                 type="date"
                                 onChange={(event) => handleChange(event)}
@@ -364,7 +374,7 @@ const JobTIcket = (props) => {
             <Button onClick={addRow}> Add row </Button>
 
             <Modal isOpen={modal} size='lg'>
-                <ModalHeader toggle={toggleModal}>Signature form for ticket {ticketNum}</ModalHeader>
+                <ModalHeader toggle={toggleModal}>Signature form for ticket {value.ticketNum}</ModalHeader>
                 <ModalBody id='jobDetails'>
                     <JobDetails
                         value={value}
@@ -483,12 +493,12 @@ const JobTIcket = (props) => {
             <FormGroupMUI row>
                 <FormControlLabel
                     labelPlacement="top"
-                    control={<Switch name='jobPerQuote' defaultChecked onClick={() => {setValue({...value, jobPerQuote: !value.jobPerQuote})}} />}
+                    control={<Switch name='jobPerQuote' defaultChecked onClick={() => { setValue({ ...value, jobPerQuote: !value.jobPerQuote }) }} />}
                     label="Job per Quote"
                 />
                 <FormControlLabel
                     labelPlacement="top"
-                    control={<Switch name='workAdded' onClick={() => {setValue({...value, workAdded: !value.workAdded})}} />}
+                    control={<Switch name='workAdded' onClick={() => { setValue({ ...value, workAdded: !value.workAdded }) }} />}
                     label="Work added"
                 />
             </FormGroupMUI>
