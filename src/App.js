@@ -10,8 +10,8 @@ import SerialNums from './components/serialNums/SerialNums';
 import TimeSheet from './components/timeSheet/TimeSheet';
 
 function App() {
-  // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-  const API_URL = 'http://localhost:8080/'
+  const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+  // const API_URL = 'http://localhost:8080/'
 
   return (
     <div className="App">
@@ -19,11 +19,11 @@ function App() {
         <Link to="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></Link>
         <section className='link-container'>
           {/* <Link className='link' to='/drawParts'>Draw parts</Link> */}
-          <Link className='link' to='/serialNums'>Serial numbers</Link>
+          {/* <Link className='link' to='/serialNums'>Serial numbers</Link> */}
           <Link className='link' to='/usageGraph'>Usage Graph</Link>
           <Link className='link' to='/jobTicket'>Job ticket</Link>
           <Link className='link' to='/ledger'>Ledger</Link>
-          <Link className='link' to='/timeSheet'>Time Sheet</Link>
+          {/* <Link className='link' to='/timeSheet'>Time Sheet</Link> */}
         
         </section>
         <p>Inventory system</p>
