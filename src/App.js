@@ -9,8 +9,8 @@ import Ledger from './components/ledger/Ledger';
 import SerialNums from './components/serialNums/SerialNums';
 
 function App() {
-  const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-  // const API_URL = 'http://localhost:8080/'
+  // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
+  const API_URL = 'http://localhost:8080/'
 
   return (
     <div className="App">
@@ -19,7 +19,7 @@ function App() {
         <section className='link-container'>
           {/* <Link className='link' to='/drawParts'>Draw parts</Link> */}
           <Link className='link' to='/serialNums'>Serial numbers</Link>
-          {/* <Link className='link' to='/usageGraph'>Usage Graph</Link> */}
+          <Link className='link' to='/usageGraph'>Usage Graph</Link>
           <Link className='link' to='/jobTicket'>Job ticket</Link>
           <Link className='link' to='/ledger'>Ledger</Link>
         </section>
