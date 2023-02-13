@@ -22,7 +22,7 @@ const JobTIcket = (props) => {
         worker: '',
         billTo: '',
         otherWorkers: [],
-        truckNum: '',
+        truckNum: 0,
         date: '',
         address: '',
         jobInfoHTML: null,

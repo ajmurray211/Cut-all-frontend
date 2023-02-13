@@ -109,7 +109,7 @@ const Ledger = (props) => {
                 handleSplitTickets('Gordon', ticket);
             } else if (ticket.worker === 'Kyle') {
                 handleSplitTickets('Kyle', ticket);
-            } else if (ticket.worker === 'Other') {
+            } else{
                 handleSplitTickets('Other', ticket);
             }
         }
