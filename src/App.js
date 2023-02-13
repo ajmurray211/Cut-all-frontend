@@ -7,6 +7,7 @@ import UsageGraph from './components/usageGraph/UsageGraph';
 import JobTIcket from './components/jobTicket/JobTicket';
 import Ledger from './components/ledger/Ledger';
 import SerialNums from './components/serialNums/SerialNums';
+import TimeSheet from './components/timeSheet/TimeSheet';
 
 function App() {
   // const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
@@ -22,6 +23,8 @@ function App() {
           <Link className='link' to='/usageGraph'>Usage Graph</Link>
           <Link className='link' to='/jobTicket'>Job ticket</Link>
           <Link className='link' to='/ledger'>Ledger</Link>
+          <Link className='link' to='/timeSheet'>Time Sheet</Link>
+        
         </section>
         <p>Inventory system</p>
       </nav>
@@ -34,6 +37,7 @@ function App() {
           <Route path='/usageGraph' element={<UsageGraph API_URL={API_URL}/>}/>
           <Route path='/jobTicket' element={<JobTIcket API_URL={API_URL}/>}/>
           <Route path='/ledger' element={<Ledger API_URL={API_URL}/>}/>
+          <Route path='/timeSheet' element={<TimeSheet API_URL={API_URL}/>}/>
         </Routes>
       </div>
     </div>
