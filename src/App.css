@@ -128,6 +128,15 @@ li.part{
   justify-content: space-around;
 }
 
+.timeSheet{
+  margin: 2vw;
+}
+
+.timeSheet.workCodes{
+  /* border: 1px solid red; */
+  text-align: left;
+}
+
 /* styles for phone view */
 @media screen and (max-width: 425px){
   section{
