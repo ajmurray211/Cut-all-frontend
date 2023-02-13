@@ -1,5 +1,5 @@
 import './usageGraph.css'
-import { DropdownItem, Dropdown, DropdownToggle, DropdownMenu, Button } from 'reactstrap';
+import { DropdownItem, Dropdown, DropdownToggle, DropdownMenu, Button, UncontrolledDropdown } from 'reactstrap';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -78,7 +78,7 @@ const UsageGraph = (props) => {
     })
 
     return (
-        <div className='container'>
+        <div className=''>
             <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                 <DropdownToggle caret size="lg" dir='down'>
                     Parts

@@ -27,7 +27,7 @@ const JobDetails = (props) => {
     const mappedjobInfo = props.value.jobInfo.map((row, index) => {
         return (
             <tr>
-                <td> {row.qty} </td> <td>{row.length}</td><td> {row.depth} </td><td>{row.workCode}</td><td>{row.equipUsed}</td> 
+                <td> {row.qty} </td> <td>{row.length}</td><td> {row.depth} </td><td>{row.workCode}</td><td>{row.equipUsed}</td>
             </tr>
         )
     })
@@ -44,19 +44,19 @@ const JobDetails = (props) => {
                     <li><span className='inputItem'>Date</span>:{props.value['date']}</li>
                     <li><span className='inputItem'>Address</span>:{props.value['address']}</li>
                     <li><span className='inputItem'>Work completed</span>:
-                    <Table bordered responsive striped>
-                        <thead>
-                            <th>Qty</th>
-                            <th>Length</th>
-                            <th>item</th>
-                            <th>Code</th>
-                            <th>Description</th>
-                        </thead>
-                        <tbody>
-                        {mappedjobInfo}
+                        <Table bordered responsive striped>
+                            <thead>
+                                <th>Qty</th>
+                                <th>Length</th>
+                                <th>item</th>
+                                <th>Code</th>
+                                <th>Description</th>
+                            </thead>
+                            <tbody>
+                                {mappedjobInfo}
 
-                        </tbody>
-                    </Table>
+                            </tbody>
+                        </Table>
                     </li>
                     <li> <span className='inputItem'>Other CA men on the job and total times.</span>
                         <ul>
