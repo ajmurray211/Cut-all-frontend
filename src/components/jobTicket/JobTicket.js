@@ -238,7 +238,7 @@ const JobTIcket = (props) => {
         infoToHTML.push(line)
         return <BillingRow
             index={index}
-            row={row}
+            // row={row}
             editRow={editRow}
         />
     })
@@ -379,7 +379,7 @@ const JobTIcket = (props) => {
                     <JobDetails
                         value={value}
                         ticketBody={ticketBody}
-                        setValue={setValue}
+                        setValue={setValue}                                       
                         handleChange={handleChange}
                         findTimes={findTimes}
                     />
