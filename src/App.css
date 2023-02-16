@@ -137,6 +137,7 @@ li.part{
   text-align: left;
 }
 
+
 /* styles for phone view */
 @media screen and (max-width: 425px){
   section{
