@@ -1,4 +1,4 @@
-import './drawPart.css'
+// import './drawPart.css'
 import { Form, Row, Col, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -6,13 +6,7 @@ import { useEffect, useState } from 'react';
 const DrawPart = (props) => {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
-    const [postName, setPostName] = useState('')
-    const [amountTaken, setAmountTaken] = useState(null)
-    const [serialNumber, setSerialNumber] = useState(null)
-    const [dateTaken, setDateTaken] = useState(null)
-    const [partName, setpartName] = useState(null)
     const [data, setData] = useState([])
-    const [show, setShow] = useState(false)
 
     const getData = (url) => {
         setLoading(true)
@@ -21,38 +15,6 @@ const DrawPart = (props) => {
             .then((response) => setData(response.data.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
-    }
-
-    // draws parts from stock and appends a worker to the draw list while updating the amount on hand
-    const postData = async () => {
-        const getPartNumber = await axios.get(`${props.API_URL}parts/search/?name=${partName}`)
-        const partNumber = getPartNumber.data.data[0]._id
-        const onHand = getPartNumber.data.data[0].onHand
-
-        const postWorker = await axios.post(`${props.API_URL}workers`, {
-            name: postName,
-            amountTaken: amountTaken,
-            dateTaken: dateTaken,
-            partID: partNumber
-        })
-
-        const newOnHandCount = onHand - amountTaken
-
-        const drawListAddition = await axios.put(`${props.API_URL}parts/${partNumber}`, {
-            name: partName,
-            onHand: newOnHandCount
-        })
-
-        if (drawListAddition.status == 201) {
-            setShow(true)
-        }
-
-        const timer = setTimeout(() => setShow(false), 5000);
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        postData()
     }
 
     useEffect(() => {
@@ -66,27 +28,31 @@ const DrawPart = (props) => {
     })
 
     const handleChange = (e) => {
-        console.log(e)
+        console.log(e.target.value)
+        props.setDrawData(val => ({
+            ...val, 
+            [e.target.name]: e.target.value
+        }))
     }
 
     return (
-        <section>
-            <Alert color='success' isOpen={show}>You have drawn a part!</Alert>
+        <section className='drawPart'>
+            <Alert color='success' isOpen={props.drawAlert}>You have drawn a part!</Alert>
 
-            <Form onSubmit={handleSubmit}>
+            <Form className='drawPart' id='drawForm'>
                 <Row>
-                    <Col md={3} />
-                    <Col md={3}>
+                    <Col md={1} />
+                    <Col md={5}>
                         <FormGroup>
-                            <Label for="employeeList">
+                            <Label for="name">
                                 Employee drawing part:
                             </Label>
                             <Input
-                                id="employeeName"
-                                name="select"
+                                id="name"
+                                name="name"
                                 placeholder="Who are you?"
                                 type="select"
-                                onChange={(event) => setPostName(event.target.value)}
+                                onChange={handleChange}
                             >
                                 <option></option>
                                 <option >Rilyn</option>
@@ -97,34 +63,33 @@ const DrawPart = (props) => {
                             </Input>
                         </FormGroup>
                     </Col>
-                    <Col md={3}>
+                    <Col md={5}>
                         <FormGroup>
-                            <Label for="partLabel"> Part: </Label>
+                            <Label for="partName"> Part: </Label>
                             <Input
-                                id="partList"
-                                name="select"
+                                id="partName"
+                                name="partName"
                                 placeholder="What part are you taking?"
                                 type="select"
-                                onChange={(event) => setpartName(event.target.value)}
+                                onChange={handleChange}
                             >
                                 <option></option>
                                 {mapParts}
                             </Input>
                         </FormGroup>
                     </Col>
-                    <Col md={2} />
                 </Row>
 
                 <Row>
-                    <Col md={4} />
-                    <Col md={2}>
-                        <FormGroup onChange={(event) => setAmountTaken(event.target.value)}>
-                            <Label for="amount">
+                    <Col md={1} />
+                    <Col md={5}>
+                        <FormGroup onChange={handleChange}>
+                            <Label for="amounTaken">
                                 Amount
                             </Label>
                             <Input
-                                id="amount"
-                                name="amount"
+                                id="amountTaken"
+                                name="amountTaken"
                                 type='number'
                                 placeholder='0'
                                 min={0}
@@ -132,14 +97,14 @@ const DrawPart = (props) => {
                             />
                         </FormGroup>
                     </Col>
-                    <Col md={2}>
-                        <FormGroup onChange={(event) => setDateTaken(event.target.value)}>
-                            <Label for="dateGroup">
+                    <Col md={5}>
+                        <FormGroup onChange={handleChange}>
+                            <Label for="date">
                                 Date
                             </Label>
                             <Input
-                                id="dateGroup"
-                                name="dateGroup"
+                                id="date"
+                                name="date"
                                 type='date'
                             />
                         </FormGroup>
@@ -160,9 +125,6 @@ const DrawPart = (props) => {
                         </FormGroup>
                     </Col>
                 </Row> */}
-                <Button type='submit'>
-                    Submit
-                </Button>
             </Form>
         </section>
     );

@@ -22,7 +22,7 @@ const JobTIcket = (props) => {
         worker: '',
         billTo: '',
         otherWorkers: [],
-        truckNum: 0,
+        truckNum: '',
         date: '',
         address: '',
         jobInfoHTML: null,
@@ -88,6 +88,19 @@ const JobTIcket = (props) => {
             total = `${hr}hrs. ${min}mins.`
         }
 
+        let timetablels = []
+
+        for (let name in value.helperTimes) {
+            if (Object.keys(value.helperTimes[name]).length !== 0) {
+                timetablels.push(`<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
+                <thead> 
+                <tr> <th>Job times</th> <th>Travel Times</th> <th>Depth</th> <th>Work Code</th> <th>Description</th> <th>Blade serial #</th> </tr>
+                </thead>
+                <tbody> ${combined} </tbody>
+                </table>`)
+            }
+        }
+
         setValue(values => ({
             ...values,
             jobInfoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
@@ -119,12 +132,26 @@ const JobTIcket = (props) => {
             });
     }
 
-    const postTicket = () => {
-        axios.post(`${props.API_URL}ticket`, {
+    const postTicket = async () => {
+        await axios.post(`${props.API_URL}ticket`, {
             ...value
         })
             .then((res) => console.log(res))
             .catch((err) => console.log(err))
+
+        value.jobInfo.forEach(async (data) => {
+            await axios.put(`${props.API_URL}serialNum/${data.serialNum}`, {
+                history: [
+                    {
+                        runLength: data.length,
+                        depth: data.depth,
+                        date: value.date
+                    }
+                ]
+            })
+                .then((res) => console.log(res))
+                .catch((err) => console.log(err))
+        })
     }
     // resets variables changing when status changes 
     useEffect(() => {
@@ -238,7 +265,7 @@ const JobTIcket = (props) => {
         infoToHTML.push(line)
         return <BillingRow
             index={index}
-            row={row}
+            // row={row}
             editRow={editRow}
         />
     })

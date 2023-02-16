@@ -1,7 +1,7 @@
 import { Button, Collapse, Card, CardBody, ButtonGroup, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, ModalFooter, } from "reactstrap";
 import { useState } from "react";
 import axios from "axios";
-import arrow from '../Assets/arrow.png'
+import arrow from '../../Assets/arrow.png'
 
 const Part = (props) => {
 
