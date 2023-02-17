@@ -45,11 +45,13 @@ const TimeSheet = () => {
         console.log(sheetInfo, "after email");
         setStatus("");
         setSuccess(false);
+        toggle();
       }, 5000);
     } else if (status === "Error") {
       setTimeout(() => {
         setStatus("");
         setFail(false);
+        toggle();
       }, 5000);
     }
   }, [status]);
@@ -134,12 +136,6 @@ const TimeSheet = () => {
 
   return (
     <div className="timeSheet">
-      <Alert color="success" isOpen={success}>
-        You have submitted a time sheet!
-      </Alert>
-      <Alert color="danger" isOpen={fail}>
-        There was a problem with your time sheet submission!
-      </Alert>
       <h1>This is the time sheet chode</h1>
       <Form>
         <Row>
@@ -287,6 +283,12 @@ const TimeSheet = () => {
       >
         <ModalHeader toggle={toggle}>Time Sheet Confirmation</ModalHeader>
         <ModalBody>
+          <Alert color="success" isOpen={success}>
+            You have submitted a time sheet!
+          </Alert>
+          <Alert color="danger" isOpen={fail}>
+            There was a problem with your time sheet submission!
+          </Alert>
           <InfoDisplay
             sheetInfo={sheetInfo}
             sheetBody={sheetBody}
