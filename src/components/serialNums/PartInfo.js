@@ -6,9 +6,12 @@ const PartInfo = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     let data = []
+    let maxNum = 25
 
     const mappedHistory = props.number.history.map(entry => {
-        console.log(entry)
+        if (Math.max(parseInt(entry.runLength), parseInt(entry.depth)) > maxNum) {
+            maxNum = Math.max(parseInt(entry.runLength), parseInt(entry.depth))
+        }
         data.push({
             name: entry.date,
             Depth: entry.depth,
@@ -26,7 +29,7 @@ const PartInfo = (props) => {
                 <ModalBody >
                     <ResponsiveContainer
                         width='95%'
-                        height={600}>
+                        height='50%'>
                         <LineChart
                             className='chart'
                             data={data}
@@ -39,10 +42,10 @@ const PartInfo = (props) => {
                         >
                             <CartesianGrid strokeDasharray="5 5" />
                             <XAxis dataKey="name" />
-                            <YAxis />
+                            <YAxis tickCount={7} domain={[0, maxNum]} />
                             <Tooltip />
                             <Legend />
-                            <Line type="monotone" dataKey="Depth" stroke="#8884d8"  />
+                            <Line type="monotone" dataKey="Depth" stroke="#8884d8" />
                             <Line type="monotone" dataKey="Length" stroke="#82ca9d" />
                         </LineChart>
                     </ResponsiveContainer>
