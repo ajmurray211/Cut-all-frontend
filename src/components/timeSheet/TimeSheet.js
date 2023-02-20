@@ -136,7 +136,7 @@ const TimeSheet = () => {
 
   return (
     <div className="timeSheet">
-      <h1>This is the time sheet chode</h1>
+      <h1>Time Sheet</h1>
       <Form>
         <Row>
           <Col md={3} />
@@ -175,6 +175,7 @@ const TimeSheet = () => {
           <Col md={3}>
             <Label for="employeeNum">Employee Number</Label>
             <Input
+              placeholder="Enter Employee Number"
               onChange={handleChange}
               name="employeeNum"
               id="employeeNum"
@@ -184,6 +185,7 @@ const TimeSheet = () => {
           <Col md={3}>
             <Label for="status">Status</Label>
             <Input
+              placeholder="Enter Your Status"
               onChange={handleChange}
               name="status"
               id="status"
