@@ -139,19 +139,19 @@ li.part{
 }
 
 .serialNums.partInfo #entryContainer{
+  margin-left: 5vw;
   display: flex;
-  flex-wrap: wrap;
-  list-style: none;
+  flex-direction: column;
+  list-style-type:none; 
   justify-content: space-around;
   padding-top: 2vw;
 }
 
 .entry{
+  font-size: larger;
   margin: 5px;
-  border: 1px solid black;
   border-radius: 10px;
   padding: 5px;
-  background-color: beige;
 }
 
 /* styles for phone view */

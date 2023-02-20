@@ -8,7 +8,9 @@ const SerialNums = (props) => {
     const [loading, setLoading] = useState(true)
     const [toolName, setToolName] = useState([])
     const [serialNumbers, setSerialNumbers] = useState([])
-    const [show, setShow] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [fail, setFail] = useState(false)
+    const [status, setStatus] = useState(null)
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal((prevState) => !prevState);
     const [newSerialNumberData, setNewSerialNumberData] = useState({
@@ -17,8 +19,6 @@ const SerialNums = (props) => {
         specNum: null,
         serialNum: null
     })
-    const [isOpen, setIsOpen] = useState(false);
-    const toggle = () => setIsOpen(!isOpen);
 
     const getData = (url, where) => {
         setLoading(true)
@@ -45,10 +45,30 @@ const SerialNums = (props) => {
         )
     })
 
+    useEffect(() => {
+        if (status === 201) {
+            setTimeout(() => {
+                setStatus('');
+                setSuccess(false)
+                toggleModal()
+                getData(`${props.API_URL}serialNum`, setSerialNumbers)
+
+            }, 5000);
+        }
+        else if (status === 'Error') {
+            setTimeout(() => {
+                setStatus('');
+                setFail(false)
+                toggleModal()
+                getData(`${props.API_URL}serialNum`, setSerialNumbers)
+            }, 5000);
+        }
+    }, [status]);
+
     const mappedSerialNums = serialNumbers.map((number) => {
         return (
-            <PartInfo 
-            number = {number}
+            <PartInfo
+                number={number}
             />
         )
     })
@@ -63,11 +83,14 @@ const SerialNums = (props) => {
 
     const handlePost = () => {
         axios.post(`${props.API_URL}serialNum`, newSerialNumberData)
-            .then(function (response) {
-                console.log(response);
+            .then(res => {
+                console.log(res)
+                setStatus(res.status)
+                setSuccess(true)
             })
-            .catch(function (error) {
-                console.log(error);
+            .catch(err => {
+                setStatus(err.text)
+                setFail(true)
             });
     }
 
@@ -75,8 +98,6 @@ const SerialNums = (props) => {
         <div>
 
             <section>
-                <Alert color='success' isOpen={show}>You have drawn a part!</Alert>
-
                 <section className="d-flex p-5 justify-content-center" id="filter-bar">
                     <Button className="me-2" id="filter-item" color="danger" onClick={toggleModal}>
                         Add Item
@@ -86,6 +107,9 @@ const SerialNums = (props) => {
                 <Modal isOpen={modal} toggle={toggleModal} size='lg' centered>
                     <ModalHeader toggle={toggleModal}>Serial number addition</ModalHeader>
                     <ModalBody>
+                        <Alert color='success' isOpen={success}>You have drawn a part!</Alert>
+                        <Alert color='danger' isOpen={fail}>There was a problem with the submission!</Alert>
+
                         <Form onSubmit={handleSubmit}>
                             <Row>
                                 <Col md={1} />
@@ -167,10 +191,6 @@ const SerialNums = (props) => {
                     </ModalFooter>
                 </Modal>
             </section>
-
-            {/* <ul>
-                {mappedSerialNums}
-            </ul> */}
 
             <ListGroup>
                 {mappedSerialNums}
