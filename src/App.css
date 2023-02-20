@@ -135,8 +135,23 @@ li.part{
 .timeSheet.workCodes{
   /* border: 1px solid red; */
   text-align: left;
+  color: black;
 }
 
+.serialNums.partInfo #entryContainer{
+  /* border: 1px solid red; */
+  display: flex;
+  list-style: none;
+  justify-content: space-around;
+  padding-top: 2vw;
+}
+
+.entry{
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 5px;
+  background-color: beige;
+}
 
 /* styles for phone view */
 @media screen and (max-width: 425px){

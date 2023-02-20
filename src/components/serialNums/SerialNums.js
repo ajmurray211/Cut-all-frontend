@@ -1,6 +1,7 @@
 import { Card, CardBody, Collapse, Form, Row, Col, FormGroup, Label, Input, Alert, Button, ModalBody, Modal, ModalFooter, ModalHeader, ListGroup, ListGroupItem } from 'reactstrap';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import PartInfo from './PartInfo';
 
 const SerialNums = (props) => {
     const [error, setError] = useState(null)
@@ -46,14 +47,9 @@ const SerialNums = (props) => {
 
     const mappedSerialNums = serialNumbers.map((number) => {
         return (
-            <ListGroupItem>
-                <Button color='primary' onClick={toggle}> {number.serialNum}, Show data</Button>
-                <Collapse isOpen={isOpen} >
-                     <Card >
-                         <CardBody> {number.serialNum}, {number.manufacture}, {number.specNum} </CardBody>
-                     </Card>
-                 </Collapse>
-            </ListGroupItem>
+            <PartInfo 
+            number = {number}
+            />
         )
     })
 
