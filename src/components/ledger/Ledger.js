@@ -53,6 +53,10 @@ const Ledger = (props) => {
     }, [searchVal])
 
     // other functions
+    const handlePrint = () => {
+        window.print()
+    }
+
     const handleDelete = () => {
         axios
             .delete(`${props.API_URL}ticket/${activeTicket._id}`)
@@ -109,7 +113,7 @@ const Ledger = (props) => {
                 handleSplitTickets('Gordon', ticket);
             } else if (ticket.worker === 'Kyle') {
                 handleSplitTickets('Kyle', ticket);
-            } else{
+            } else {
                 handleSplitTickets('Other', ticket);
             }
         }
@@ -191,11 +195,11 @@ const Ledger = (props) => {
                     <MyWrappedComponent value={activeTicket} ref={componentRef} />
                 </ModalBody>
                 <ModalFooter>
-                    <Button color='primary' onClick={() => componentRef.current.handlePrint()}>Print</Button>
+                    <Button color='primary' onClick={() => handlePrint()}>Print</Button>
                     <Button color="secondary" onClick={toggle}>
                         close
                     </Button>
-                    <Button color='danger' onClick={toggleNested}>delete</Button>
+                    <Button color='danger' onClick={toggleNested}>Delete</Button>
                 </ModalFooter>
             </Modal>
 
