@@ -18,11 +18,11 @@ function App() {
         <Link to="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></Link>
         <section className='link-container'>
           <Link className='link' to='/'>Inventory</Link>
-          {/* <Link className='link' to='/serialNums'>Serial numbers</Link> */}
+          <Link className='link' to='/ledger'>Ledger</Link>
+          <Link className='link' to='/serialNums'>Serial numbers</Link>
+          <Link className='link' to='/timeSheet'>Time Sheet</Link>
           {/* <Link className='link' to='/usageGraph'>Usage Graph</Link> */}
           <Link className='link' to='/jobTicket'>Job ticket</Link>
-          <Link className='link' to='/ledger'>Ledger</Link>
-          {/* <Link className='link' to='/timeSheet'>Time Sheet</Link> */}
 
         </section>
         <p>Inventory system</p>

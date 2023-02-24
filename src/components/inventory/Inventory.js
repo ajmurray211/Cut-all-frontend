@@ -86,23 +86,23 @@ const Main = (props) => {
 
     // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const drawPart = async () => {
-        console.log(drawData)
         const getPartNumber = await axios.get(`${props.API_URL}parts/search/?name=${drawData.partName}`)
         const partNumber = getPartNumber.data.data[0]._id
         const onHand = getPartNumber.data.data[0].onHand
-
+        
         const postWorker = await axios.post(`${props.API_URL}workers`, {
             ...drawData,
             partID: partNumber
         })
-            .then(res => console.log(res))
-            .catch(err => console.log('error', err))
+        .then(res => console.log(res))
+        .catch(err => console.log('error', err))
 
         const newOnHandCount = onHand - drawData.amountTaken
 
         const drawListAddition = await axios.put(`${props.API_URL}parts/${partNumber}`, {
             name: drawData.partName,
-            onHand: newOnHandCount
+            onHand: newOnHandCount,
+            dateTaken:  drawData.dateTaken
         })
 
         if (drawListAddition.status == 201) {
@@ -116,11 +116,16 @@ const Main = (props) => {
     }
 
     const mappedParts = parts.map((part) => {
+        if (part.emailed == false && part.onHand <= 5) {
+            axios.put(`${props.API_URL}parts/${part._id}`, {emailed: true})
+        }
         return (
             <Part
                 key={part.id}
                 part={part}
                 API_URL={props.API_URL}
+                getData={getData}
+                id = {part._id}
             />
         )
     })
@@ -214,7 +219,7 @@ const Main = (props) => {
                 </ModalFooter>
             </Modal>
 
-            <ul>
+            <ul id="partsContainer" className="inventory">
                 {loading ? <Spinner animation="border" /> : mappedParts}
             </ul>
         </div>
