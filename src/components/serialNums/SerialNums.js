@@ -14,17 +14,22 @@ const SerialNums = (props) => {
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal((prevState) => !prevState);
     const [coreNums, setCoreNums] = useState([])
-    const [handNums, setHandNums] = useState([]) 
-    const [wallNums, setWallNums] = useState([]) 
-    const [asphltNums, setAsphltNums] = useState([]) 
-    const [concreteNums, setConcreteNums] = useState([]) 
+    const [handNums, setHandNums] = useState([])
+    const [wallNums, setWallNums] = useState([])
+    const [asphltNums, setAsphltNums] = useState([])
+    const [concreteNums, setConcreteNums] = useState([])
     const [otherNums, setOtherNums] = useState([])
+    const [validInput, setValidInput] = useState(false)
     const [newSerialNumberData, setNewSerialNumberData] = useState({
         manufacture: null,
-        tool: null,
+        name: null,
         specNum: null,
         serialNum: null
     })
+    let currentSerialNums = []
+    const validateInput = (val) => {
+        setValidInput(currentSerialNums.includes(val))
+    }
 
     const getData = (url, where) => {
         setLoading(true)
@@ -33,11 +38,6 @@ const SerialNums = (props) => {
             .then((response) => where(response.data.data))
             .catch((err) => setError(err))
             .finally(() => setLoading(false))
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        console.log('hit submit', newSerialNumberData)
     }
 
     useEffect(() => {
@@ -70,39 +70,52 @@ const SerialNums = (props) => {
         }
     }, [status]);
 
-    const splitSerialNums = () => {
-        serialNumbers.forEach((num) => {
-            switch (true) {
-                case num.tool.toLocaleLowerCase().includes('concrete'):
+    const splitSerialNums = (num) => {
+        switch (true) {
+            case num.name.toLocaleLowerCase().includes('concrete'):
+                if (!concreteNums.find(i => i.id === num.id)) {
                     setConcreteNums(data => [...data, num]);
-                    break;
-                case num.tool.toLocaleLowerCase().includes('asphalt'):
+                }
+                break;
+            case num.name.toLocaleLowerCase().includes('asphalt'):
+                if (!asphltNums.find(i => i.id === num.id)) {
                     setAsphltNums(data => [...data, num]);
-                    break;
-                case num.tool.toLocaleLowerCase().includes('wall '):
+                }
+                break;
+            case num.name.toLocaleLowerCase().includes('wall '):
+                if (!wallNums.find(i => i.id === num.id)) {
                     setWallNums(data => [...data, num]);
-                    break;
-                case num.tool.toLocaleLowerCase().includes('hand'):
+                }
+                break;
+            case num.name.toLocaleLowerCase().includes('hand'):
+                if (!handNums.find(i => i.id === num.id)) {
                     setHandNums(data => [...data, num]);
-                    break;
-                case num.tool.toLocaleLowerCase().includes('core'):
+                }
+                break;
+            case num.name.toLocaleLowerCase().includes('core'):
+                if (!coreNums.find(i => i.id === num.id)) {
                     setCoreNums(data => [...data, num]);
-                    break;
-                case num.tool.toLocaleLowerCase().includes('consumable'):
-                    break;
-                default:
+                }
+                break;
+            case num.name.toLocaleLowerCase().includes('consumable'):
+                break;
+            default:
+                if (!otherNums.find(i => i.id === num.id)) {
                     setOtherNums(data => [...data, num]);
-                    break;
-            }
-        })
+                }
+                break;
+        }
     }
 
     useEffect(() => {
-        splitSerialNums()
+        serialNumbers.forEach((num) => {
+            splitSerialNums(num)
+        })
     }, [serialNumbers]);
 
     const mappedSerialNums = (who) => {
         let mapped = who.map((number) => {
+            currentSerialNums.push(number.serialNum)
             return (
                 <PartInfo
                     number={number}
@@ -113,6 +126,10 @@ const SerialNums = (props) => {
     }
 
     const handleChange = (e) => {
+        if (e.target.name == 'serialNum') {
+
+            validateInput(e.target.value)
+        }
         setNewSerialNumberData(data => ({
             ...data,
             [e.target.name]: e.target.value
@@ -148,7 +165,7 @@ const SerialNums = (props) => {
                         <Alert color='success' isOpen={success}>You have created a serial number!</Alert>
                         <Alert color='danger' isOpen={fail}>There was a problem with the submission!</Alert>
 
-                        <Form onSubmit={handleSubmit}>
+                        <Form>
                             <Row>
                                 <Col md={1} />
                                 <Col md={5}>
@@ -180,7 +197,7 @@ const SerialNums = (props) => {
                                         <Label for="toolList"> Tool: </Label>
                                         <Input
                                             id="toolList"
-                                            name="tool"
+                                            name="name"
                                             type="select"
                                             onChange={handleChange}
                                         >
@@ -207,11 +224,14 @@ const SerialNums = (props) => {
                                     </FormGroup>
                                 </Col>
                                 <Col md={5}>
-                                    <FormGroup onChange={handleChange}>
+                                    <FormGroup >
                                         <Label for="serialNum">
                                             Cutall serial #
                                         </Label>
                                         <Input
+                                            onChange={handleChange}
+                                            value={newSerialNumberData.serialNum}
+                                            invalid={validInput}
                                             id="serialNum"
                                             name="serialNum"
                                             type='text'
@@ -223,33 +243,37 @@ const SerialNums = (props) => {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={handlePost} type='submit' color='primary'>
+                        <Button onClick={handlePost} type='submit' color='primary' disabled={validInput}>
                             Submit
                         </Button>
                     </ModalFooter>
                 </Modal>
             </section>
 
-            <section className='splitNumConatiner'> 
+            <section className='splitNumConatiner'>
                 <section className='nums'>
                     <h2>Wall Saw Serials</h2>
-                    {mappedSerialNums(wallNums)}
+                    {wallNums.length !== 0 ? mappedSerialNums(wallNums): 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Hand Saw Serials</h2>
-                    {mappedSerialNums(handNums)}
+                    {handNums.length != 0 ? mappedSerialNums(handNums): 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Asphalt Saw Serials</h2>
-                    {mappedSerialNums(asphltNums)}
+                    {asphltNums.length !== 0 ? mappedSerialNums(asphltNums): 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Concrete Saw Serials</h2>
-                    {mappedSerialNums(concreteNums)}
+                    {concreteNums.length !== 0 ? mappedSerialNums(concreteNums): 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Core Drill Serials</h2>
-                    {mappedSerialNums(coreNums)}
+                    {coreNums.length !== 0 ? mappedSerialNums(coreNums) : 'No current data stored'}
+                </section>
+                <section className='nums'>
+                    <h2>Other Serials</h2>
+                    {otherNums.length !== 0 ? mappedSerialNums(otherNums): 'No current data stored'}
                 </section>
             </section>
         </div>

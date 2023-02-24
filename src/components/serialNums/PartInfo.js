@@ -24,7 +24,7 @@ const PartInfo = (props) => {
 
     return (
         <div className="entry">
-            <Button color='primary' onClick={toggle}> #{props.number.serialNum}, {props.number.tool}</Button>
+            <Button color='primary' onClick={toggle}> #{props.number.serialNum}, {props.number.name}</Button>
             <Modal isOpen={isOpen} fullscreen className="serialNums partInfo">
                 <ModalBody>
                     <ResponsiveContainer
