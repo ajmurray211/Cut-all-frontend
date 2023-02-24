@@ -25,7 +25,10 @@ nav{
 
 .link-container{
   display: flex;
-  flex-direction: column;
+  width: 70%;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size:x-large;
 }
 
 nav p {
@@ -177,8 +180,24 @@ margin-bottom: 5px;
   margin: 10px;
 }
 
+@media screen and (max-width: 768px){
+  .link-container{
+    display: flex;
+    width: 60%;
+    flex-direction: row;
+    justify-content: space-evenly;
+    font-size: larger;
+  }
+}
+
 /* styles for phone view */
 @media screen and (max-width: 425px){
+  .link-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
   section{
     color: grey;
   }
