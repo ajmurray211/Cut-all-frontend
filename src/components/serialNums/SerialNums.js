@@ -13,6 +13,12 @@ const SerialNums = (props) => {
     const [status, setStatus] = useState(null)
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal((prevState) => !prevState);
+    const [coreNums, setCoreNums] = useState([])
+    const [handNums, setHandNums] = useState([]) 
+    const [wallNums, setWallNums] = useState([]) 
+    const [asphltNums, setAsphltNums] = useState([]) 
+    const [concreteNums, setConcreteNums] = useState([]) 
+    const [otherNums, setOtherNums] = useState([])
     const [newSerialNumberData, setNewSerialNumberData] = useState({
         manufacture: null,
         tool: null,
@@ -52,7 +58,6 @@ const SerialNums = (props) => {
                 setSuccess(false)
                 toggleModal()
                 getData(`${props.API_URL}serialNum`, setSerialNumbers)
-
             }, 5000);
         }
         else if (status === 'Error') {
@@ -65,20 +70,53 @@ const SerialNums = (props) => {
         }
     }, [status]);
 
-    const mappedSerialNums = serialNumbers.map((number) => {
-        return (
-            <PartInfo
-                number={number}
-            />
-        )
-    })
+    const splitSerialNums = () => {
+        serialNumbers.forEach((num) => {
+            switch (true) {
+                case num.tool.toLocaleLowerCase().includes('concrete'):
+                    setConcreteNums(data => [...data, num]);
+                    break;
+                case num.tool.toLocaleLowerCase().includes('asphalt'):
+                    setAsphltNums(data => [...data, num]);
+                    break;
+                case num.tool.toLocaleLowerCase().includes('wall '):
+                    setWallNums(data => [...data, num]);
+                    break;
+                case num.tool.toLocaleLowerCase().includes('hand'):
+                    setHandNums(data => [...data, num]);
+                    break;
+                case num.tool.toLocaleLowerCase().includes('core'):
+                    setCoreNums(data => [...data, num]);
+                    break;
+                case num.tool.toLocaleLowerCase().includes('consumable'):
+                    break;
+                default:
+                    setOtherNums(data => [...data, num]);
+                    break;
+            }
+        })
+    }
+
+    useEffect(() => {
+        splitSerialNums()
+    }, [serialNumbers]);
+
+    const mappedSerialNums = (who) => {
+        let mapped = who.map((number) => {
+            return (
+                <PartInfo
+                    number={number}
+                />
+            )
+        })
+        return mapped
+    }
 
     const handleChange = (e) => {
         setNewSerialNumberData(data => ({
             ...data,
             [e.target.name]: e.target.value
         }))
-        console.log(newSerialNumberData)
     }
 
     const handlePost = () => {
@@ -107,7 +145,7 @@ const SerialNums = (props) => {
                 <Modal isOpen={modal} toggle={toggleModal} size='lg' centered>
                     <ModalHeader toggle={toggleModal}>Serial number addition</ModalHeader>
                     <ModalBody>
-                        <Alert color='success' isOpen={success}>You have drawn a part!</Alert>
+                        <Alert color='success' isOpen={success}>You have created a serial number!</Alert>
                         <Alert color='danger' isOpen={fail}>There was a problem with the submission!</Alert>
 
                         <Form onSubmit={handleSubmit}>
@@ -192,9 +230,28 @@ const SerialNums = (props) => {
                 </Modal>
             </section>
 
-            <ListGroup>
-                {mappedSerialNums}
-            </ListGroup>
+            <section className='splitNumConatiner'> 
+                <section className='nums'>
+                    <h2>Wall Saw Serials</h2>
+                    {mappedSerialNums(wallNums)}
+                </section>
+                <section className='nums'>
+                    <h2>Hand Saw Serials</h2>
+                    {mappedSerialNums(handNums)}
+                </section>
+                <section className='nums'>
+                    <h2>Asphalt Saw Serials</h2>
+                    {mappedSerialNums(asphltNums)}
+                </section>
+                <section className='nums'>
+                    <h2>Concrete Saw Serials</h2>
+                    {mappedSerialNums(concreteNums)}
+                </section>
+                <section className='nums'>
+                    <h2>Core Drill Serials</h2>
+                    {mappedSerialNums(coreNums)}
+                </section>
+            </section>
         </div>
     );
 }

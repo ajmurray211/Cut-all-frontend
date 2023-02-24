@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ListGroupItem, Button, Collapse, Card, CardBody, CardTitle, CardText, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { ListGroupItem, Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const PartInfo = (props) => {
@@ -23,10 +23,10 @@ const PartInfo = (props) => {
     })
 
     return (
-        <ListGroupItem >
+        <div className="entry">
             <Button color='primary' onClick={toggle}> #{props.number.serialNum}, {props.number.tool}</Button>
             <Modal isOpen={isOpen} fullscreen className="serialNums partInfo">
-                <ModalBody >
+                <ModalBody>
                     <ResponsiveContainer
                         width='95%'
                         height='50%'>
@@ -63,7 +63,7 @@ const PartInfo = (props) => {
                     <Button onClick={toggle}>Close</Button>
                 </ModalFooter>
             </Modal>
-        </ListGroupItem>
+        </div>
     );
 }
 
