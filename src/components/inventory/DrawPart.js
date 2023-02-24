@@ -28,11 +28,21 @@ const DrawPart = (props) => {
     })
 
     const handleChange = (e) => {
-        console.log(e.target.value)
-        props.setDrawData(val => ({
-            ...val, 
-            [e.target.name]: e.target.value
-        }))
+        if (e.target.name == 'dateTaken') {
+            let splitDate = e.target.value.split('-')
+            let year = splitDate.shift()
+            splitDate.push(year)
+            let reFormatedDate = splitDate.join('/')
+            props.setDrawData(val => ({
+                ...val,
+                dateTaken: reFormatedDate
+            }))
+        } else {
+            props.setDrawData(val => ({
+                ...val,
+                [e.target.name]: e.target.value
+            }))
+        }
     }
 
     return (
@@ -104,27 +114,12 @@ const DrawPart = (props) => {
                             </Label>
                             <Input
                                 id="date"
-                                name="date"
+                                name="dateTaken"
                                 type='date'
                             />
                         </FormGroup>
                     </Col>
                 </Row>
-                {/* <Row>
-                    <Col md={4} />
-                    <Col md={4}>
-                        <FormGroup onChange={(event) => setSerialNumber(event.target.value)}>
-                            <Label for="serialNum">
-                                Serial number for blade/bit
-                            </Label>
-                            <Input
-                                id="serialNum"
-                                name="serialNum"
-                                type='number'
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row> */}
             </Form>
         </section>
     );

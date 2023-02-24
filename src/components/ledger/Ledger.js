@@ -53,6 +53,10 @@ const Ledger = (props) => {
     }, [searchVal])
 
     // other functions
+    const handlePrint = () => {
+        window.print()
+    }
+
     const handleDelete = () => {
         axios
             .delete(`${props.API_URL}ticket/${activeTicket._id}`)
@@ -109,7 +113,7 @@ const Ledger = (props) => {
                 handleSplitTickets('Gordon', ticket);
             } else if (ticket.worker === 'Kyle') {
                 handleSplitTickets('Kyle', ticket);
-            } else{
+            } else {
                 handleSplitTickets('Other', ticket);
             }
         }
@@ -130,38 +134,6 @@ const Ledger = (props) => {
     return (
         <div>
             <h1>List of job tickets on file</h1>
-            {/* <section className="d-flex p-5 justify-content-center" id="filter-bar">
-                <form className="me-2" id="filter-item"  > 
-                    <input className="searchbar" type='text' placeholder="Search by name or ticket #" onChange={() => { console.log('hit') }} />
-                    <button className="search-submit" type="submit">
-                        <img src={searchicon} alt="Search Icon" />
-                    </button>
-                </form>
-
-                <UncontrolledDropdown className="me-2" id="filter-item">
-                    <DropdownToggle caret> Workers </DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem name='worker' value='Rilyn' onClick={handleSearch}>Rilyn</DropdownItem>
-                        <DropdownItem name='worker' value='Kyle' onClick={handleSearch}>Kyle</DropdownItem>
-                        <DropdownItem name='worker' value='Pat' onClick={handleSearch}>Pat</DropdownItem>
-                        <DropdownItem name='worker' value='Gordon' onClick={handleSearch}>Gordon</DropdownItem>
-                        <DropdownItem name='worker' value='Other' onClick={handleSearch}>Other</DropdownItem>
-                    </DropdownMenu>
-                </UncontrolledDropdown>
-
-                <UncontrolledDropdown className="me-2" id="filter-item">
-                    <DropdownToggle caret > Ticket # </DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem name='sort' value='dec' onClick={handleSearch}>High</DropdownItem>
-                        <DropdownItem name='sort' value='acd' onClick={handleSearch}>Low</DropdownItem>
-                    </DropdownMenu>
-                </UncontrolledDropdown>
-
-                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${props.API_URL}ticket`)}>
-                    Refresh
-                </Button>
-            </section> */}
-
             <section className='ledger split' id='ticketContainer'>
                 <section>
                     <h1>Rilyn</h1>
@@ -191,11 +163,11 @@ const Ledger = (props) => {
                     <MyWrappedComponent value={activeTicket} ref={componentRef} />
                 </ModalBody>
                 <ModalFooter>
-                    <Button color='primary' onClick={() => componentRef.current.handlePrint()}>Print</Button>
+                    <Button color='primary' onClick={() => handlePrint()}>Print</Button>
                     <Button color="secondary" onClick={toggle}>
                         close
                     </Button>
-                    <Button color='danger' onClick={toggleNested}>delete</Button>
+                    <Button color='danger' onClick={toggleNested}>Delete</Button>
                 </ModalFooter>
             </Modal>
 

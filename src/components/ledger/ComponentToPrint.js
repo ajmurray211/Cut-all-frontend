@@ -8,9 +8,9 @@ const MyComponentToPrint = forwardRef((props, ref) => {
         window.print()
     }
 
-    useImperativeHandle(ref, () => ({
-        handlePrint
-    }));
+    // useImperativeHandle(ref, () => ({
+    //     handlePrint
+    // }));
 
     const findTimes = (start, end) => {
         let d1 = Date.parse(`2023-01-15T${start}:00.000`);
@@ -67,18 +67,18 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                     <Table
                         size='sm'
                         bordered>
+                        <thead>
+                            <tr>
+                                <th>Truck #</th>
+                                <th>Customer</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <td>Truck Num.</td>
                                 <td>{props.value.truckNum}</td>
-                                {/* <td>Job Times</td>
-                                <td>{props.value.jobBegin} - {props.value.jobEnd}</td> */}
-                            </tr>
-                            <tr>
-                                <td>Address</td>
+                                <td id='customer'>{props.value.billTo.toLocaleUpperCase()}</td>
                                 <td>{props.value.address}</td>
-                                {/* <td>Travel Times</td>
-                                <td>{props.value.travelBegin} - {props.value.travelEnd}</td> */}
                             </tr>
                         </tbody>
                     </Table>
@@ -163,7 +163,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                         {props.value.jobNum ? <li>{`Job #: ${props.value.jobNum}.`}</li> : ''}
                         {props.value.CC ? <li>{`Email sent to: ${props.value.CC}`}</li> : ''}
                     </ul>
-                    I {props.value.confirmationName} have read and agreed to the details and conditions of the job ticket above on behalf of {props.value.billTo}.
+                    I {props.value.confirmationName} have read and agreed to the details and conditions of the job ticket above on behalf of {props.value.billTo.toLocaleUpperCase()}.
                 </section>
             </section>
         </div>

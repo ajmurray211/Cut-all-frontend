@@ -25,7 +25,10 @@ nav{
 
 .link-container{
   display: flex;
-  flex-direction: column;
+  width: 70%;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size:x-large;
 }
 
 nav p {
@@ -73,24 +76,6 @@ ul {
   padding: 0;
 }
 
-.part {
-  list-style: none;
-  display: flex;
-  margin-left: 50px;
-  margin-right: 50px;
-  margin-bottom: 15px;
-  justify-content: space-evenly;
-  align-items: center;
-  background-color: rgba(128, 128, 128, 0.685);
-  border-radius: 35px;
-  font-size: larger;
-}
-
-.part-collapse {
-  margin-left: 50px;
-  margin-right: 50px;
-  margin-bottom: 15px;
-}
 
 /* styling drop downs */
 
@@ -114,6 +99,32 @@ li.part{
 #partLastPerson{
   padding-top: 15px;
 }
+/* inventory styles */
+.part {
+  width: 350px;
+}
+
+.card{
+  margin: 0 30px 15px 30px ;
+  border-radius: 35px;
+}
+
+.part-collapse {
+border-radius: 35px;
+margin-bottom: 5px;
+}
+
+.inventory#partsContainer{
+  font-size: larger;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.inventory #partPicture{
+  background-color: rgb(44, 44, 255);
+  border-radius: 35px;
+}
 
 .toolTracker{
   display: flex;
@@ -121,6 +132,8 @@ li.part{
   justify-content: space-around;
   margin: 2vw;
 }
+
+/* ledger styles */
 
 .ledger#ticketContainer{
   display: flex;
@@ -133,13 +146,58 @@ li.part{
 }
 
 .timeSheet.workCodes{
-  /* border: 1px solid red; */
   text-align: left;
+  color: black;
 }
 
+/* serial numbers styles */
+
+.serialNums.partInfo #entryContainer{
+  margin-left: 5vw;
+  display: flex;
+  flex-direction: column;
+  list-style-type:none; 
+  justify-content: space-around;
+  padding-top: 2vw;
+}
+
+.splitNumConatiner{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 25px;
+}
+
+.entry{
+  font-size: larger;
+  margin: 5px;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.nums{
+  width: 25vw;
+  margin: 10px;
+}
+
+@media screen and (max-width: 768px){
+  .link-container{
+    display: flex;
+    width: 60%;
+    flex-direction: row;
+    justify-content: space-evenly;
+    font-size: larger;
+  }
+}
 
 /* styles for phone view */
 @media screen and (max-width: 425px){
+  .link-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
   section{
     color: grey;
   }
