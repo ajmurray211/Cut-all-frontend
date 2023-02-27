@@ -8,6 +8,10 @@
   font-family: 'Nunito', sans-serif;
 }
 
+.hide{
+  display: none;
+}
+
 /* header styling */
 
 .cut-all-logo {

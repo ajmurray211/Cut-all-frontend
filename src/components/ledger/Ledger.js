@@ -3,6 +3,7 @@ import axios from "axios"
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import MyWrappedComponent from './ComponentToPrint';
+import EditComponent from './EditComponent';
 import logo from '../../Assets/cut-all-logo.png'
 import searchicon from "../../Assets/searchicon.png";
 
@@ -20,6 +21,7 @@ const Ledger = (props) => {
     const [patTickets, setPatTickets] = useState([])
     const [gordonTickets, setGordonTickets] = useState([])
     const [otherTickets, setOtherTickets] = useState([])
+    const [editMode, setEditMode] = useState(false)
 
     // controls for modals 
     const [nestedModal, setNestedModal] = useState(false);
@@ -55,6 +57,12 @@ const Ledger = (props) => {
     // other functions
     const handlePrint = () => {
         window.print()
+    }
+
+    const handleSubmit = (data) => {
+        axios.put(`${props.API_URL}ticket/${data._id}`, data)
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
     }
 
     const handleDelete = () => {
@@ -160,14 +168,18 @@ const Ledger = (props) => {
             <Modal fullscreen className='modal-width' id='mainModal' isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
                 <ModalBody id="ticketInfo">
-                    <MyWrappedComponent value={activeTicket} ref={componentRef} />
+                    <MyWrappedComponent editMode={editMode} value={activeTicket} ref={componentRef} />
+                    <EditComponent editMode={editMode} editedData={activeTicket} API_URL={props.API_URL} setEditedData = {setActiveTicket} />
                 </ModalBody>
                 <ModalFooter>
-                    <Button color='primary' onClick={() => handlePrint()}>Print</Button>
-                    <Button color="secondary" onClick={toggle}>
-                        close
-                    </Button>
-                    <Button color='danger' onClick={toggleNested}>Delete</Button>
+                    <Button color="secondary" className={editMode ? 'hide' : 'show'} onClick={toggle}>close</Button>
+                    <Button color='primary' className={editMode ? 'hide' : 'show'} onClick={() => handlePrint()}>Print</Button>
+                    <Button color='warning' className={editMode ? 'hide' : 'show'} onClick={() => setEditMode(!editMode)}>Edit</Button>
+                    <Button color='success' className={editMode ? 'show' : 'hide'} type='submit' onClick={() => {
+                        handleSubmit(activeTicket)
+                        setEditMode(!editMode)
+                    }}>Save</Button>
+                    <Button color='danger' className={editMode ? 'hide' : 'show'} onClick={toggleNested}>Delete</Button>
                 </ModalFooter>
             </Modal>
 

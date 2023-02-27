@@ -3,14 +3,10 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Table } from 'reactstrap';
 
 const MyComponentToPrint = forwardRef((props, ref) => {
-    console.log(props.value)
+    // console.log(props.value)
     const handlePrint = () => {
         window.print()
     }
-
-    // useImperativeHandle(ref, () => ({
-    //     handlePrint
-    // }));
 
     const findTimes = (start, end) => {
         let d1 = Date.parse(`2023-01-15T${start}:00.000`);
@@ -40,7 +36,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
     }
 
     let mappedHelpers = helpersParsedData.map((worker) => {
-        console.log(worker)
+        // console.log(worker)
         let totalMins = worker[1].mins + worker[2].mins
         const minutes = totalMins % 60
         const hours = Math.floor(totalMins / 60);
@@ -60,9 +56,9 @@ const MyComponentToPrint = forwardRef((props, ref) => {
     })
 
     return (
-        <div id='ticketBody' ref={ref} >
+        <div className={props.editMode ? 'hide' : 'show'} id={props.editMode ? 'hide' : 'ticketBody'} ref={ref} >
             <section className='half' id='left'>
-                <h3>Job Information:</h3>
+                <h3 >Job Information:</h3>
                 <ul id='inputContainer'>
                     <Table
                         size='sm'
@@ -143,7 +139,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                         <tr>{props.value.coreDrilling ? <th>{`Core drilling took ${props.value.coreDrilling} hrs.`}</th> : ''} </tr>
                         <tr>{props.value.waterControl ? <th>{`Water control took ${props.value.waterControl} hrs.`}</th> : ''} </tr>
                         <tr>{props.value.slabSaw ? <th>{`Slab sawing took ${props.value.slabSaw} hrs.`}</th> : ''} </tr>
-                        <tr>{props.value.hammerChipping ? `Jack hammer chipping took ${props.value.hammerChipping} hrs.` : ''} </tr>
+                        <tr>{props.value.hammerChipping ? <th>{`Jack hammer chipping took ${props.value.hammerChipping} hrs.`}</th> : ''} </tr>
                         <tr>{props.value.loadExcevate ? <th>{`Load excevate took ${props.value.loadExcevate} hrs.`}</th> : ''} </tr>
                         <tr>{props.value.haul ? <th>{`Hauling took ${props.value.haul} hrs.`}</th> : ''} </tr>
                         <tr>{props.value.handLabor ? <th>{`Hand labor took ${props.value.handLabor} hrs.`}</th> : ''} </tr>
@@ -163,7 +159,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
                         {props.value.jobNum ? <li>{`Job #: ${props.value.jobNum}.`}</li> : ''}
                         {props.value.CC ? <li>{`Email sent to: ${props.value.CC}`}</li> : ''}
                     </ul>
-                    I {props.value.confirmationName} have read and agreed to the details and conditions of the job ticket above on behalf of {props.value.billTo.toLocaleUpperCase()}.
+                    I {props.value.confirmationName} have read and agreed to the details and conditions of the job ticket above on behalf of<span id='customer'>  {props.value.billTo.toLocaleUpperCase()}</span>.
                 </section>
             </section>
         </div>
