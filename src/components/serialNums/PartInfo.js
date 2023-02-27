@@ -55,6 +55,7 @@ const PartInfo = (props) => {
                     <br />
                     Spec number: {props.number.specNum}
                     <br />
+                    Assigned User: {props.number.assignedTo == '' ? 'No user assigned yet.' : props.number.assignedTo}
                     <ul id="entryContainer">
                         {mappedHistory}
                     </ul>

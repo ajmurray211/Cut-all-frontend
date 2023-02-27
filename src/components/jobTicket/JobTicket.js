@@ -58,6 +58,7 @@ const JobTIcket = (props) => {
         jobPerQuote: true,
         workAdded: false
     })
+    const [serialNumsList, setSerialNumsList] = useState([])
     let infoToHTML = []
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
 
@@ -75,6 +76,20 @@ const JobTIcket = (props) => {
                 }))
             })
     }, [])
+
+    useEffect(() => {
+        axios
+            .get(`${props.API_URL}serialNum/numsList`)
+            .then((res) => {
+                res.data.data.map((num) => {
+                    if (!serialNumsList.includes(num.serialNum)) {
+                        let copy = serialNumsList
+                        copy.push(num.serialNum)
+                        setSerialNumsList(copy)
+                    } 
+                })
+            })
+    }, [serialNumsList])
 
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
@@ -121,15 +136,15 @@ const JobTIcket = (props) => {
         toggleModal()
         console.log(value, 'before email')
         postTicket()
-        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
-            .then((result) => {
-                setStatus(result.text);
-                setSuccess(true)
-            }, (error) => {
-                setFail(true)
-                setStatus('Error')
-                console.log(error);
-            });
+        // emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+        //     .then((result) => {
+        //         setStatus(result.text);
+        //         setSuccess(true)
+        //     }, (error) => {
+        //         setFail(true)
+        //         setStatus('Error')
+        //         console.log(error);
+        //     });
     }
 
     const postTicket = async () => {
@@ -141,6 +156,7 @@ const JobTIcket = (props) => {
 
         value.jobInfo.forEach(async (data) => {
             await axios.put(`${props.API_URL}serialNum/${data.serialNum}`, {
+                assignedTo: value.worker,
                 history: [
                     {
                         runLength: data.length,
@@ -265,7 +281,7 @@ const JobTIcket = (props) => {
         infoToHTML.push(line)
         return <BillingRow
             index={index}
-            // row={row}
+            serialNumsList={serialNumsList}
             editRow={editRow}
         />
     })
