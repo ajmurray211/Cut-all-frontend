@@ -2,9 +2,9 @@ import { Label, FormGroup, Input, Table } from 'reactstrap';
 import { useState } from 'react';
 
 const JobDetails = (props) => {
-    // console.log(props.value)
     const [confirmation, setConfirmation] = useState(true);
     const toggle = () => setConfirmation(!confirmation);
+    console.log(props.value)
 
     let helpersParsedData = []
     if (props.value.helperTimes) {
@@ -18,7 +18,6 @@ const JobDetails = (props) => {
     }
 
     let mappedHelpers = helpersParsedData.map((worker) => {
-        // console.log(worker)
         return (
             <li>{worker[0]}: traveled for {worker[2].combined} and worked for {worker[1].combined}</li>
         )
@@ -31,7 +30,6 @@ const JobDetails = (props) => {
             </tr>
         )
     })
-
 
     return (
         <div id='mainBody'>
@@ -48,7 +46,7 @@ const JobDetails = (props) => {
                             <thead>
                                 <th>Qty</th>
                                 <th>Length</th>
-                                <th>item</th>
+                                <th>Depth</th>
                                 <th>Code</th>
                                 <th>Description</th>
                             </thead>
