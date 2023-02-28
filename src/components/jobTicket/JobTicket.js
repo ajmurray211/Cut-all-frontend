@@ -58,6 +58,7 @@ const JobTIcket = (props) => {
         jobPerQuote: true,
         workAdded: false
     })
+    const [serialNumsList, setSerialNumsList] = useState([])
     let infoToHTML = []
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
 
@@ -75,6 +76,20 @@ const JobTIcket = (props) => {
                 }))
             })
     }, [])
+
+    useEffect(() => {
+        axios
+            .get(`${props.API_URL}serialNum/numsList`)
+            .then((res) => {
+                res.data.data.map((num) => {
+                    if (!serialNumsList.includes(num.serialNum)) {
+                        let copy = serialNumsList
+                        copy.push(num.serialNum)
+                        setSerialNumsList(copy)
+                    } 
+                })
+            })
+    }, [serialNumsList])
 
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
@@ -141,6 +156,7 @@ const JobTIcket = (props) => {
 
         value.jobInfo.forEach(async (data) => {
             await axios.put(`${props.API_URL}serialNum/${data.serialNum}`, {
+                assignedTo: value.worker,
                 history: [
                     {
                         runLength: data.length,
@@ -202,6 +218,7 @@ const JobTIcket = (props) => {
     };
 
     const handleChange = (e) => {
+        console.log(value)
         const changeVal = (total, field) => {
             setValue(values => ({
                 ...values,
@@ -248,6 +265,7 @@ const JobTIcket = (props) => {
 
     // allows user to add more rows 
     const addRow = () => {
+        console.log('hit add row')
         let row = {
             'qty': '',
             'length': '',
@@ -265,7 +283,7 @@ const JobTIcket = (props) => {
         infoToHTML.push(line)
         return <BillingRow
             index={index}
-            // row={row}
+            serialNumsList={serialNumsList}
             editRow={editRow}
         />
     })
