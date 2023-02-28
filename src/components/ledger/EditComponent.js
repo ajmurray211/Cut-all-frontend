@@ -3,8 +3,25 @@ import { useState, useEffect } from 'react';
 import { Input, Label, Table } from 'reactstrap';
 
 const EditComponent = ((props) => {
-    console.log(props.value)
     const [serialNumsList, setSerialNumsList] = useState([])
+    const [helpers, setHelpers] = useState({ ...props.editedData.helperTimes })
+
+    const changeTimes = (e, name, field, val) => {
+        setHelpers((values) => ({
+            ...values,
+            [name]: {
+                ...helpers[name],
+                [field]: e.target.value
+            }
+        }))
+    }
+
+    useEffect(() => {
+        props.setEditedData(values => ({
+            ...values,
+            helperTimes: helpers
+        }))
+    }, [helpers])
 
     useEffect(() => {
         axios
@@ -48,6 +65,17 @@ const EditComponent = ((props) => {
                 ...editedData,
                 [e.target.name]: selected
             }))
+        } else if (e.target.name === 'helper') {
+            let workersList = Object.keys(helpers)
+            const oldName = workersList[i];
+            const newName = e.target.value;
+            const updatedHelpers = Object.fromEntries(
+                Object.entries(helpers).map(([key, value]) => [
+                    key === oldName ? newName : key,
+                    value,
+                ])
+            );
+            setHelpers(updatedHelpers);
         } else {
             props.setEditedData(editedData => ({
                 ...editedData,
@@ -73,32 +101,70 @@ const EditComponent = ((props) => {
     }
 
     let helpersParsedData = []
-    if (props.editedData.helperTimes) {
-        for (let name in props.editedData.helperTimes) {
-            if (Object.keys(props.value['helperTimes'][name]).length != 0) {
-                let totalJob = findTimes(props.value['helperTimes'][name].jobBegin, props.value['helperTimes'][name].jobEnd)
-                let totalTravel = findTimes(props.value['helperTimes'][name].travelBegin, props.value['helperTimes'][name].travelEnd)
-                helpersParsedData.push([name, totalJob, totalTravel, props.value['helperTimes'][name]])
+    if (helpers) {
+        for (let name in helpers) {
+            if (Object.keys(helpers[name]).length != 0) {
+                let totalJob = findTimes(helpers[name].jobBegin, helpers[name].jobEnd)
+                let totalTravel = findTimes(helpers[name].travelBegin, helpers[name].travelEnd)
+                helpersParsedData.push([name, totalJob, totalTravel, helpers[name]])
             }
         }
     }
 
-    let mappedHelpers = helpersParsedData.map((worker) => {
-        let totalMins = worker[1].mins + worker[2].mins
+    let mappedHelpers = helpersParsedData.map((worker, i) => {
+        let workersList = Object.keys(helpers)
+        let totalMins = (worker[1].mins ? worker[1].mins : 0) + (worker[2].mins ? worker[2].mins : 0)
         const minutes = totalMins % 60
         const hours = Math.floor(totalMins / 60);
         return (
             <tr className='helperInfoLine'>
-                <td> <Input name='' onChange={(e) => handleChange(e)} value={worker[0]} />  </td>
-                <td> <Input name='' onChange={(e) => handleChange(e)} type='time' value={worker[3].travelBegin} />  -  <Input name='' onChange={(e) => handleChange(e)} type='time' value={worker[3].travelEnd} /> </td>
-                <td> <Input name='' onChange={(e) => handleChange(e)} type='time' value={worker[3].jobBegin} /> -  <Input name='' onChange={(e) => handleChange(e)} type='time' value={worker[3].jobEnd} /> </td>
+                <td> <Input
+                    autoComplete="on"
+                    list='workers'
+                    name='helper'
+                    id={worker[0]}
+                    onChange={(e) => handleChange(e, i)}
+                    value={workersList[i]} />
+                    <datalist id="workers">
+                        <option value='Pat' />
+                        <option value='Kyle' />
+                        <option value='Rilyn' />
+                        <option value='Gordon' />
+                    </datalist>
+                </td>
+                <td> <Input
+                    name='travelBegin'
+                    onChange={(e) => changeTimes(e, worker[0], 'travelBegin',)}
+                    type='time'
+                    value={worker[3].travelBegin} />  -
+                    <Input
+                        name='travelEnd'
+                        onChange={(e) => changeTimes(e, worker[0], 'travelEnd')}
+                        type='time' value={worker[3].travelEnd} />
+                </td>
+                <td>
+                    <Input
+                        name='jobBegin'
+                        onChange={(e) => changeTimes(e, worker[0], 'jobBegin')}
+                        type='time'
+                        value={worker[3].jobBegin} /> -
+                    <Input
+                        name='jobEnd'
+                        onChange={(e) => changeTimes(e, worker[0], 'jobEnd')}
+                        type='time'
+                        value={worker[3].jobEnd} /> </td>
                 <td> {hours}hr. {minutes}.min</td>
-                <td> <Input name='' onChange={(e) => handleChange(e)} value={worker[3].milage} /></td>
+                <td>
+                    <Input
+                        name='milage'
+                        onChange={(e) => changeTimes(e, worker[0], 'milage')}
+                        value={worker[3].milage} />
+                </td>
             </tr>
         )
     })
 
-    const mappedjobInfo = props.editedData.jobInfo.map((row, index) => { 
+    const mappedjobInfo = props.editedData.jobInfo.map((row, index) => {
         return (
             <tr className='jobInfoLine'>
                 <td><Input name='infoRow' onChange={(e) => handleChange(e, index, 'qty', e.target.value)} value={row.qty} />  </td>
@@ -190,7 +256,16 @@ const EditComponent = ((props) => {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><Input name='worker' onChange={(e) => handleChange(e)} value={props.editedData.worker} /></td>
+                                    <td>
+                                        <Input
+                                            name='worker'
+                                            onChange={(e) => handleChange(e)}
+                                            value={props.editedData.worker} 
+                                            list='workers'
+                                            autoComplete='on'
+                                            />
+                                            
+                                    </td>
                                     <td><><Input name='travelBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelBegin} /> - <Input name='travelEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelEnd} /> </> </td>
                                     <td><><Input name='jobBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobBegin} /> - <Input name='jobEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobEnd} /> </></td>
                                     <td>{props.editedData.totalPaidTime}</td>

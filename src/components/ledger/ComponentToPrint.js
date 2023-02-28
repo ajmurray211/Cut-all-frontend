@@ -3,10 +3,6 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Table } from 'reactstrap';
 
 const MyComponentToPrint = forwardRef((props, ref) => {
-    // console.log(props.value)
-    const handlePrint = () => {
-        window.print()
-    }
 
     const findTimes = (start, end) => {
         let d1 = Date.parse(`2023-01-15T${start}:00.000`);
@@ -36,8 +32,7 @@ const MyComponentToPrint = forwardRef((props, ref) => {
     }
 
     let mappedHelpers = helpersParsedData.map((worker) => {
-        // console.log(worker)
-        let totalMins = worker[1].mins + worker[2].mins
+        let totalMins = (worker[1].mins ? worker[1].mins : 0) + (worker[2].mins ? worker[2].mins : 0)
         const minutes = totalMins % 60
         const hours = Math.floor(totalMins / 60);
         return (
