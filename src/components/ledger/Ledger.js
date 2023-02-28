@@ -63,6 +63,9 @@ const Ledger = (props) => {
         axios.put(`${props.API_URL}ticket/${data._id}`, data)
             .then(res => console.log(res))
             .catch(err => console.log(err))
+
+        // axios.put(`${props.API_URL}serialNum/update`)
+        // .then(res => console.log('hit'))
     }
 
     const handleDelete = () => {
@@ -169,7 +172,7 @@ const Ledger = (props) => {
                 <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
                 <ModalBody id="ticketInfo">
                     <MyWrappedComponent editMode={editMode} value={activeTicket} ref={componentRef} />
-                    <EditComponent editMode={editMode} editedData={activeTicket} API_URL={props.API_URL} setEditedData = {setActiveTicket} />
+                    <EditComponent editMode={editMode} editedData={activeTicket} API_URL={props.API_URL} setEditedData={setActiveTicket} />
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" className={editMode ? 'hide' : 'show'} onClick={toggle}>close</Button>

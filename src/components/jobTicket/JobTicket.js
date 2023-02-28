@@ -218,6 +218,7 @@ const JobTIcket = (props) => {
     };
 
     const handleChange = (e) => {
+        console.log(value)
         const changeVal = (total, field) => {
             setValue(values => ({
                 ...values,
@@ -264,6 +265,7 @@ const JobTIcket = (props) => {
 
     // allows user to add more rows 
     const addRow = () => {
+        console.log('hit add row')
         let row = {
             'qty': '',
             'length': '',

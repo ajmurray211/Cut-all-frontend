@@ -264,7 +264,6 @@ const EditComponent = ((props) => {
                                             list='workers'
                                             autoComplete='on'
                                             />
-                                            
                                     </td>
                                     <td><><Input name='travelBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelBegin} /> - <Input name='travelEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelEnd} /> </> </td>
                                     <td><><Input name='jobBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobBegin} /> - <Input name='jobEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobEnd} /> </></td>
