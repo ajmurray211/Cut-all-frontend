@@ -67,7 +67,7 @@ const JobTIcket = (props) => {
         axios
             .get(`${props.API_URL}ticket/topTicketNum`)
             .then((res) => {
-                console.log(value)
+                // console.log(value)
                 // let number = res.data[0].ticketNum !== null ? number = res.data[0].ticketNum + 1 : number = 1
                 let number = res.data[0].ticketNum + 1
                 setValue(values => ({
@@ -86,7 +86,7 @@ const JobTIcket = (props) => {
                         let copy = serialNumsList
                         copy.push(num.serialNum)
                         setSerialNumsList(copy)
-                    } 
+                    }
                 })
             })
     }, [serialNumsList])
@@ -120,7 +120,7 @@ const JobTIcket = (props) => {
             ...values,
             jobInfoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
             <thead> 
-            <tr> <th>QTY</th> <th>Length/DIA</th> <th>Depth</th> <th>Work Code</th> <th>Description</th> <th>Blade serial #</th> </tr>
+            <tr> <th>QTY</th> <th>Length/DIA</th> <th>Depth (in.)</th> <th>Work Code</th> <th>Description</th> <th>Blade serial #</th> </tr>
             </thead>
             <tbody> ${combined} </tbody>
             </table>`,
@@ -134,17 +134,17 @@ const JobTIcket = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        console.log(value, 'before email')
+        // console.log(value, 'before email')
         postTicket()
-        emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
-            .then((result) => {
-                setStatus(result.text);
-                setSuccess(true)
-            }, (error) => {
-                setFail(true)
-                setStatus('Error')
-                console.log(error);
-            });
+        // emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
+        //     .then((result) => {
+        //         setStatus(result.text);
+        //         setSuccess(true)
+        //     }, (error) => {
+        //         setFail(true)
+        //         setStatus('Error')
+        // console.log(error);
+        //     });
     }
 
     const postTicket = async () => {
@@ -154,21 +154,49 @@ const JobTIcket = (props) => {
             .then((res) => console.log(res))
             .catch((err) => console.log(err))
 
-        value.jobInfo.forEach(async (data) => {
-            await axios.put(`${props.API_URL}serialNum/${data.serialNum}`, {
-                assignedTo: value.worker,
-                history: [
-                    {
-                        runLength: data.length,
-                        depth: data.depth,
-                        date: value.date
+            value.jobInfo.forEach(async (data) => {
+            let dateList = null
+            await axios.get(`${props.API_URL}serialNum/${data.serialNum}`)
+                .then(res => dateList = (res.data.data[0].history))
+
+                if (dateList.some(item => item.date === value.date)) {
+                const duplicateDate = dateList.find(item => item.date === value.date);
+                console.log(dateList)
+                const updatedHistory = dateList.map(item => {
+                    if (item.date === duplicateDate.date) {
+                        return {
+                            ...item,
+                            runLength: parseInt(item.runLength) + parseInt(data.length),
+                            depth: parseInt(item.depth) + parseInt(data.depth),
+                        };
                     }
-                ]
-            })
-                .then((res) => console.log(res))
-                .catch((err) => console.log(err))
+                    return item;
+                });
+                await axios.put(`${props.API_URL}serialNum/update/1`, {
+                    serialNum: data.serialNum,
+                    history: updatedHistory
+                })
+                    .then((res) => console.log(res))
+                    .catch((err) => console.log(err))
+                console.log('exsisting', duplicateDate, data, updatedHistory)
+            } else {
+                console.log('new date')
+                await axios.put(`${props.API_URL}serialNum/update/2`, {
+                    serialNum: data.serialNum,
+                    assignedTo: value.worker,
+                    history: [
+                        {
+                            runLength: data.length,
+                            depth: data.depth,
+                            date: value.date
+                        }]
+                })
+                    .then((res) => console.log(res))
+                    .catch((err) => console.log(err))
+            }
         })
     }
+
     // resets variables changing when status changes 
     useEffect(() => {
         if (status === 'OK') {
