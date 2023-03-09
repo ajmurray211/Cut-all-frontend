@@ -192,7 +192,7 @@ const EditComponent = ((props) => {
     })
 
     return (
-        <div onSubmit={() => props.handleSubmit(props.editedData)} className={props.editMode ? 'show' : 'hide'} id={props.editMode ? 'ticketBody' : 'hide'}>
+        <div className={props.editMode ? 'show' : 'hide'} id={props.editMode ? 'ticketBody' : 'hide'}>
             <section className='half' id='left'>
                 <h3 >Job Information:</h3>
                 <ul id='input name = onChange={(e) => handleChange(e)}Container'>
@@ -228,7 +228,7 @@ const EditComponent = ((props) => {
                                 <tr>
                                     <th>QTY</th>
                                     <th>Length / DIA</th>
-                                    <th>Depth</th>
+                                    <th>Depth (in.)</th>
                                     <th>Work Code</th>
                                     <th>Description / Equip. Used</th>
                                     <th>Blade serial #</th>
