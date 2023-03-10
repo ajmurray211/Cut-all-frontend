@@ -18,16 +18,17 @@ import TimeRow from "./TimeRow";
 import emailjs from "@emailjs/browser";
 import InfoDisplay from "./InfoDisplay";
 import "./timeSheet.css";
+import axios from "axios";
 
-const TimeSheet = () => {
+const TimeSheet = (props) => {
   const [title, setTitle] = useState("");
   const [sheetBody, setSheetBody] = useState([]);
   const [sheetInfo, setSheetInfo] = useState({
     employeeName: null,
     employeeNum: null,
     truckNum: null,
-    title: "operator",
-    status: null,
+    title: "Operator",
+    status: "Journeyman",
     date: null,
     infoHTML: null,
   });
@@ -126,18 +127,17 @@ const TimeSheet = () => {
         </tbody></table>`,
     }));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // setStatus('OK')
-    emailjs
-      .send(
-        "service_v3kf86l",
-        "template_5kfgkxl",
-        sheetInfo,
-        "E5-2RW9TeJyvAH3_r"
-      )
+    console.log('submit')
+    await axios.put(`${props.API_URL}timeCards/${sheetInfo.employeeName}`, {
+      sheetInfo,
+      sheetBody
+    })
       .then(
         (result) => {
+          console.log(result.text)
           setStatus(result.text);
           setSuccess(true);
         },
@@ -147,6 +147,24 @@ const TimeSheet = () => {
           console.log(error);
         }
       );
+    // emailjs
+    //   .send(
+    //     "service_v3kf86l",
+    //     "template_5kfgkxl",
+    //     sheetInfo,
+    //     "E5-2RW9TeJyvAH3_r"
+    //   )
+    //   .then(
+    //     (result) => {
+    //       setStatus(result.text);
+    //       setSuccess(true);
+    //     },
+    //     (error) => {
+    //       setFail(true);
+    //       setStatus("Error");
+    //       console.log(error);
+    //     }
+    //   );
   };
 
   return (
@@ -177,7 +195,7 @@ const TimeSheet = () => {
           <Col md={3}>
             <Label for="title">Title</Label>
             <Input
-              defaultValue={"operator"}
+              defaultValue={sheetInfo.title}
               onChange={handleChange}
               name="title"
               id="title"
@@ -202,6 +220,7 @@ const TimeSheet = () => {
             <Input
               placeholder="Enter Your Status"
               onChange={handleChange}
+              defaultValue={sheetInfo.status}
               name="status"
               id="status"
               type="text"
@@ -253,8 +272,8 @@ const TimeSheet = () => {
           </Col>
           <Col md={2}>
             <Input
+              readOnly
               min={0}
-              defaultValue={0}
               value={total}
               id="Total"
               type="number"
