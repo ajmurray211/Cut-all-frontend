@@ -90,6 +90,21 @@ const TimeSheet = () => {
     }));
   };
 
+  const autoEmail = () => {
+    console.log('api call')
+  }
+
+  setInterval(() => {
+    const now = new Date();
+    // Check if it's Saturday at midnight
+    if (now.getDay() === 6 && now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+      autoEmail();
+    }
+    else if (now.getDay() === 6 && now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+      autoEmail();
+    }
+  }, 1000 * 60); // Check every minute
+
   const mapRows = sheetBody.map((row, i) => {
     sheetHTML.push(
       `<tr><td>${row.startTime}</td><td>${row.endTime}</td><td>${row.workCode}</td><td>${row.jobName}</td><td>${row.hours}</td><td>${row.notes}</td></tr>`
