@@ -12,11 +12,18 @@ const Part = (props) => {
     const [putOnHand, setPutOnHand] = useState(props.part.onHand)
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
 
-    const handleEdit = async () => {
+    console.log(props.part)
+
+    const handleEdit = async (event) => {
+        // const formData = new FormData();
+        // formData.append("image", selectedFile);
+
         const getID = await axios.put(`${props.API_URL}parts/${props.part._id}`, {
             name: putName,
-            onHand: putOnHand
+            onHand: putOnHand,
         })
             .then(res => { if (res.status == 201) setSuccess(true) })
             .catch(err => { if (err.status == 201) setFail(true) })
@@ -28,6 +35,17 @@ const Part = (props) => {
         }, 5000)
     }
 
+    // const handleFileInputChange = (event) => {
+    //     const file = event.target.files[0];
+    //     setSelectedFile(file);
+
+    //     const reader = new FileReader();
+    //     reader.readAsDataURL(file);
+    //     reader.onloadend = () => {
+    //         setPreviewUrl(reader.result);
+    //     };
+    // };
+
     const handleDelete = async () => {
         const getID = await axios.delete(`${props.API_URL}parts/${props.part._id}`)
         toggleEdit()
@@ -35,7 +53,7 @@ const Part = (props) => {
 
     const handleFullHistory = () => {
         let info = axios.get(`${props.API_URL}parts/${props.id}`)
-        .then(res => console.log(res.data.data.drawList))
+            .then(res => console.log(res.data.data.drawList))
     }
 
     const mappedLastDrawNames = props.part.drawList.map((info) => {
@@ -43,7 +61,7 @@ const Part = (props) => {
             <li key={info.id} style={{ fontSize: 20 }}>{info.name} took <span style={{ color: 'red' }}>{info.amountTaken}</span> on <span style={{ color: 'blue' }}>{info.dateTaken}</span>.</li>
         )
     })
-    
+
     return (
         <div className="part">
             <Card
@@ -102,6 +120,11 @@ const Part = (props) => {
                             <Label for="partCount"> Amount on hand </Label>
                             <Input id="partCount" placeholder={props.part.onHand} type="number" onChange={(event) => setPutOnHand(event.target.value)} value={putOnHand} />
                         </FormGroup>
+                        {/* <FormGroup>
+                            <Label for="partImage" > Upload an image </Label>
+                            <Input id="partImage" type="file" onChange={handleFileInputChange} />
+                            {previewUrl && <img id="partPicture" src={previewUrl} alt="Preview" />}
+                        </FormGroup> */}
                     </Form>
                     <ModalFooter>
                         <Button color="danger" onClick={handleDelete}> Delete </Button>

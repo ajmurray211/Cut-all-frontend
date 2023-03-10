@@ -4,7 +4,7 @@ import { useState } from 'react';
 const JobDetails = (props) => {
     const [confirmation, setConfirmation] = useState(true);
     const toggle = () => setConfirmation(!confirmation);
-    console.log(props.value)
+    // console.log(props.value)
 
     let helpersParsedData = []
     if (props.value.helperTimes) {
