@@ -26,6 +26,7 @@ const JobTIcket = (props) => {
         date: '',
         address: '',
         jobInfoHTML: null,
+        helperTimesHTML: null,
         jobInfo: [],
         wallSawing: null,
         coreDrilling: null,
@@ -104,15 +105,10 @@ const JobTIcket = (props) => {
         }
 
         let timetablels = []
-
         for (let name in value.helperTimes) {
             if (Object.keys(value.helperTimes[name]).length !== 0) {
-                timetablels.push(`<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
-                <thead> 
-                <tr> <th>Job times</th> <th>Travel Times</th> <th>Depth</th> <th>Work Code</th> <th>Description</th> <th>Blade serial #</th> </tr>
-                </thead>
-                <tbody> ${combined} </tbody>
-                </table>`)
+                let key = value.helperTimes[name]
+                timetablels.push(`<tr> <td>${name} </td> <td>${key.jobBegin}</td> <td>${key.jobEnd}</td> <td> ${key.travelBegin}</td> <td>${key.travelEnd}</td> <td>${key.milage}</td> </tr>`)
             }
         }
 
@@ -125,6 +121,13 @@ const JobTIcket = (props) => {
             <tbody> ${combined} </tbody>
             </table>`,
             jobInfo: ticketBody,
+            // helperTimesHTML: `<table style="border-collapse: collapse; width: 50%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
+            // <thead> 
+            // <tr> <th>Name</th> <th>Job Begin</th> <th>Job End</th> <th>Travel begin</th> <th>Travel End</th> <th>Milage</th> </tr>
+            // </thead>
+            // <tbody> ${timetablels.join('')} </tbody>
+            // </table>`,
+            helperTimesHTML: timetablels.join(''),
             totalPaidTime: total
         }))
         console.log('compile html', value)
@@ -136,15 +139,15 @@ const JobTIcket = (props) => {
         toggleModal()
         // console.log(value, 'before email')
         postTicket()
-        // emailjs.send('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r')
-        //     .then((result) => {
-        //         setStatus(result.text);
-        //         setSuccess(true)
-        //     }, (error) => {
-        //         setFail(true)
-        //         setStatus('Error')
-        // console.log(error);
-        //     });
+        emailjs.send('service_v3kf86l','template_mdw8cd7' , value, 'E5-2RW9TeJyvAH3_r') //dev email template 'template_jxp3a6n' 
+            .then((result) => {
+                setStatus(result.text);
+                setSuccess(true)
+            }, (error) => {
+                setFail(true)
+                setStatus('Error')
+                console.log(error);
+            });
     }
 
     const postTicket = async () => {
@@ -154,12 +157,12 @@ const JobTIcket = (props) => {
             .then((res) => console.log(res))
             .catch((err) => console.log(err))
 
-            value.jobInfo.forEach(async (data) => {
+        value.jobInfo.forEach(async (data) => {
             let dateList = null
             await axios.get(`${props.API_URL}serialNum/${data.serialNum}`)
                 .then(res => dateList = (res.data.data[0].history))
 
-                if (dateList.some(item => item.date === value.date)) {
+            if (dateList.some(item => item.date === value.date)) {
                 const duplicateDate = dateList.find(item => item.date === value.date);
                 console.log(dateList)
                 const updatedHistory = dateList.map(item => {
@@ -246,7 +249,6 @@ const JobTIcket = (props) => {
     };
 
     const handleChange = (e) => {
-        console.log(value)
         const changeVal = (total, field) => {
             setValue(values => ({
                 ...values,
@@ -322,7 +324,7 @@ const JobTIcket = (props) => {
             <Alert color='danger' isOpen={fail}>There was a problem with the submission check all the data fields!</Alert>
             <Form>
                 <Row>
-                    <Col md={3} />
+                    <Col md={2} />
                     <Col md={2}>
                         <FormGroup>
                             <Label for="employeeList">
@@ -358,7 +360,7 @@ const JobTIcket = (props) => {
                     </Col>
                 </Row>
                 <Row>
-                    <Col md={3} />
+                    <Col md={2} />
                     <Col md={3}>
                         <FormGroup>
                             <Label for="employeeList">
@@ -373,6 +375,7 @@ const JobTIcket = (props) => {
                             ></Input>
                         </FormGroup>
                     </Col>
+
                     <Col md={4}>
                         <p>Other CA men on the job</p>
                         <Multiselect
@@ -396,7 +399,7 @@ const JobTIcket = (props) => {
                     />
                 </Row>
                 <Row>
-                    <Col md={3} />
+                    <Col md={2} />
                     <Col md={3}>
                         <FormGroup>
                             <Label for="date">
@@ -424,6 +427,20 @@ const JobTIcket = (props) => {
                             >
                             </Input>
                         </FormGroup>
+                    </Col>
+                    <Col md={3}>
+                        <FormGroupMUI row>
+                            <FormControlLabel
+                                labelPlacement="top"
+                                control={<Switch name='jobPerQuote' defaultChecked onClick={() => { setValue({ ...value, jobPerQuote: !value.jobPerQuote }) }} />}
+                                label="Job per Quote"
+                            />
+                            <FormControlLabel
+                                labelPlacement="top"
+                                control={<Switch name='workAdded' onClick={() => { setValue({ ...value, workAdded: !value.workAdded }) }} />}
+                                label="Work added"
+                            />
+                        </FormGroupMUI>
                     </Col>
                 </Row>
 
@@ -563,18 +580,6 @@ const JobTIcket = (props) => {
                 <h2>Other job details:</h2>
                 <textarea id='detailsArea' name='detailsNotCovered' onChange={handleChange} />
             </section>
-            <FormGroupMUI row>
-                <FormControlLabel
-                    labelPlacement="top"
-                    control={<Switch name='jobPerQuote' defaultChecked onClick={() => { setValue({ ...value, jobPerQuote: !value.jobPerQuote }) }} />}
-                    label="Job per Quote"
-                />
-                <FormControlLabel
-                    labelPlacement="top"
-                    control={<Switch name='workAdded' onClick={() => { setValue({ ...value, workAdded: !value.workAdded }) }} />}
-                    label="Work added"
-                />
-            </FormGroupMUI>
 
             <Button onClick={() => {
                 toggleModal()

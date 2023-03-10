@@ -12,7 +12,7 @@ const TimeSheet = (props) => {
     })
 
     const [data, setData] = useState({
-        milage:null,
+        milage: null,
         jobBegin: null,
         jobEnd: null,
         travelBegin: null,
@@ -23,16 +23,24 @@ const TimeSheet = (props) => {
         setData((values) => ({
             ...values,
             [e.target.name]: e.target.value
-        }))
-        setHelpers((values) => ({
-            ...values,
+        }));
+
+        setHelpers((prevHelpers) => ({
+            ...prevHelpers,
             [e.target.id]: data
-        }))
-        props.setValue(values => ({
-            ...values,
-            helperTimes: helpers
-        }))
-    }
+        }));
+
+        props.setValue((prevValues) => ({
+            ...prevValues,
+            helperTimes: {
+                ...prevValues.helperTimes,
+                [e.target.id]: {
+                    ...data,
+                    [e.target.name]: e.target.value
+                }
+            }
+        }));
+    };
 
     if (props.namesList) {
         mappedNames = props.namesList.map((name) => {
