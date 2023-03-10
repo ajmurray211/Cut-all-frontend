@@ -61,11 +61,19 @@ const Ledger = (props) => {
 
     const handleSubmit = (data) => {
         axios.put(`${props.API_URL}ticket/${data._id}`, data)
-            .then(res => console.log(res))
+            .then(res => console.log(res.data.message))
             .catch(err => console.log(err))
 
-        // axios.put(`${props.API_URL}serialNum/update`)
-        // .then(res => console.log('hit'))
+        activeTicket.jobInfo.forEach(async (line) => {
+            axios.put(`${props.API_URL}serialNum/editJobInfo`, {
+                serialNum: line.serialNum,
+                date: activeTicket.date,
+                runLength: parseInt(line.length),
+                depth: parseInt(line.depth)
+            })
+                .then(res => console.log(res))
+            console.log(line)
+        })
     }
 
     const handleDelete = () => {
