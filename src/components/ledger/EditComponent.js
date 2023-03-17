@@ -260,10 +260,10 @@ const EditComponent = ((props) => {
                                         <Input
                                             name='worker'
                                             onChange={(e) => handleChange(e)}
-                                            value={props.editedData.worker} 
+                                            value={props.editedData.worker}
                                             list='workers'
                                             autoComplete='on'
-                                            />
+                                        />
                                     </td>
                                     <td><><Input name='travelBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelBegin} /> - <Input name='travelEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelEnd} /> </> </td>
                                     <td><><Input name='jobBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobBegin} /> - <Input name='jobEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobEnd} /> </></td>
@@ -328,6 +328,10 @@ const EditComponent = ((props) => {
                         <tr> <th>
                             <Label>Slab Saw</Label>
                             <Input name='slabSaw' onChange={(e) => handleChange(e)} type='number' value={props.editedData.slabSaw} />
+                        </th></tr>
+                        <tr> <th>
+                            <Label>Hand Saw</Label>
+                            <Input name='handSawing' onChange={(e) => handleChange(e)} type='number' value={props.editedData.slabSaw} />
                         </th></tr>
 
                         <tr> <th>
