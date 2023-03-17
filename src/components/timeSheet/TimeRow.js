@@ -8,14 +8,14 @@ const TimeRow = (props) => {
         <Input
           onChange={(e) => props.editRow(e, props.i)}
           name="startTime"
-          type="text"
+          type="time"
         />
       </td>
       <td>
         <Input
           onChange={(e) => props.editRow(e, props.i)}
           name="endTime"
-          type="text"
+          type="time"
         />
       </td>
       <td>

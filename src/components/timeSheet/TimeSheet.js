@@ -41,7 +41,7 @@ const TimeSheet = (props) => {
   const toggle = () => setModal(!modal);
   // resets variables changing when status changes
   useEffect(() => {
-    if (status === "OK") {
+    if (status === "Created" || status === "OK") {
       setTimeout(() => {
         console.log(sheetInfo, "after email");
         setStatus("");
@@ -114,7 +114,7 @@ const TimeSheet = (props) => {
   });
   const compileHTML = () => {
     let combined = sheetHTML.join(" ");
-    console.log(combined, sheetInfo);
+    // console.log(combined, sheetInfo);
     setSheetInfo((value) => ({
       ...value,
       infoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"></colgroup>
@@ -129,7 +129,7 @@ const TimeSheet = (props) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setStatus('OK')
+    // setStatus('Created')
     console.log('submit')
     await axios.put(`${props.API_URL}timeCards/${sheetInfo.employeeName}`, {
       sheetInfo,
@@ -137,7 +137,26 @@ const TimeSheet = (props) => {
     })
       .then(
         (result) => {
-          console.log(result.text)
+          // setStatus(result.statusText);
+          // setSuccess(true);
+          console.log(result)
+        },
+        (error) => {
+          // setFail(true);
+          // setStatus("Error");
+          console.log(error);
+        }
+      );
+    emailjs
+      .send(
+        "service_v3kf86l",
+        "template_5kfgkxl",
+        sheetInfo,
+        "E5-2RW9TeJyvAH3_r"
+      )
+      .then(
+        (result) => {
+          console.log(result)
           setStatus(result.text);
           setSuccess(true);
         },
@@ -147,24 +166,6 @@ const TimeSheet = (props) => {
           console.log(error);
         }
       );
-    // emailjs
-    //   .send(
-    //     "service_v3kf86l",
-    //     "template_5kfgkxl",
-    //     sheetInfo,
-    //     "E5-2RW9TeJyvAH3_r"
-    //   )
-    //   .then(
-    //     (result) => {
-    //       setStatus(result.text);
-    //       setSuccess(true);
-    //     },
-    //     (error) => {
-    //       setFail(true);
-    //       setStatus("Error");
-    //       console.log(error);
-    //     }
-    //   );
   };
 
   return (
