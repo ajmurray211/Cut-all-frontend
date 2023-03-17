@@ -272,7 +272,7 @@ const SerialNums = (props) => {
                     {coreNums.length !== 0 ? mappedSerialNums(coreNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
-                    <h2>Other Serials</h2>
+                    <h2>Other Serials</h2> 
                     {otherNums.length !== 0 ? mappedSerialNums(otherNums): 'No current data stored'}
                 </section>
             </section>
