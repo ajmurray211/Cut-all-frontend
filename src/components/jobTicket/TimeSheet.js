@@ -12,11 +12,11 @@ const TimeSheet = (props) => {
     })
 
     const [data, setData] = useState({
-        milage: null,
-        jobBegin: null,
-        jobEnd: null,
-        travelBegin: null,
-        travelEnd: null,
+        milage: '',
+        jobBegin: '',
+        jobEnd: '',
+        travelBegin: '',
+        travelEnd: '',
     })
 
     const handleChange = (e) => {
