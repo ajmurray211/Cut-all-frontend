@@ -15,8 +15,6 @@ const Part = (props) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
 
-    console.log(props.part)
-
     const handleEdit = async (event) => {
         // const formData = new FormData();
         // formData.append("image", selectedFile);
