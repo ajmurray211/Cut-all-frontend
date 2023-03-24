@@ -207,6 +207,17 @@ html{
   padding: 20px;
 }
 
+/* user profile styles */
+.userProfile{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.userInfoSection{
+  width: 40%;
+}
+
 @media screen and (max-width: 768px){
   .link-container{
     display: flex;
