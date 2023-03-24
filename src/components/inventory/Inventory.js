@@ -3,7 +3,7 @@ import Part from "./Part";
 import {
     DropdownToggle, DropdownMenu, DropdownItem, Button,
     UncontrolledDropdown, Modal, ModalBody, ModalFooter, ModalHeader,
-    Form, FormGroup, Label, Input, Spinner, Alert
+    Form, FormGroup, Label, Input, Spinner, Alert, FormFeedback
 } from 'reactstrap';
 import axios from "axios";
 import searchicon from "../../Assets/searchicon.png";
@@ -20,11 +20,13 @@ const Main = (props) => {
     const [parts, setParts] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
-    const [partName, setPartName] = useState('')
+    const [partName, setPartName] = useState(null)
     const [postOnHand, setPostOnHand] = useState(null)
     const [postTool, setPostTool] = useState(null)
     const [drawAlert, setDrawAlert] = useState(false)
     const [addAlert, setAddAlert] = useState(false)
+    const [nameTouched, setNameTouched] = useState(false)
+    const [toolTouched, setToolTouched] = useState(false)
     const [drawData, setDrawData] = useState({
         partName: null,
         name: null,
@@ -67,6 +69,7 @@ const Main = (props) => {
     }
 
     const handlePost = () => {
+        console.log(postTool, partName)
         axios.post(`${props.API_URL}parts/`, {
             name: partName,
             onHand: postOnHand,
@@ -89,20 +92,20 @@ const Main = (props) => {
         const getPartNumber = await axios.get(`${props.API_URL}parts/search/?name=${drawData.partName}`)
         const partNumber = getPartNumber.data.data[0]._id
         const onHand = getPartNumber.data.data[0].onHand
-        
+
         const postWorker = await axios.post(`${props.API_URL}workers`, {
             ...drawData,
             partID: partNumber
         })
-        .then(res => console.log(res))
-        .catch(err => console.log('error', err))
+            .then(res => console.log(res))
+            .catch(err => console.log('error', err))
 
         const newOnHandCount = onHand - drawData.amountTaken
 
         const drawListAddition = await axios.put(`${props.API_URL}parts/${partNumber}`, {
             name: drawData.partName,
             onHand: newOnHandCount,
-            dateTaken:  drawData.dateTaken
+            dateTaken: drawData.dateTaken
         })
 
         if (drawListAddition.status == 201) {
@@ -117,7 +120,7 @@ const Main = (props) => {
 
     const mappedParts = parts.map((part) => {
         if (part.emailed == false && part.onHand <= 5) {
-            axios.put(`${props.API_URL}parts/${part._id}`, {emailed: true})
+            axios.put(`${props.API_URL}parts/${part._id}`, { emailed: true })
         }
         return (
             <Part
@@ -125,7 +128,7 @@ const Main = (props) => {
                 part={part}
                 API_URL={props.API_URL}
                 getData={getData}
-                id = {part._id}
+                id={part._id}
             />
         )
     })
@@ -178,25 +181,48 @@ const Main = (props) => {
                 <ModalHeader toggle={toggleModal} >Part input</ModalHeader>
                 <ModalBody>
                     <Alert color='success' isOpen={addAlert}>You Added an item!</Alert>
-
-                    <Form>
-                        <FormGroup>
+                    <Form noValidate >
+                        <FormGroup >
                             <Label for="partName"> Part Name </Label>
-                            <Input id="partName" placeholder="Enter the parts name" type="text" onChange={(event) => setPartName(event.target.value)} value={partName} />
+                            <Input
+                                id="partName"
+                                placeholder="Enter the parts name"
+                                type="text"
+                                onChange={(event) => setPartName(event.target.value)}
+                                value={partName}
+                                valid={partName && nameTouched}
+                                invalid={partName == null && nameTouched}
+                                onBlur={() => setNameTouched(true)}
+                            />
+                            <FormFeedback valid>Username is valid</FormFeedback>
+                            <FormFeedback invalid>Oops! You need to enter a username.</FormFeedback>
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup >
                             <Label for="partCount"> Amount on hand </Label>
                             <Input id="partCount" placeholder="On hand count" type="number" onChange={(event) => setPostOnHand(event.target.value)} value={postOnHand} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="toolInput">Tool </Label>
-                            <Input id="toolInput" placeholder="What tool does this part belong to?" type="select" onChange={(event) => setPostTool(event.target.value)} value={postTool}>
+                            <Input
+                                id="toolInput"
+                                type="select"
+                                onChange={(event) => setPostTool(event.target.value)}
+                                value={postTool}
+                                valid={postTool && toolTouched}
+                                invalid={postTool == null && toolTouched}
+                                onBlur={() => setToolTouched(true)}
+                            >
+                                <option></option>
                                 <option>Concrete saw</option>
+                                <option>Hand saw</option>
                                 <option>Asphalt saw</option>
                                 <option>Hand saw</option>
                                 <option>Core drill</option>
                                 <option>Consumables</option>
                             </Input>
+                            <FormFeedback valid>Username is valid</FormFeedback>
+                            <FormFeedback invalid>Oops! You need to enter a username.</FormFeedback>
+
                         </FormGroup>
                     </Form>
                 </ModalBody>

@@ -18,16 +18,17 @@ import TimeRow from "./TimeRow";
 import emailjs from "@emailjs/browser";
 import InfoDisplay from "./InfoDisplay";
 import "./timeSheet.css";
+import axios from "axios";
 
-const TimeSheet = () => {
+const TimeSheet = (props) => {
   const [title, setTitle] = useState("");
   const [sheetBody, setSheetBody] = useState([]);
   const [sheetInfo, setSheetInfo] = useState({
     employeeName: null,
     employeeNum: null,
     truckNum: null,
-    title: "operator",
-    status: null,
+    title: "Operator",
+    status: "Journeyman",
     date: null,
     infoHTML: null,
   });
@@ -40,7 +41,7 @@ const TimeSheet = () => {
   const toggle = () => setModal(!modal);
   // resets variables changing when status changes
   useEffect(() => {
-    if (status === "OK") {
+    if (status === "Created" || status === "OK") {
       setTimeout(() => {
         console.log(sheetInfo, "after email");
         setStatus("");
@@ -113,7 +114,7 @@ const TimeSheet = () => {
   });
   const compileHTML = () => {
     let combined = sheetHTML.join(" ");
-    console.log(combined, sheetInfo);
+    // console.log(combined, sheetInfo);
     setSheetInfo((value) => ({
       ...value,
       infoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"></colgroup>
@@ -126,9 +127,26 @@ const TimeSheet = () => {
         </tbody></table>`,
     }));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // setStatus('OK')
+    // setStatus('Created')
+    console.log('submit')
+    await axios.put(`${props.API_URL}timeCards/${sheetInfo.employeeName}`, {
+      sheetInfo,
+      sheetBody
+    })
+      .then(
+        (result) => {
+          // setStatus(result.statusText);
+          // setSuccess(true);
+          console.log(result)
+        },
+        (error) => {
+          // setFail(true);
+          // setStatus("Error");
+          console.log(error);
+        }
+      );
     emailjs
       .send(
         "service_v3kf86l",
@@ -138,6 +156,7 @@ const TimeSheet = () => {
       )
       .then(
         (result) => {
+          console.log(result)
           setStatus(result.text);
           setSuccess(true);
         },
@@ -177,7 +196,7 @@ const TimeSheet = () => {
           <Col md={3}>
             <Label for="title">Title</Label>
             <Input
-              defaultValue={"operator"}
+              defaultValue={sheetInfo.title}
               onChange={handleChange}
               name="title"
               id="title"
@@ -202,6 +221,7 @@ const TimeSheet = () => {
             <Input
               placeholder="Enter Your Status"
               onChange={handleChange}
+              defaultValue={sheetInfo.status}
               name="status"
               id="status"
               type="text"
@@ -253,8 +273,8 @@ const TimeSheet = () => {
           </Col>
           <Col md={2}>
             <Input
+              readOnly
               min={0}
-              defaultValue={0}
               value={total}
               id="Total"
               type="number"
