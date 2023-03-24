@@ -71,6 +71,7 @@ const JobDetails = (props) => {
                     {props.value.coreDrilling ? <li>{`Core drilling took ${props.value.coreDrilling} hrs.`}</li> : ''}
                     {props.value.waterControl ? <li>{`Water control took ${props.value.waterControl} hrs.`}</li> : ''}
                     {props.value.slabSaw ? <li>{`Slab sawing took ${props.value.slabSaw} hrs.`}</li> : ''}
+                    {props.value.handSawing ? <li>{`Hand sawing took ${props.value.handSawing} hrs.`}</li> : ''}
                     {props.value.hammerChipping ? `Jack hammer chipping took ${props.value.hammerChipping} hrs.` : ''}
                     {props.value.loadExcevate ? <li>{`Load excevate took ${props.value.loadExcevate} hrs.`}</li> : ''}
                     {props.value.haul ? <li>{`Hauling took ${props.value.haul} hrs.`}</li> : ''}

@@ -28,6 +28,7 @@ const JobTIcket = (props) => {
         jobInfoHTML: null,
         helperTimesHTML: null,
         jobInfo: [],
+        handSawing: null,
         wallSawing: null,
         coreDrilling: null,
         slabSaw: null,
@@ -139,7 +140,7 @@ const JobTIcket = (props) => {
         toggleModal()
         // console.log(value, 'before email')
         postTicket()
-        emailjs.send('service_v3kf86l','template_mdw8cd7' , value, 'E5-2RW9TeJyvAH3_r') //dev email template 'template_jxp3a6n' 
+        emailjs.send('service_v3kf86l','template_jxp3a6n' , value, 'E5-2RW9TeJyvAH3_r') //prod email template 'template_mdw8cd7' 
             .then((result) => {
                 setStatus(result.text);
                 setSuccess(true)
