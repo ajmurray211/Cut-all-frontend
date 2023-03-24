@@ -1,21 +1,25 @@
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useLogout } from '../hooks/useLogout'
-import { Button, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Button, UncontrolledDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import logo from '../Assets/cut-all-logo.png';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const Navbar = () => {
     const { user } = useAuthContext()
     const { logout } = useLogout()
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const toggle = () => setDropdownOpen((prevState) => !prevState);
 
     const handleLogout = () => {
         logout()
     }
 
     return (
-        <nav>
+        <nav className='fullNav'>
             <Link to="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></Link>
-            {user && (
+            {/* {user && ( */}
                 <section className='link-container'>
                     <Link className='link' to='/'>Inventory</Link>
                     <Link className='link' to='/ledger'>Ledger</Link>
@@ -24,23 +28,25 @@ const Navbar = () => {
                     {/* <Link className='link' to='/usageGraph'>Usage Graph</Link> */}
                     <Link className='link' to='/jobTicket'>Job ticket</Link>
                 </section>
-            )}
+            {/* )} */}
             <section className='auth-info'>
                 {user && (
                     <div>
                         <span>{user.email}</span>
                         <UncontrolledDropdown group>
-                            <Button onClick={handleLogout} color="warning">
-                                Logout
+                            <Button disabled color="warning">
+                                Actions
                             </Button>
                             <DropdownToggle
                                 caret
                                 color="warning"
                             />
                             <DropdownMenu>
-                                <DropdownItem header> Other actions </DropdownItem>
+                                <DropdownItem onClick={() => handleLogout()} >
+                                    Log out
+                                </DropdownItem>
                                 <DropdownItem>
-                                    <Link to="/ledger">Profile info</Link>
+                                    <Link to="/userProfile">Profile info</Link>
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
@@ -49,11 +55,9 @@ const Navbar = () => {
                 {!user && (
                     <div>
                         <Link className='link' to='/login'>Log In</Link>
-                        <Link className='link' to='/register'>Register</Link>
                     </div>
                 )}
             </section>
-            <p>Inventory system</p>
         </nav>
     );
 }
