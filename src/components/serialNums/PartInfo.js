@@ -12,10 +12,11 @@ const PartInfo = (props) => {
         let { depth, runLength, date } = entry
 
         // remove quotes from user entries if present
-        if (runLength.includes('"') || runLength.includes("'")) {
-            runLength = runLength.slice(0, -1)
+        if (runLength.includes('”') || runLength.includes("’") || runLength.includes("'") || runLength.includes('"')) {
+            let newLength = runLength.slice(0, -1)
+            runLength = newLength
         }
-        if (depth.includes('"') || depth.includes("'")) {
+        if (depth.includes('”') || depth.includes("’") || depth.includes("'") || depth.includes('"')) {
             depth = depth.slice(0, -1)
         }
 
@@ -23,6 +24,7 @@ const PartInfo = (props) => {
             if (Math.max(parseInt(runLength), parseInt(depth)) > maxNum) {
                 maxNum = Math.max(parseInt(runLength), parseInt(depth))
             }
+
         data.push({
             name: date,
             Depth: depth,
