@@ -118,7 +118,7 @@ const Main = (props) => {
         }, 5000);
     }
 
-    const mappedParts = parts.map((part) => {
+    const mappedParts = parts.map((part, key) => {
         if (part.emailed == false && part.onHand <= 5) {
             axios.put(`${props.API_URL}parts/${part._id}`, { emailed: true })
         }
