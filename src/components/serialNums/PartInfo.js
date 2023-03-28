@@ -9,16 +9,27 @@ const PartInfo = (props) => {
     let maxNum = 25
 
     const mappedHistory = props.number.history.map(entry => {
-        if (Math.max(parseInt(entry.runLength), parseInt(entry.depth)) > maxNum) {
-            maxNum = Math.max(parseInt(entry.runLength), parseInt(entry.depth))
+        let { depth, runLength, date } = entry
+
+        // remove quotes from user entries if present
+        if (runLength.includes('"') || runLength.includes("'")) {
+            runLength = runLength.slice(0, -1)
         }
+        if (depth.includes('"') || depth.includes("'")) {
+            depth = depth.slice(0, -1)
+        }
+
+        if (entry)
+            if (Math.max(parseInt(runLength), parseInt(depth)) > maxNum) {
+                maxNum = Math.max(parseInt(runLength), parseInt(depth))
+            }
         data.push({
-            name: entry.date,
-            Depth: entry.depth,
-            Length: entry.runLength
+            name: date,
+            Depth: depth,
+            Length: runLength
         })
         return (
-            <li className="entry">Date: {entry.date}, Depth: {entry.depth}, Length: {entry.runLength}</li>
+            <li className="entry">Date: {date}, Depth: {depth}, Length: {runLength}</li>
         )
     })
 
