@@ -25,6 +25,7 @@ nav{
   align-items: center;
   /* justify-content: space-around; */
   background-color: rgb(12, 100, 253);
+  z-index: 999;
 }
 
 .link-container{
@@ -79,7 +80,6 @@ display: none;
 ul {
   padding: 0;
 }
-
 
 /* styling drop downs */
 
@@ -185,26 +185,23 @@ margin-bottom: 5px;
 }
 
 /* login and register form styles */
-html{
-  /* background-color: red; */
-  /* background-image: url("./Assets/low-poly-grid-haikei.png"); */
-}
 
 .auth_form{
   position: absolute;
-  left: 30%;
-  top: 35%;
+  left: 50%;
+  top: 65%;
+  transform: translate(-50%, -50%);
   min-height: 20rem;
   width: 40rem;
-}
-
-.login{
-  width:auto;
-  height:inherit;
+  max-width: 90%;
 }
 
 .inputs{
   padding: 20px;
+}
+
+.auth-info{
+  padding-right: 20px;
 }
 
 /* user profile styles */
@@ -219,12 +216,18 @@ html{
 }
 
 @media screen and (max-width: 768px){
+
   .link-container{
     display: flex;
     width: 60%;
     flex-direction: row;
     justify-content: space-evenly;
     font-size: larger;
+  }
+
+  .auth_form{
+    left: 46%;
+
   }
 }
 
@@ -261,6 +264,8 @@ html{
   }
 
   /* login and register styles */
-
+  .auth_form{
+    left: 43%;
+  }
 
 }
