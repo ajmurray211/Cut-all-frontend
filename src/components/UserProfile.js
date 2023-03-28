@@ -1,12 +1,10 @@
 import axios from 'axios';
-import { Alert } from 'bootstrap';
 import { useEffect, useState } from 'react';
-import { Input, Label, Button } from 'reactstrap';
+import { Input, Label, Button, Alert } from 'reactstrap';
 import { useAuthContext } from '../hooks/useAuthContext';
 
 const UserProfile = (props) => {
     const { user } = useAuthContext()
-    const [email, setEmail] = useState('')
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [title, setTitle] = useState('')
@@ -17,12 +15,14 @@ const UserProfile = (props) => {
 
     // assign defaults from local storage 
     const assignValues = () => {
-        if (user.firstName) setFirstName(user.firstName)
-        if (user.lastName) setLastName(user.lastName)
-        if (user.title) setTitle(user.title)
-        if (user.employeeNumber) setEmployeeNumber(user.employeeNumber)
-        if (user.status) setStatus(user.status)
-        if (user.truckNumber) setTruckNumber(user.truckNumber)
+        if (user) {
+            if (user.firstName) setFirstName(user.firstName)
+            if (user.lastName) setLastName(user.lastName)
+            if (user.title) setTitle(user.title)
+            if (user.employeeNumber) setEmployeeNumber(user.employeeNumber)
+            if (user.status) setStatus(user.status)
+            if (user.truckNumber) setTruckNumber(user.truckNumber)
+        }
     }
 
     useEffect(() => {
@@ -144,16 +144,6 @@ const UserProfile = (props) => {
                 </section>
 
                 <section className='userInfoSection'>
-                    {/* <Label size='lg' for='email'>Email</Label>
-                    <Input
-                        size='lg'
-                        value={email}
-                        // defaultValue={user.email}
-                        placeholder='please enter a value'
-                        name='email'
-                        type='text'
-                        onChange={e => setEmail(e.target.value)}
-                    /> */}
                     <h2>Email: {user.email}</h2>
                 </section>
 

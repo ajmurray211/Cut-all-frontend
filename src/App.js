@@ -11,15 +11,29 @@ import Register from './components/authentication/Register'
 import { useAuthContext } from './hooks/useAuthContext';
 import Navbar from './components/Navbar';
 import UserProfile from './components/UserProfile';
+import HamburgerNav from './components/HamburgerNav';
+import { useState, useEffect } from 'react';
 
 function App() {
   const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
   // const API_URL = 'http://localhost:8080/'
+
   const { user } = useAuthContext()
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div className="App">
-      <Navbar />
+      {isMobile ? <HamburgerNav /> : <Navbar />}
       <div>
         <Routes>
           <Route path='/' element={<Inventory API_URL={API_URL} />} />

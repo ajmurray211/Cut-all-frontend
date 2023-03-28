@@ -144,7 +144,7 @@ const Ledger = (props) => {
                 <li className='ticket'><Button onClick={() => {
                     setActiveTicket(ticket)
                     toggle()
-                }}>{ticket.worker}s ticket for {ticket.billTo} on {ticket.date} Ticket # {ticket.ticketNum ? ticket.ticketNum : '-----'}</Button></li>
+                }}>{ticket.billTo} - {ticket.date} - Ticket # {ticket.ticketNum ? ticket.ticketNum : '-----'}</Button></li>
             )
         })
         return mapped
