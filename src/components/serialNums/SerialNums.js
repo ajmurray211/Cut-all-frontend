@@ -2,17 +2,16 @@ import { Card, CardBody, Collapse, Form, Row, Col, FormGroup, Label, Input, Aler
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import PartInfo from './PartInfo';
+import { useDataFetcher } from "../../hooks/useDataFetcher";
+import { useModal } from '../../hooks/useModal';
 
 const SerialNums = (props) => {
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [toolName, setToolName] = useState([])
-    const [serialNumbers, setSerialNumbers] = useState([])
+    const { getData: getToolName, data: toolName, error1, loading1 } = useDataFetcher();
+    const { getData: getSerialNumbers, data: serialNumbers, error2, loading2 } = useDataFetcher();
+    const { isOpen: modal, toggleModal } = useModal();
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
     const [status, setStatus] = useState(null)
-    const [modal, setModal] = useState(false);
-    const toggleModal = () => setModal((prevState) => !prevState);
     const [coreNums, setCoreNums] = useState([])
     const [handNums, setHandNums] = useState([])
     const [wallNums, setWallNums] = useState([])
@@ -27,22 +26,14 @@ const SerialNums = (props) => {
         serialNum: null
     })
     let currentSerialNums = []
+    
     const validateInput = (val) => {
         setValidInput(currentSerialNums.includes(val))
     }
 
-    const getData = (url, where) => {
-        setLoading(true)
-        axios
-            .get(url)
-            .then((response) => where(response.data.data))
-            .catch((err) => setError(err))
-            .finally(() => setLoading(false))
-    }
-
     useEffect(() => {
-        getData(`${props.API_URL}parts/?format=json`, setToolName)
-        getData(`${props.API_URL}serialNum`, setSerialNumbers)
+        getToolName(`${props.API_URL}parts/?format=json`)
+        getSerialNumbers(`${props.API_URL}serialNum`)
     }, [])
 
     const mapParts = toolName.map((tool) => {
@@ -57,7 +48,7 @@ const SerialNums = (props) => {
                 setStatus('');
                 setSuccess(false)
                 toggleModal()
-                getData(`${props.API_URL}serialNum`, setSerialNumbers)
+                getSerialNumbers(`${props.API_URL}serialNum`)
             }, 5000);
         }
         else if (status === 'Error') {
@@ -65,7 +56,7 @@ const SerialNums = (props) => {
                 setStatus('');
                 setFail(false)
                 toggleModal()
-                getData(`${props.API_URL}serialNum`, setSerialNumbers)
+                getSerialNumbers(`${props.API_URL}serialNum`)
             }, 5000);
         }
     }, [status]);
@@ -253,27 +244,27 @@ const SerialNums = (props) => {
             <section className='splitNumConatiner'>
                 <section className='nums'>
                     <h2>Wall Saw Serials</h2>
-                    {wallNums.length !== 0 ? mappedSerialNums(wallNums): 'No current data stored'}
+                    {wallNums.length !== 0 ? mappedSerialNums(wallNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Hand Saw Serials</h2>
-                    {handNums.length != 0 ? mappedSerialNums(handNums): 'No current data stored'}
+                    {handNums.length != 0 ? mappedSerialNums(handNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Asphalt Saw Serials</h2>
-                    {asphltNums.length !== 0 ? mappedSerialNums(asphltNums): 'No current data stored'}
+                    {asphltNums.length !== 0 ? mappedSerialNums(asphltNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Concrete Saw Serials</h2>
-                    {concreteNums.length !== 0 ? mappedSerialNums(concreteNums): 'No current data stored'}
+                    {concreteNums.length !== 0 ? mappedSerialNums(concreteNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Core Drill Serials</h2>
                     {coreNums.length !== 0 ? mappedSerialNums(coreNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
-                    <h2>Other Serials</h2> 
-                    {otherNums.length !== 0 ? mappedSerialNums(otherNums): 'No current data stored'}
+                    <h2>Other Serials</h2>
+                    {otherNums.length !== 0 ? mappedSerialNums(otherNums) : 'No current data stored'}
                 </section>
             </section>
         </div>

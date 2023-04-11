@@ -1,26 +1,14 @@
 import { useState, useEffect } from "react";
-import {
-  Input,
-  Table,
-  Label,
-  FormGroup,
-  Col,
-  Form,
-  Row,
-  Button,
-  Alert,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Modal,
-} from "reactstrap";
+import { Input, Table, Label, FormGroup, Col, Form, Row, Button, Alert, ModalHeader, ModalBody, ModalFooter, Modal, } from "reactstrap";
 import TimeRow from "./TimeRow";
 import emailjs from "@emailjs/browser";
 import InfoDisplay from "./InfoDisplay";
 import "./timeSheet.css";
 import axios from "axios";
+import { useModal } from "../../hooks/useModal";
 
 const TimeSheet = (props) => {
+  const { isOpen: modal, toggleModal: toggle } = useModal();
   const [title, setTitle] = useState("");
   const [sheetBody, setSheetBody] = useState([]);
   const [sheetInfo, setSheetInfo] = useState({
@@ -37,8 +25,7 @@ const TimeSheet = (props) => {
   const [success, setSuccess] = useState(false);
   const [fail, setFail] = useState(false);
   const [status, setStatus] = useState(false);
-  const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
+
   // resets variables changing when status changes
   useEffect(() => {
     if (status === "Created" || status === "OK") {
@@ -50,7 +37,7 @@ const TimeSheet = (props) => {
       }, 5000);
     } else if (status === "Error") {
       setTimeout(() => {
-        setStatus("");
+        setStatus("")
         setFail(false);
         toggle();
       }, 5000);
@@ -118,13 +105,13 @@ const TimeSheet = (props) => {
     setSheetInfo((value) => ({
       ...value,
       infoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"></colgroup>
-        <thead>
-        <tr> <th>Start Time</th> <th>End Time</th> <th>Work Code</th> <th>Job Name</th> <th>Hours</th> <th>Notes</th> </tr>
-        </thead>
-        <tbody>
-        ${combined}
-        <tr> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <th>Total</th> <td>${total}</td> <td style = "background-color: rgb(128, 128, 128);" ></td> </tr>
-        </tbody></table>`,
+          <thead>
+          <tr> <th>Start Time</th> <th>End Time</th> <th>Work Code</th> <th>Job Name</th> <th>Hours</th> <th>Notes</th> </tr>
+          </thead>
+          <tbody>
+          ${combined}
+          <tr> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <th>Total</th> <td>${total}</td> <td style = "background-color: rgb(128, 128, 128);" ></td> </tr>
+          </tbody></table>`,
     }));
   };
   const handleSubmit = async (e) => {
