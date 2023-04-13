@@ -11,7 +11,6 @@ export const useEmail = () => {
         setLoading(true)
         await emailjs.send(service, template, value, repID)
             .then((result) => {
-                console.log(result)
                 setLoading(false)
                 setStatus(result.text);
                 setSuccess(true)

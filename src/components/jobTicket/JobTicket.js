@@ -10,10 +10,12 @@ import TimeSheet from './TimeSheet';
 import axios from 'axios';
 import { useModal } from '../../hooks/useModal';
 import { useEmail } from '../../hooks/useEmail';
+import { useFindTimeDiff } from '../../hooks/useFindTimeDiff';
 
 const JobTIcket = (props) => {
     const { isOpen, toggleModal } = useModal();
     const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
+    const { findTimes } = useFindTimeDiff()
     const [ticketBody, setTicketBody] = useState([])
     const [value, setValue] = useState({
         email: 'murray.aj.murray@gmail.com',
@@ -203,23 +205,6 @@ const JobTIcket = (props) => {
             }, 10000);
         }
     }, [status]);
-
-    // saves values when inputs changed by user 
-    const findTimes = (start, end) => {
-        let d1 = Date.parse(`2023-01-15T${start}:00.000`);
-        let d2 = Date.parse(`2023-01-15T${end}:00.000`);
-        const milliseconds = Math.abs(d1 - d2);
-        const secs = Math.floor(milliseconds / 1000);
-        const mins = Math.floor(secs / 60);
-        const minutes = mins % 60
-        const hours = Math.floor(mins / 60);
-        return {
-            mins: mins,
-            hours: hours,
-            minutes: minutes,
-            combined: `${hours}hr. ${minutes}min.`
-        }
-    }
 
     const handleSelect = (selectedList) => {
         setValue((values) => ({
