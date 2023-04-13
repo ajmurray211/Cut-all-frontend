@@ -2,12 +2,11 @@ import { Button, Collapse, Card, CardTitle, CardText, CardBody, Alert, Modal, Mo
 import { useState } from "react";
 import axios from "axios";
 import logo from "../../Assets/cut-all-logo.png";
+import { useModal } from "../../hooks/useModal";
 
 const Part = (props) => {
-    const [isOpen, setIsOpen] = useState(false)
-    const toggle = () => setIsOpen(!isOpen);
-    const [modalOpen, setModalOpen] = useState(false)
-    const toggleEdit = () => setModalOpen(!modalOpen);
+    const { isOpen: pullhistoryOpen, toggleModal: togglePullHistory } = useModal();
+    const { isOpen: editOpen, toggleModal: toggleEdit } = useModal();
     const [putName, setPutName] = useState(props.part.name)
     const [putOnHand, setPutOnHand] = useState(props.part.onHand)
     const [success, setSuccess] = useState(false)
@@ -87,13 +86,13 @@ const Part = (props) => {
                     <Button color="primary" onClick={toggleEdit}>
                         Edit
                     </Button>
-                    <Button color="primary" onClick={toggle}>
+                    <Button color="primary" onClick={togglePullHistory}>
                         History
                     </Button>
                 </CardBody>
             </Card>
 
-            <Collapse className="part-collapse" isOpen={isOpen}>
+            <Collapse className="part-collapse" isOpen={pullhistoryOpen}>
                 <Card>
                     <CardBody className="detail-cards">
                         <ul className="lastdrawednames">
@@ -104,7 +103,7 @@ const Part = (props) => {
                 </Card>
             </Collapse>
 
-            <Modal isOpen={modalOpen}>
+            <Modal isOpen={editOpen}>
                 <ModalHeader toggle={toggleEdit}>Edit part info</ModalHeader>
                 <ModalBody>
                     <Alert color='success' isOpen={success}>You have edited this parts info!</Alert>

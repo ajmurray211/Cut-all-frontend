@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ListGroupItem, Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useModal } from "../../hooks/useModal";
 
 const PartInfo = (props) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const toggle = () => setIsOpen(!isOpen);
+    const { isOpen, toggleModal: toggle } = useModal();
     let data = []
     let maxNum = 25
 
