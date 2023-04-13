@@ -4,19 +4,17 @@ import FormGroupMUI from '@mui/material/FormGroup'
 import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Switch, FormControlLabel, FormLabel, FormControl } from '@mui/material';
 import { useState, useEffect } from 'react';
-import emailjs from '@emailjs/browser';
 import BillingRow from './BillingRow';
 import JobDetails from './JobDetails';
 import TimeSheet from './TimeSheet';
 import axios from 'axios';
 import { useModal } from '../../hooks/useModal';
+import { useEmail } from '../../hooks/useEmail';
 
 const JobTIcket = (props) => {
     const { isOpen, toggleModal } = useModal();
+    const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
     const [ticketBody, setTicketBody] = useState([])
-    const [status, setStatus] = useState('');
-    const [success, setSuccess] = useState(false)
-    const [fail, setFail] = useState(false)
     const [value, setValue] = useState({
         email: 'murray.aj.murray@gmail.com',
         worker: '',
@@ -129,82 +127,71 @@ const JobTIcket = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        // console.log(value, 'before email')
         postTicket()
-        emailjs.send('service_v3kf86l', 'template_jxp3a6n', value, 'E5-2RW9TeJyvAH3_r') //prod email template template_mdw8cd7 
-            .then((result) => {
-                setStatus(result.text);
-                setSuccess(true)
-            }, (error) => {
-                setFail(true)
-                setStatus('Error')
-                console.log(error);
-            });
+        sendEmail('service_v3kf86l', 'template_jxp3a6n', value, 'E5-2RW9TeJyvAH3_r') //prod email template template_mdw8cd7 
     }
 
     const postTicket = async () => {
         try {
-          await axios.post(`${props.API_URL}ticket`, {
-            ...value
-          });
-      
-          for (const data of value.jobInfo) {
-            let newDepth = data.depth;
-            let newLength = data.length;
-            if (data.qty) {
-              newDepth = parseInt(data.qty) * parseInt(data.depth);
-              newLength = parseInt(data.qty) * parseInt(data.length);
-            }
-      
-            const { data: { data: [serialNumData] } } = await axios.get(`${props.API_URL}serialNum/${data.serialNum}`);
-      
-            const { history } = serialNumData;
-      
-            const duplicateDate = history.find(item => item.date === value.date);
-      
-            if (duplicateDate) {
-              const updatedHistory = history.map(item => {
-                if (item.date === duplicateDate.date) {
-                  return {
-                    ...item,
-                    runLength: parseInt(item.runLength) + parseInt(newLength),
-                    depth: parseInt(item.depth) + parseInt(newDepth),
-                  };
+            await axios.post(`${props.API_URL}ticket`, {
+                ...value
+            });
+
+            for (const data of value.jobInfo) {
+                let newDepth = data.depth;
+                let newLength = data.length;
+                if (data.qty) {
+                    newDepth = parseInt(data.qty) * parseInt(data.depth);
+                    newLength = parseInt(data.qty) * parseInt(data.length);
                 }
-                return item;
-              });
-      
-              await axios.put(`${props.API_URL}serialNum/update/1`, {
-                serialNum: data.serialNum,
-                history: updatedHistory
-              });
-              console.log('existing', duplicateDate, data, updatedHistory);
-            } else {
-              await axios.put(`${props.API_URL}serialNum/update/2`, {
-                serialNum: data.serialNum,
-                assignedTo: value.worker,
-                history: [
-                  {
-                    runLength: newLength,
-                    depth: newDepth,
-                    date: value.date
-                  }
-                ]
-              });
-              console.log('new date');
+
+                const { data: { data: [serialNumData] } } = await axios.get(`${props.API_URL}serialNum/${data.serialNum}`);
+
+                const { history } = serialNumData;
+
+                const duplicateDate = history.find(item => item.date === value.date);
+
+                if (duplicateDate) {
+                    const updatedHistory = history.map(item => {
+                        if (item.date === duplicateDate.date) {
+                            return {
+                                ...item,
+                                runLength: parseInt(item.runLength) + parseInt(newLength),
+                                depth: parseInt(item.depth) + parseInt(newDepth),
+                            };
+                        }
+                        return item;
+                    });
+
+                    await axios.put(`${props.API_URL}serialNum/update/1`, {
+                        serialNum: data.serialNum,
+                        history: updatedHistory
+                    });
+                    console.log('existing', duplicateDate, data, updatedHistory);
+                } else {
+                    await axios.put(`${props.API_URL}serialNum/update/2`, {
+                        serialNum: data.serialNum,
+                        assignedTo: value.worker,
+                        history: [
+                            {
+                                runLength: newLength,
+                                depth: newDepth,
+                                date: value.date
+                            }
+                        ]
+                    });
+                    console.log('new date');
+                }
             }
-          }
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
-      };
-      
+    };
 
     // resets variables changing when status changes 
     useEffect(() => {
         if (status === 'OK') {
             setTimeout(() => {
-                console.log(value, 'after email')
                 setStatus('');
                 setSuccess(false)
             }, 5000);

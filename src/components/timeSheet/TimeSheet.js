@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { Input, Table, Label, FormGroup, Col, Form, Row, Button, Alert, ModalHeader, ModalBody, ModalFooter, Modal, } from "reactstrap";
 import TimeRow from "./TimeRow";
-import emailjs from "@emailjs/browser";
 import InfoDisplay from "./InfoDisplay";
 import "./timeSheet.css";
 import axios from "axios";
 import { useModal } from "../../hooks/useModal";
+import { useEmail } from "../../hooks/useEmail";
 
 const TimeSheet = (props) => {
   const { isOpen: modal, toggleModal: toggle } = useModal();
+  const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
   const [title, setTitle] = useState("");
   const [sheetBody, setSheetBody] = useState([]);
   const [sheetInfo, setSheetInfo] = useState({
@@ -22,9 +23,6 @@ const TimeSheet = (props) => {
   });
   let sheetHTML = [];
   const [total, setTotal] = useState(0);
-  const [success, setSuccess] = useState(false);
-  const [fail, setFail] = useState(false);
-  const [status, setStatus] = useState(false);
 
   // resets variables changing when status changes
   useEffect(() => {
@@ -134,25 +132,7 @@ const TimeSheet = (props) => {
           console.log(error);
         }
       );
-    emailjs
-      .send(
-        "service_v3kf86l",
-        "template_5kfgkxl",
-        sheetInfo,
-        "E5-2RW9TeJyvAH3_r"
-      )
-      .then(
-        (result) => {
-          console.log(result)
-          setStatus(result.text);
-          setSuccess(true);
-        },
-        (error) => {
-          setFail(true);
-          setStatus("Error");
-          console.log(error);
-        }
-      );
+    sendEmail("service_v3kf86l", "template_5kfgkxl", sheetInfo, "E5-2RW9TeJyvAH3_r")
   };
 
   return (
