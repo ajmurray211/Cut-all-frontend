@@ -1,44 +1,42 @@
 import { useState, useEffect } from "react";
-import {
-  Input,
-  Table,
-  Label,
-  FormGroup,
-  Col,
-  Form,
-  Row,
-  Button,
-  Alert,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Modal,
-} from "reactstrap";
+import { Input, Table, Label, FormGroup, Col, Form, Row, Button, Alert, ModalHeader, ModalBody, ModalFooter, Modal, } from "reactstrap";
 import TimeRow from "./TimeRow";
-import emailjs from "@emailjs/browser";
 import InfoDisplay from "./InfoDisplay";
 import "./timeSheet.css";
 import axios from "axios";
+import { useModal } from "../../hooks/useModal";
+import { useEmail } from "../../hooks/useEmail";
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 const TimeSheet = (props) => {
-  const [title, setTitle] = useState("");
+  const { user } = useAuthContext()
+  const { isOpen: modal, toggleModal: toggle } = useModal();
+  const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
   const [sheetBody, setSheetBody] = useState([]);
   const [sheetInfo, setSheetInfo] = useState({
     employeeName: null,
     employeeNum: null,
     truckNum: null,
-    title: "Operator",
-    status: "Journeyman",
+    title: null,
+    status: null,
     date: null,
     infoHTML: null,
   });
   let sheetHTML = [];
   const [total, setTotal] = useState(0);
-  const [success, setSuccess] = useState(false);
-  const [fail, setFail] = useState(false);
-  const [status, setStatus] = useState(false);
-  const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
+
+  useEffect(() => {
+    if (user) {
+      setSheetInfo({
+        employeeName: `${user.firstName} ${user.lastName}`,
+        status: user.status,
+        title: user.title,
+        employeeNum: user.employeeNumber,
+        truckNum: user.truckNumber
+      });
+    }
+  }, []);
+
   // resets variables changing when status changes
   useEffect(() => {
     if (status === "Created" || status === "OK") {
@@ -50,7 +48,7 @@ const TimeSheet = (props) => {
       }, 5000);
     } else if (status === "Error") {
       setTimeout(() => {
-        setStatus("");
+        setStatus("")
         setFail(false);
         toggle();
       }, 5000);
@@ -68,7 +66,6 @@ const TimeSheet = (props) => {
     };
     let copy = [...sheetBody, row];
     setSheetBody(copy);
-    console.log(sheetBody);
   };
 
   // changes values of the job row when the user changes and imput field
@@ -83,8 +80,15 @@ const TimeSheet = (props) => {
     });
     setTotal(counter);
   };
+
+  const deleteRow = (index) => {
+    console.log(index)
+    setTotal(total - sheetBody[index].hours)
+    sheetBody.splice(index, 1)
+    setSheetBody([...sheetBody]);
+  }
+
   const handleChange = (e) => {
-    console.log(e.target.name);
     setSheetInfo((value) => ({
       ...value,
       [e.target.name]: e.target.value,
@@ -110,23 +114,25 @@ const TimeSheet = (props) => {
     sheetHTML.push(
       `<tr><td>${row.startTime}</td><td>${row.endTime}</td><td>${row.workCode}</td><td>${row.jobName}</td><td>${row.hours}</td><td>${row.notes}</td></tr>`
     );
-    return <TimeRow i={i} editRow={editRow} handleChange={handleChange} />;
+    return <TimeRow i={i} editRow={editRow} handleChange={handleChange} deleteRow={deleteRow} />;
   });
+
   const compileHTML = () => {
     let combined = sheetHTML.join(" ");
     // console.log(combined, sheetInfo);
     setSheetInfo((value) => ({
       ...value,
       infoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"></colgroup>
-        <thead>
-        <tr> <th>Start Time</th> <th>End Time</th> <th>Work Code</th> <th>Job Name</th> <th>Hours</th> <th>Notes</th> </tr>
-        </thead>
-        <tbody>
-        ${combined}
-        <tr> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <th>Total</th> <td>${total}</td> <td style = "background-color: rgb(128, 128, 128);" ></td> </tr>
-        </tbody></table>`,
+          <thead>
+          <tr> <th>Start Time</th> <th>End Time</th> <th>Work Code</th> <th>Job Name</th> <th>Hours</th> <th>Notes</th> </tr>
+          </thead>
+          <tbody>
+          ${combined}
+          <tr> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <th>Total</th> <td>${total}</td> <td style = "background-color: rgb(128, 128, 128);" ></td> </tr>
+          </tbody></table>`,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // setStatus('Created')
@@ -147,25 +153,7 @@ const TimeSheet = (props) => {
           console.log(error);
         }
       );
-    emailjs
-      .send(
-        "service_v3kf86l",
-        "template_5kfgkxl",
-        sheetInfo,
-        "E5-2RW9TeJyvAH3_r"
-      )
-      .then(
-        (result) => {
-          console.log(result)
-          setStatus(result.text);
-          setSuccess(true);
-        },
-        (error) => {
-          setFail(true);
-          setStatus("Error");
-          console.log(error);
-        }
-      );
+    sendEmail("service_v3kf86l", "template_5kfgkxl", sheetInfo, "E5-2RW9TeJyvAH3_r")
   };
 
   return (
@@ -178,24 +166,20 @@ const TimeSheet = (props) => {
             <FormGroup>
               <Label for="employeeName">Employee Name</Label>
               <Input
+                defaultValue={sheetInfo.employeeName}
                 id="employeeName"
                 name="employeeName"
                 placeholder="Who are you?"
-                type="select"
+                type="text"
                 onChange={handleChange}
               >
-                <option></option>
-                <option>Rilyn</option>
-                <option>Kyle</option>
-                <option>Pat</option>
-                <option>Gordon</option>
-                <option>Kim</option>
               </Input>
             </FormGroup>
           </Col>
           <Col md={3}>
             <Label for="title">Title</Label>
             <Input
+              placeholder="Enter Employee title"
               defaultValue={sheetInfo.title}
               onChange={handleChange}
               name="title"
@@ -209,6 +193,7 @@ const TimeSheet = (props) => {
           <Col md={3}>
             <Label for="employeeNum">Employee Number</Label>
             <Input
+              defaultValue={sheetInfo.employeeNum}
               placeholder="Enter Employee Number"
               onChange={handleChange}
               name="employeeNum"
@@ -234,6 +219,8 @@ const TimeSheet = (props) => {
             <Label for="truckNum">Truck Number</Label>
             <Input
               onChange={handleChange}
+              defaultValue={sheetInfo.truckNum}
+              placeholder="Enter truck number"
               name="truckNum"
               id="truckNum"
               type="text"

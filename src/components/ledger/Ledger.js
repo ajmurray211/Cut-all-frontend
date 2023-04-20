@@ -6,58 +6,28 @@ import MyWrappedComponent from './ComponentToPrint';
 import EditComponent from './EditComponent';
 import logo from '../../Assets/cut-all-logo.png'
 import searchicon from "../../Assets/searchicon.png";
+import { useModal } from '../../hooks/useModal';
+import { useDataFetcher } from '../../hooks/useDataFetcher';
 
 const Ledger = (props) => {
-    const [tickets, setTickets] = useState([])
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(true)
     const [activeTicket, setActiveTicket] = useState(null)
-    const [modal, setModal] = useState(false);
     const componentRef = useRef(null);
-    const [searchVal, setSearchVal] = useState('')
-    const [searchBy, setSearchBy] = useState(null)
     const [rilynTickets, setRilynTickets] = useState([])
     const [kyleTickets, setKyleTickets] = useState([])
     const [patTickets, setPatTickets] = useState([])
     const [gordonTickets, setGordonTickets] = useState([])
     const [otherTickets, setOtherTickets] = useState([])
     const [editMode, setEditMode] = useState(false)
-
-    // controls for modals 
-    const [nestedModal, setNestedModal] = useState(false);
-    const [closeAll, setCloseAll] = useState(false);
-    const toggle = () => setModal(!modal);
-    const toggleNested = () => {
-        setNestedModal(!nestedModal);
-        setCloseAll(false);
-    };
-    const toggleAll = () => {
-        setNestedModal(!nestedModal);
-        setCloseAll(true);
-    }
-
-    // gathering data functions
-    const getData = (url) => {
-        setLoading(true)
-        axios
-            .get(url)
-            .then((response) => setTickets(response.data.data))
-            .catch((err) => setError(err))
-            .finally(() => setLoading(false))
-    }
+    const { isOpen: ticketInfoModal, toggleModal: toggleTicketInfoModal } = useModal();
+    const { isOpen: editTicketModal, toggleModal: toggleEditTicketModal } = useModal();
+    const { getData, data: tickets, error, loading } = useDataFetcher();
 
     useEffect(() => {
-        if (searchVal === '') {
-            getData(`${props.API_URL}ticket`)
-        } else {
-            getData(`${props.API_URL}ticket/search/?${searchBy}=${searchVal}`)
-        }
-    }, [searchVal])
+        getData(`${props.API_URL}ticket`)
+    }, [])
 
     // other functions
-    const handlePrint = () => {
-        window.print()
-    }
+    const handlePrint = () => { window.print() }
 
     const handleSubmit = (data) => {
         axios.put(`${props.API_URL}ticket/${data._id}`, data)
@@ -80,13 +50,8 @@ const Ledger = (props) => {
         axios
             .delete(`${props.API_URL}ticket/${activeTicket._id}`)
             .then(res => console.log(res))
-        toggleAll()
+        toggleEditTicketModal()
         getData(`${props.API_URL}ticket`)
-    }
-
-    const handleSearch = (e) => {
-        setSearchBy(e.target.name)
-        setSearchVal(e.target.value)
     }
 
     const handleSplitTickets = (worker, ticket) => {
@@ -143,7 +108,7 @@ const Ledger = (props) => {
             return (
                 <li className='ticket'><Button onClick={() => {
                     setActiveTicket(ticket)
-                    toggle()
+                    toggleTicketInfoModal()
                 }}>{ticket.billTo} - {ticket.date} - Ticket # {ticket.ticketNum ? ticket.ticketNum : '-----'}</Button></li>
             )
         })
@@ -176,38 +141,38 @@ const Ledger = (props) => {
                 </section>
             </section>
 
-            <Modal fullscreen className='modal-width' id='mainModal' isOpen={modal} toggle={toggle}>
-                <ModalHeader toggle={toggle}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
+            <Modal fullscreen className='modal-width' id='mainModal' isOpen={ticketInfoModal} toggle={toggleTicketInfoModal}>
+                <ModalHeader toggle={toggleTicketInfoModal}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
                 <ModalBody id="ticketInfo">
                     <MyWrappedComponent editMode={editMode} value={activeTicket} ref={componentRef} />
                     <EditComponent editMode={editMode} editedData={activeTicket} API_URL={props.API_URL} setEditedData={setActiveTicket} />
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" className={editMode ? 'hide' : 'show'} onClick={toggle}>close</Button>
+                    <Button color="secondary" className={editMode ? 'hide' : 'show'} onClick={toggleTicketInfoModal}>close</Button>
                     <Button color='primary' className={editMode ? 'hide' : 'show'} onClick={() => handlePrint()}>Print</Button>
                     <Button color='warning' className={editMode ? 'hide' : 'show'} onClick={() => setEditMode(!editMode)}>Edit</Button>
                     <Button color='success' className={editMode ? 'show' : 'hide'} type='submit' onClick={() => {
                         handleSubmit(activeTicket)
                         setEditMode(!editMode)
                     }}>Save</Button>
-                    <Button color='danger' className={editMode ? 'hide' : 'show'} onClick={toggleNested}>Delete</Button>
+                    <Button color='danger' className={editMode ? 'hide' : 'show'} onClick={handleDelete}>Delete</Button>
                 </ModalFooter>
             </Modal>
 
             <Modal
-                isOpen={nestedModal}
-                toggle={toggleNested}
-                onClosed={closeAll ? toggle : undefined}
+                isOpen={editTicketModal}
+                toggle={toggleEditTicketModal}
+                onClosed={toggleTicketInfoModal}
             >
                 <ModalHeader>Nested Modal title</ModalHeader>
                 <ModalBody>
                     Are you sure that you want to delete {activeTicket ? activeTicket.worker : ''}s job ticket for {activeTicket ? activeTicket.billTo : ''} completed on {activeTicket ? activeTicket.date : ''}. Once deleted it will be gone forever.
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={toggleNested}>
+                    <Button color="primary" onClick={toggleEditTicketModal}>
                         cancel
                     </Button>{' '}
-                    <Button color="danger" onClick={handleDelete}>
+                    <Button color="danger" onClick={toggleEditTicketModal}>
                         Delete
                     </Button>
                 </ModalFooter>

@@ -1,9 +1,10 @@
 import { Input } from "reactstrap";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton, Tooltip } from '@mui/material';
 
 const TimeRow = (props) => {
   return (
     <tr>
-      {/* <th scope="row">1</th> */}
       <td>
         <Input
           onChange={(e) => props.editRow(e, props.i)}
@@ -49,6 +50,13 @@ const TimeRow = (props) => {
           name="notes"
           type="textarea"
         />
+      </td>
+      <td>
+        <Tooltip title="Delete">
+          <IconButton onClick={() => props.deleteRow(props.i)}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
       </td>
     </tr>
   );

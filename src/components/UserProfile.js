@@ -10,6 +10,7 @@ const UserProfile = (props) => {
     const [title, setTitle] = useState('')
     const [employeeNumber, setEmployeeNumber] = useState('')
     const [status, setStatus] = useState('')
+    const [email, setEmail] = useState('No email Stored')
     const [truckNumber, setTruckNumber] = useState('')
     const [alert, setAlert] = useState({ type: 'primary', mssg: 'nothing' })
 
@@ -22,6 +23,7 @@ const UserProfile = (props) => {
             if (user.employeeNumber) setEmployeeNumber(user.employeeNumber)
             if (user.status) setStatus(user.status)
             if (user.truckNumber) setTruckNumber(user.truckNumber)
+            if (user.email) setEmail(user.email)
         }
     }
 
@@ -144,7 +146,7 @@ const UserProfile = (props) => {
                 </section>
 
                 <section className='userInfoSection'>
-                    <h2>Email: {user.email}</h2>
+                    <h2>Email: {email}</h2>
                 </section>
 
                 <Button onClick={handleUserUpdate}>Update user</Button>

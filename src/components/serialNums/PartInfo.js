@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ListGroupItem, Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useModal } from "../../hooks/useModal";
 
 const PartInfo = (props) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const toggle = () => setIsOpen(!isOpen);
+    const { isOpen, toggleModal: toggle } = useModal();
     let data = []
     let maxNum = 25
 
@@ -69,6 +69,8 @@ const PartInfo = (props) => {
                     Spec number: {props.number.specNum}
                     <br />
                     Assigned User: {props.number.assignedTo == '' ? 'No user assigned yet.' : props.number.assignedTo}
+                    <br/>
+                    Created on: {props.number.createdAt? props.number.createdAt : 'Time Stamp not working on this part.'}
                     <ul id="entryContainer">
                         {mappedHistory}
                     </ul>
