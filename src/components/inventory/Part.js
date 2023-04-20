@@ -17,7 +17,7 @@ const Part = (props) => {
     const handleEdit = async (event) => {
         // const formData = new FormData();
         // formData.append("image", selectedFile);
-
+        
         const getID = await axios.put(`${props.API_URL}parts/${props.part._id}`, {
             name: putName,
             onHand: putOnHand,

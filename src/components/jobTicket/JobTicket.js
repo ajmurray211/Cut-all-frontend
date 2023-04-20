@@ -130,7 +130,7 @@ const JobTIcket = (props) => {
         event.preventDefault()
         toggleModal()
         postTicket()
-        sendEmail('service_v3kf86l', 'template_jxp3a6n', value, 'E5-2RW9TeJyvAH3_r') //prod email template template_mdw8cd7 
+        sendEmail('service_v3kf86l', 'template_mdw8cd7 ', value, 'E5-2RW9TeJyvAH3_r') //dev email template_jxp3a6n 
     }
 
     const postTicket = async () => {
@@ -280,6 +280,11 @@ const JobTIcket = (props) => {
         setTicketBody(copy)
     }
 
+    const deleteRow = (index) => {
+        let newBody = ticketBody.filter((row, i) => i !== index)
+        setTicketBody(newBody);
+    };
+
     const mappedRows = ticketBody.map((row, index) => {
         let line = (`<tr> <td"> ${row.qty} </td> <td"> ${row.length}</td> <td"> ${row.depth} </td> <td"> ${row.workCode} </td>  <td">${row.equipUsed} </td> <td">${row.serialNum}</td> </tr>`)
         infoToHTML.push(line)
@@ -287,6 +292,7 @@ const JobTIcket = (props) => {
             index={index}
             serialNumsList={serialNumsList}
             editRow={editRow}
+            deleteRow={deleteRow}
         />
     })
 

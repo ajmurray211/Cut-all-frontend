@@ -69,6 +69,8 @@ const PartInfo = (props) => {
                     Spec number: {props.number.specNum}
                     <br />
                     Assigned User: {props.number.assignedTo == '' ? 'No user assigned yet.' : props.number.assignedTo}
+                    <br/>
+                    Created on: {props.number.createdAt? props.number.createdAt : 'Time Stamp not working on this part.'}
                     <ul id="entryContainer">
                         {mappedHistory}
                     </ul>

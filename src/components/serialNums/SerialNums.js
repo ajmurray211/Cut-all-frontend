@@ -9,6 +9,7 @@ const SerialNums = (props) => {
     const { getData: getToolName, data: toolName, error1, loading1 } = useDataFetcher();
     const { getData: getSerialNumbers, data: serialNumbers, error2, loading2 } = useDataFetcher();
     const { isOpen: modal, toggleModal } = useModal();
+    const [submitted, setSubmitted] = useState(false)
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
     const [status, setStatus] = useState(null)
@@ -26,7 +27,7 @@ const SerialNums = (props) => {
         serialNum: null
     })
     let currentSerialNums = []
-    
+
     const validateInput = (val) => {
         setValidInput(currentSerialNums.includes(val))
     }
@@ -49,6 +50,7 @@ const SerialNums = (props) => {
                 setSuccess(false)
                 toggleModal()
                 getSerialNumbers(`${props.API_URL}serialNum`)
+                setSubmitted(false)
             }, 5000);
         }
         else if (status === 'Error') {
@@ -57,6 +59,7 @@ const SerialNums = (props) => {
                 setFail(false)
                 toggleModal()
                 getSerialNumbers(`${props.API_URL}serialNum`)
+                setSubmitted(false)
             }, 5000);
         }
     }, [status]);
@@ -83,7 +86,7 @@ const SerialNums = (props) => {
                     setHandNums(data => [...data, num]);
                 }
                 break;
-            case num.name.toLocaleLowerCase().includes('core'):
+            case num.name.toLocaleLowerCase().includes('bit'):
                 if (!coreNums.find(i => i.id === num.id)) {
                     setCoreNums(data => [...data, num]);
                 }
@@ -128,6 +131,7 @@ const SerialNums = (props) => {
     }
 
     const handlePost = () => {
+        setSubmitted(true)
         axios.post(`${props.API_URL}serialNum`, newSerialNumberData)
             .then(res => {
                 console.log(res)
@@ -234,7 +238,7 @@ const SerialNums = (props) => {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={handlePost} type='submit' color='primary' disabled={validInput}>
+                        <Button onClick={handlePost} type='submit' color='primary' disabled={validInput || submitted}>
                             Submit
                         </Button>
                     </ModalFooter>
