@@ -25,6 +25,7 @@ const Main = (props) => {
     const [addAlert, setAddAlert] = useState(false)
     const [nameTouched, setNameTouched] = useState(false)
     const [toolTouched, setToolTouched] = useState(false)
+    const [bladeNamesList, setBladeNamesList] = useState([])
     const [drawData, setDrawData] = useState({
         partName: null,
         name: null,
@@ -32,7 +33,7 @@ const Main = (props) => {
         serialNumber: null,
         dateTaken: null
     })
-    
+
     useEffect(() => {
         if (activeSearchVal === '') {
             getData(`${props.API_URL}parts/?format=json`)
@@ -40,23 +41,35 @@ const Main = (props) => {
             getData(`${props.API_URL}parts/search/?${searchBy}=${activeSearchVal}`)
         }
     }, [activeSearchVal])
-    
+
     const handleChange = (event) => {
+        console.log(event.target.value)
         event.preventDefault()
         setSearchVal(event.target.value)
     }
-    
+
+    const splitBladeNames = () => {
+        parts.map((part) => {
+            if (!bladeNamesList.includes(part.name)) {
+                let copy = [...bladeNamesList]
+                copy.push(part.name)
+                setBladeNamesList(copy)
+                console.log(bladeNamesList, copy)
+            }
+        })
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault()
         getData(`${props.API_URL}parts/search/?name=${searchVal}`)
         setSearchVal('')
     }
-    
+
     const filterOnHand = (event) => {
         setSearchBy(event.target.name)
         setActiveSearchVal(event.target.value)
     }
-    
+
     const handlePost = () => {
         console.log(postTool, partName)
         axios.post(`${props.API_URL}parts/`, {
@@ -64,8 +77,8 @@ const Main = (props) => {
             onHand: postOnHand,
             tool: postTool
         })
-        .then(res => res.status == 201 ? setAddAlert(true) : null)
-        .catch(err => console.log('error', err))
+            .then(res => res.status == 201 ? setAddAlert(true) : null)
+            .catch(err => console.log('error', err))
         const timer = setTimeout(() => {
             setPartName('')
             setPostOnHand(null)
@@ -75,28 +88,28 @@ const Main = (props) => {
             getData(`${props.API_URL}parts/?format=json`)
         }, 5000);
     }
-    
+
     // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const drawPart = async () => {
         const getPartNumber = await axios.get(`${props.API_URL}parts/search/?name=${drawData.partName}`)
         const partNumber = getPartNumber.data.data[0]._id
         const onHand = getPartNumber.data.data[0].onHand
-        
+
         const postWorker = await axios.post(`${props.API_URL}workers`, {
             ...drawData,
             partID: partNumber
         })
-        .then(res => console.log(res))
-        .catch(err => console.log('error', err))
-        
+            .then(res => console.log(res))
+            .catch(err => console.log('error', err))
+
         const newOnHandCount = onHand - drawData.amountTaken
-        
+
         const drawListAddition = await axios.put(`${props.API_URL}parts/${partNumber}`, {
             name: drawData.partName,
             onHand: newOnHandCount,
             dateTaken: drawData.dateTaken
         })
-        
+
         if (drawListAddition.status == 201) {
             setDrawAlert(true)
         }
@@ -106,15 +119,15 @@ const Main = (props) => {
             getData(`${props.API_URL}parts/?format=json`)
         }, 5000);
     }
-    
+
     const mappedParts = parts.map((part, key) => {
         if (part.emailed == false && part.onHand <= 5) {
             axios.put(`${props.API_URL}parts/${part._id}`, { emailed: true })
         }
         return (
             <Part
-            key={part.id}
-            part={part}
+                key={part.id}
+                part={part}
                 API_URL={props.API_URL}
                 getData={getData}
                 id={part._id}
@@ -160,7 +173,10 @@ const Main = (props) => {
                     Draw Part
                 </Button>
 
-                <Button className="me-2" id="filter-item" color="danger" onClick={toggleAddPartModal}>
+                <Button className="me-2" id="filter-item" color="danger" onClick={() => {
+                    toggleAddPartModal()
+                    // splitBladeNames()
+                }}>
                     Add Item
                 </Button>
 
@@ -180,11 +196,11 @@ const Main = (props) => {
                                 onChange={(event) => setPartName(event.target.value)}
                                 value={partName}
                                 valid={partName && nameTouched}
-                                invalid={partName == null && nameTouched}
+                                invalid={partName == null && nameTouched && bladeNamesList.includes(partName)}
                                 onBlur={() => setNameTouched(true)}
                             />
-                            <FormFeedback valid>Username is valid</FormFeedback>
-                            <FormFeedback invalid>Oops! You need to enter a username.</FormFeedback>
+                            <FormFeedback valid>Name is valid</FormFeedback>
+                            <FormFeedback invalid>Oops! You need to enter a unique name.</FormFeedback>
                         </FormGroup>
                         <FormGroup >
                             <Label for="partCount"> Amount on hand </Label>
@@ -204,13 +220,13 @@ const Main = (props) => {
                                 <option></option>
                                 <option>Concrete saw</option>
                                 <option>Hand saw</option>
+                                <option>Wall saw</option>
                                 <option>Asphalt saw</option>
-                                <option>Hand saw</option>
                                 <option>Core drill</option>
                                 <option>Consumables</option>
                             </Input>
-                            <FormFeedback valid>Username is valid</FormFeedback>
-                            <FormFeedback invalid>Oops! You need to enter a username.</FormFeedback>
+                            <FormFeedback valid>Tool is valid</FormFeedback>
+                            <FormFeedback invalid>Oops! There is a problem.</FormFeedback>
 
                         </FormGroup>
                     </Form>
