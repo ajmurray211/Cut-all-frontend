@@ -8,18 +8,16 @@ import {
 import axios from "axios";
 import searchicon from "../../Assets/searchicon.png";
 import DrawPart from "./DrawPart";
+import { useDataFetcher } from "../../hooks/useDataFetcher";
+import { useModal } from "../../hooks/useModal";
 
 const Main = (props) => {
+    const { isOpen: addPartModal, toggleModal: toggleAddPartModal } = useModal();
+    const { isOpen: drawModal, toggleModal: toggleDrawModal } = useModal();
+    const { getData, data: parts, error, loading } = useDataFetcher();
     const [searchVal, setSearchVal] = useState('')
     const [activeSearchVal, setActiveSearchVal] = useState('')
     const [searchBy, setSearchBy] = useState('')
-    const [modal, setModal] = useState(false);
-    const toggleModal = () => setModal(!modal);
-    const [drawModal, setDrawModal] = useState(false);
-    const toggleDrawModal = () => setDrawModal(!drawModal);
-    const [parts, setParts] = useState([])
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(true)
     const [partName, setPartName] = useState(null)
     const [postOnHand, setPostOnHand] = useState(null)
     const [postTool, setPostTool] = useState(null)
@@ -34,16 +32,7 @@ const Main = (props) => {
         serialNumber: null,
         dateTaken: null
     })
-
-    const getData = (url) => {
-        setLoading(true)
-        axios
-            .get(url)
-            .then((response) => setParts(response.data.data))
-            .catch((err) => setError(err))
-            .finally(() => setLoading(false))
-    }
-
+    
     useEffect(() => {
         if (activeSearchVal === '') {
             getData(`${props.API_URL}parts/?format=json`)
@@ -51,23 +40,23 @@ const Main = (props) => {
             getData(`${props.API_URL}parts/search/?${searchBy}=${activeSearchVal}`)
         }
     }, [activeSearchVal])
-
+    
     const handleChange = (event) => {
         event.preventDefault()
         setSearchVal(event.target.value)
     }
-
+    
     const handleSubmit = (event) => {
         event.preventDefault()
         getData(`${props.API_URL}parts/search/?name=${searchVal}`)
         setSearchVal('')
     }
-
+    
     const filterOnHand = (event) => {
         setSearchBy(event.target.name)
         setActiveSearchVal(event.target.value)
     }
-
+    
     const handlePost = () => {
         console.log(postTool, partName)
         axios.post(`${props.API_URL}parts/`, {
@@ -75,39 +64,39 @@ const Main = (props) => {
             onHand: postOnHand,
             tool: postTool
         })
-            .then(res => res.status == 201 ? setAddAlert(true) : null)
-            .catch(err => console.log('error', err))
+        .then(res => res.status == 201 ? setAddAlert(true) : null)
+        .catch(err => console.log('error', err))
         const timer = setTimeout(() => {
             setPartName('')
             setPostOnHand(null)
             setActiveSearchVal('')
             setAddAlert(false)
-            toggleModal()
+            toggleAddPartModal()
             getData(`${props.API_URL}parts/?format=json`)
         }, 5000);
     }
-
+    
     // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const drawPart = async () => {
         const getPartNumber = await axios.get(`${props.API_URL}parts/search/?name=${drawData.partName}`)
         const partNumber = getPartNumber.data.data[0]._id
         const onHand = getPartNumber.data.data[0].onHand
-
+        
         const postWorker = await axios.post(`${props.API_URL}workers`, {
             ...drawData,
             partID: partNumber
         })
-            .then(res => console.log(res))
-            .catch(err => console.log('error', err))
-
+        .then(res => console.log(res))
+        .catch(err => console.log('error', err))
+        
         const newOnHandCount = onHand - drawData.amountTaken
-
+        
         const drawListAddition = await axios.put(`${props.API_URL}parts/${partNumber}`, {
             name: drawData.partName,
             onHand: newOnHandCount,
             dateTaken: drawData.dateTaken
         })
-
+        
         if (drawListAddition.status == 201) {
             setDrawAlert(true)
         }
@@ -117,15 +106,15 @@ const Main = (props) => {
             getData(`${props.API_URL}parts/?format=json`)
         }, 5000);
     }
-
+    
     const mappedParts = parts.map((part, key) => {
         if (part.emailed == false && part.onHand <= 5) {
             axios.put(`${props.API_URL}parts/${part._id}`, { emailed: true })
         }
         return (
             <Part
-                key={part.id}
-                part={part}
+            key={part.id}
+            part={part}
                 API_URL={props.API_URL}
                 getData={getData}
                 id={part._id}
@@ -171,14 +160,14 @@ const Main = (props) => {
                     Draw Part
                 </Button>
 
-                <Button className="me-2" id="filter-item" color="danger" onClick={toggleModal}>
+                <Button className="me-2" id="filter-item" color="danger" onClick={toggleAddPartModal}>
                     Add Item
                 </Button>
 
             </section>
 
-            <Modal isOpen={modal} toggle={toggleModal} centered >
-                <ModalHeader toggle={toggleModal} >Part input</ModalHeader>
+            <Modal isOpen={addPartModal} toggle={toggleAddPartModal} centered >
+                <ModalHeader toggle={toggleAddPartModal} >Part input</ModalHeader>
                 <ModalBody>
                     <Alert color='success' isOpen={addAlert}>You Added an item!</Alert>
                     <Form noValidate >

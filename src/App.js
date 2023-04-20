@@ -19,7 +19,7 @@ function App() {
   // const API_URL = 'http://localhost:8080/'
 
   const { user } = useAuthContext()
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 868);
 
   useEffect(() => {
     const handleResize = () => {

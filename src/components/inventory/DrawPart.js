@@ -2,20 +2,10 @@
 import { Form, Row, Col, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useDataFetcher } from '../../hooks/useDataFetcher';
 
 const DrawPart = (props) => {
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [data, setData] = useState([])
-
-    const getData = (url) => {
-        setLoading(true)
-        axios
-            .get(url)
-            .then((response) => setData(response.data.data))
-            .catch((err) => setError(err))
-            .finally(() => setLoading(false))
-    }
+    const { getData, data, error, loading } = useDataFetcher();
 
     useEffect(() => {
         getData(`${props.API_URL}parts/?format=json`)

@@ -4,19 +4,19 @@ import FormGroupMUI from '@mui/material/FormGroup'
 import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Switch, FormControlLabel, FormLabel, FormControl } from '@mui/material';
 import { useState, useEffect } from 'react';
-import emailjs from '@emailjs/browser';
 import BillingRow from './BillingRow';
 import JobDetails from './JobDetails';
 import TimeSheet from './TimeSheet';
 import axios from 'axios';
+import { useModal } from '../../hooks/useModal';
+import { useEmail } from '../../hooks/useEmail';
+import { useFindTimeDiff } from '../../hooks/useFindTimeDiff';
 
 const JobTIcket = (props) => {
-    const [modal, setModal] = useState(false);
-    const toggleModal = () => setModal(!modal);
+    const { isOpen, toggleModal } = useModal();
+    const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
+    const { findTimes } = useFindTimeDiff()
     const [ticketBody, setTicketBody] = useState([])
-    const [status, setStatus] = useState('');
-    const [success, setSuccess] = useState(false)
-    const [fail, setFail] = useState(false)
     const [value, setValue] = useState({
         email: 'murray.aj.murray@gmail.com',
         worker: '',
@@ -64,14 +64,11 @@ const JobTIcket = (props) => {
     let infoToHTML = []
     let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
 
-    // set the current ticket number that will be logged when submitted
     useEffect(() => {
         axios
             .get(`${props.API_URL}ticket/topTicketNum`)
             .then((res) => {
-                // console.log(value)
-                // let number = res.data[0].ticketNum !== null ? number = res.data[0].ticketNum + 1 : number = 1
-                let number = res.data[0].ticketNum + 1
+                let number = res.data.data.ticketNum + 1
                 setValue(values => ({
                     ...values,
                     ticketNum: number
@@ -91,7 +88,7 @@ const JobTIcket = (props) => {
                     }
                 })
             })
-    }, [serialNumsList])
+    }, [])
 
     // add the html varibles to values variable for emailing 
     const compileHTML = () => {
@@ -122,12 +119,6 @@ const JobTIcket = (props) => {
             <tbody> ${combined} </tbody>
             </table>`,
             jobInfo: ticketBody,
-            // helperTimesHTML: `<table style="border-collapse: collapse; width: 50%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
-            // <thead> 
-            // <tr> <th>Name</th> <th>Job Begin</th> <th>Job End</th> <th>Travel begin</th> <th>Travel End</th> <th>Milage</th> </tr>
-            // </thead>
-            // <tbody> ${timetablels.join('')} </tbody>
-            // </table>`,
             helperTimesHTML: timetablels.join(''),
             totalPaidTime: total
         }))
@@ -138,74 +129,71 @@ const JobTIcket = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault()
         toggleModal()
-        // console.log(value, 'before email')
         postTicket()
-        emailjs.send('service_v3kf86l','template_mdw8cd7' , value, 'E5-2RW9TeJyvAH3_r') //dev email template  'template_jxp3a6n'
-            .then((result) => {
-                setStatus(result.text);
-                setSuccess(true)
-            }, (error) => {
-                setFail(true)
-                setStatus('Error')
-                console.log(error);
-            });
+        sendEmail('service_v3kf86l', 'template_mdw8cd7 ', value, 'E5-2RW9TeJyvAH3_r') //dev email template_jxp3a6n 
     }
 
     const postTicket = async () => {
-        await axios.post(`${props.API_URL}ticket`, {
-            ...value
-        })
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err))
+        try {
+            await axios.post(`${props.API_URL}ticket`, {
+                ...value
+            });
 
-        value.jobInfo.forEach(async (data) => {
-            let dateList = null
-            await axios.get(`${props.API_URL}serialNum/${data.serialNum}`)
-                .then(res => dateList = (res.data.data[0].history))
+            for (const data of value.jobInfo) {
+                let newDepth = data.depth;
+                let newLength = data.length;
+                if (data.qty) {
+                    newDepth = parseInt(data.qty) * parseInt(data.depth);
+                    newLength = parseInt(data.qty) * parseInt(data.length);
+                }
 
-            if (dateList.some(item => item.date === value.date)) {
-                const duplicateDate = dateList.find(item => item.date === value.date);
-                console.log(dateList)
-                const updatedHistory = dateList.map(item => {
-                    if (item.date === duplicateDate.date) {
-                        return {
-                            ...item,
-                            runLength: parseInt(item.runLength) + parseInt(data.length),
-                            depth: parseInt(item.depth) + parseInt(data.depth),
-                        };
-                    }
-                    return item;
-                });
-                await axios.put(`${props.API_URL}serialNum/update/1`, {
-                    serialNum: data.serialNum,
-                    history: updatedHistory
-                })
-                    .then((res) => console.log(res))
-                    .catch((err) => console.log(err))
-                console.log('exsisting', duplicateDate, data, updatedHistory)
-            } else {
-                console.log('new date')
-                await axios.put(`${props.API_URL}serialNum/update/2`, {
-                    serialNum: data.serialNum,
-                    assignedTo: value.worker,
-                    history: [
-                        {
-                            runLength: data.length,
-                            depth: data.depth,
-                            date: value.date
-                        }]
-                })
-                    .then((res) => console.log(res))
-                    .catch((err) => console.log(err))
+                const { data: { data: [serialNumData] } } = await axios.get(`${props.API_URL}serialNum/${data.serialNum}`);
+
+                const { history } = serialNumData;
+
+                const duplicateDate = history.find(item => item.date === value.date);
+
+                if (duplicateDate) {
+                    const updatedHistory = history.map(item => {
+                        if (item.date === duplicateDate.date) {
+                            return {
+                                ...item,
+                                runLength: parseInt(item.runLength) + parseInt(newLength),
+                                depth: parseInt(item.depth) + parseInt(newDepth),
+                            };
+                        }
+                        return item;
+                    });
+
+                    await axios.put(`${props.API_URL}serialNum/update/1`, {
+                        serialNum: data.serialNum,
+                        history: updatedHistory
+                    });
+                    console.log('existing', duplicateDate, data, updatedHistory);
+                } else {
+                    await axios.put(`${props.API_URL}serialNum/update/2`, {
+                        serialNum: data.serialNum,
+                        assignedTo: value.worker,
+                        history: [
+                            {
+                                runLength: newLength,
+                                depth: newDepth,
+                                date: value.date
+                            }
+                        ]
+                    });
+                    console.log('new date');
+                }
             }
-        })
-    }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     // resets variables changing when status changes 
     useEffect(() => {
         if (status === 'OK') {
             setTimeout(() => {
-                console.log(value, 'after email')
                 setStatus('');
                 setSuccess(false)
             }, 5000);
@@ -214,26 +202,9 @@ const JobTIcket = (props) => {
             setTimeout(() => {
                 setStatus('');
                 setFail(false)
-            }, 5000);
+            }, 10000);
         }
     }, [status]);
-
-    // saves values when inputs changed by user 
-    const findTimes = (start, end) => {
-        let d1 = Date.parse(`2023-01-15T${start}:00.000`);
-        let d2 = Date.parse(`2023-01-15T${end}:00.000`);
-        const milliseconds = Math.abs(d1 - d2);
-        const secs = Math.floor(milliseconds / 1000);
-        const mins = Math.floor(secs / 60);
-        const minutes = mins % 60
-        const hours = Math.floor(mins / 60);
-        return {
-            mins: mins,
-            hours: hours,
-            minutes: minutes,
-            combined: `${hours}hr. ${minutes}min.`
-        }
-    }
 
     const handleSelect = (selectedList) => {
         setValue((values) => ({
@@ -309,6 +280,11 @@ const JobTIcket = (props) => {
         setTicketBody(copy)
     }
 
+    const deleteRow = (index) => {
+        let newBody = ticketBody.filter((row, i) => i !== index)
+        setTicketBody(newBody);
+    };
+
     const mappedRows = ticketBody.map((row, index) => {
         let line = (`<tr> <td"> ${row.qty} </td> <td"> ${row.length}</td> <td"> ${row.depth} </td> <td"> ${row.workCode} </td>  <td">${row.equipUsed} </td> <td">${row.serialNum}</td> </tr>`)
         infoToHTML.push(line)
@@ -316,6 +292,7 @@ const JobTIcket = (props) => {
             index={index}
             serialNumsList={serialNumsList}
             editRow={editRow}
+            deleteRow={deleteRow}
         />
     })
 
@@ -464,7 +441,7 @@ const JobTIcket = (props) => {
 
             <Button onClick={addRow}> Add row </Button>
 
-            <Modal isOpen={modal} size='lg'>
+            <Modal isOpen={isOpen} size='lg'>
                 <ModalHeader toggle={toggleModal}>Signature form for ticket {value.ticketNum}</ModalHeader>
                 <ModalBody id='jobDetails'>
                     <JobDetails
