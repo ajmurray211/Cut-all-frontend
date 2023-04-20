@@ -1,6 +1,7 @@
 import { Table } from "reactstrap";
 
 const InfoDisplay = (props) => {
+
   let mappedInfo = props.sheetBody.map((row) => {
     return (
       <tr>
