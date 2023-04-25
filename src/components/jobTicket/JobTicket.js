@@ -130,7 +130,7 @@ const JobTIcket = (props) => {
         event.preventDefault()
         toggleModal()
         postTicket()
-        sendEmail('service_v3kf86l', 'template_mdw8cd7 ', value, 'E5-2RW9TeJyvAH3_r') //dev email template_jxp3a6n 
+        sendEmail('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r') //dev email  'template_jxp3a6n'
     }
 
     const postTicket = async () => {
