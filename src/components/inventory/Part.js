@@ -3,8 +3,10 @@ import { useState } from "react";
 import axios from "axios";
 import logo from "../../Assets/cut-all-logo.png";
 import { useModal } from "../../hooks/useModal";
+import { useWorkerContext } from "../../hooks/useWorkerContext";
 
 const Part = (props) => {
+    const { API_URL, workerlist } = useWorkerContext()
     const { isOpen: pullhistoryOpen, toggleModal: togglePullHistory } = useModal();
     const { isOpen: editOpen, toggleModal: toggleEdit } = useModal();
     const [putName, setPutName] = useState(props.part.name)
@@ -18,7 +20,7 @@ const Part = (props) => {
         // const formData = new FormData();
         // formData.append("image", selectedFile);
         
-        const getID = await axios.put(`${props.API_URL}parts/${props.part._id}`, {
+        const getID = await axios.put(`${API_URL}parts/${props.part._id}`, {
             name: putName,
             onHand: putOnHand,
         })
@@ -28,7 +30,7 @@ const Part = (props) => {
             setFail(false)
             setSuccess(false)
             toggleEdit()
-            props.getData(`${props.API_URL}parts/?format=json`)
+            props.getData(`${API_URL}parts/?format=json`)
         }, 5000)
     }
 
@@ -44,12 +46,12 @@ const Part = (props) => {
     // };
 
     const handleDelete = async () => {
-        const getID = await axios.delete(`${props.API_URL}parts/${props.part._id}`)
+        const getID = await axios.delete(`${API_URL}parts/${props.part._id}`)
         toggleEdit()
     }
 
     const handleFullHistory = () => {
-        let info = axios.get(`${props.API_URL}parts/${props.id}`)
+        let info = axios.get(`${API_URL}parts/${props.id}`)
             .then(res => console.log(res.data.data.drawList))
     }
 

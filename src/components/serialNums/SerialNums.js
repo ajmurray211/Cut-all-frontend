@@ -1,14 +1,17 @@
-import { Card, CardBody, Collapse, Form, Row, Col, FormGroup, Label, Input, Alert, Button, ModalBody, Modal, ModalFooter, ModalHeader, ListGroup, ListGroupItem } from 'reactstrap';
+import { Form, Row, Col, FormGroup, Label, Input, Alert, Button, ModalBody, Modal, ModalFooter, ModalHeader } from 'reactstrap';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import PartInfo from './PartInfo';
 import { useDataFetcher } from "../../hooks/useDataFetcher";
 import { useModal } from '../../hooks/useModal';
+import { useWorkerContext } from '../../hooks/useWorkerContext';
 
 const SerialNums = (props) => {
+    const { API_URL, workerlist } = useWorkerContext()
     const { getData: getToolName, data: toolName, error1, loading1 } = useDataFetcher();
     const { getData: getSerialNumbers, data: serialNumbers, error2, loading2 } = useDataFetcher();
     const { isOpen: modal, toggleModal } = useModal();
+    const { isOpen: assignModal, toggleModal: toggleAssignModal } = useModal();
     const [submitted, setSubmitted] = useState(false)
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
@@ -20,6 +23,8 @@ const SerialNums = (props) => {
     const [concreteNums, setConcreteNums] = useState([])
     const [otherNums, setOtherNums] = useState([])
     const [validInput, setValidInput] = useState(false)
+    const [assignedToName, setAssignToName] = useState('')
+    const [assignedToNumber, setAssignToNumber] = useState('')
     const [newSerialNumberData, setNewSerialNumberData] = useState({
         manufacture: null,
         name: null,
@@ -33,8 +38,8 @@ const SerialNums = (props) => {
     }
 
     useEffect(() => {
-        getToolName(`${props.API_URL}parts/?format=json`)
-        getSerialNumbers(`${props.API_URL}serialNum`)
+        getToolName(`${API_URL}parts/?format=json`)
+        getSerialNumbers(`${API_URL}serialNum`)
     }, [])
 
     const mapParts = toolName.map((tool) => {
@@ -49,7 +54,7 @@ const SerialNums = (props) => {
                 setStatus('');
                 setSuccess(false)
                 toggleModal()
-                getSerialNumbers(`${props.API_URL}serialNum`)
+                getSerialNumbers(`${API_URL}serialNum`)
                 setSubmitted(false)
             }, 5000);
         }
@@ -58,7 +63,7 @@ const SerialNums = (props) => {
                 setStatus('');
                 setFail(false)
                 toggleModal()
-                getSerialNumbers(`${props.API_URL}serialNum`)
+                getSerialNumbers(`${API_URL}serialNum`)
                 setSubmitted(false)
             }, 5000);
         }
@@ -119,9 +124,9 @@ const SerialNums = (props) => {
         return mapped
     }
 
+
     const handleChange = (e) => {
         if (e.target.name == 'serialNum') {
-
             validateInput(e.target.value)
         }
         setNewSerialNumberData(data => ({
@@ -132,7 +137,7 @@ const SerialNums = (props) => {
 
     const handlePost = () => {
         setSubmitted(true)
-        axios.post(`${props.API_URL}serialNum`, newSerialNumberData)
+        axios.post(`${API_URL}serialNum`, newSerialNumberData)
             .then(res => {
                 console.log(res)
                 setStatus(res.status)
@@ -144,106 +149,191 @@ const SerialNums = (props) => {
             });
     }
 
+    const handleAssign = async () => {
+        await axios.put((`${API_URL}serialNum/update/2`), {
+            assignedTo: assignedToName,
+            serialNum: assignedToNumber
+        })
+            .then(res => console.log('response from assign', res))
+            .catch(err => console.log('Error', err))
+
+        toggleAssignModal()
+        setAssignToName('')
+        setAssignToNumber('')
+        getSerialNumbers(`${API_URL}serialNum`)
+
+    }
+
     return (
         <div>
+            <div className='modalContainer'>
+                <section>
+                    <section className="d-flex p-5 justify-content-center" id="filter-bar">
+                        <Button className="me-2" id="filter-item" color="danger" onClick={toggleModal}>
+                            Add Item
+                        </Button>
+                    </section>
 
-            <section>
-                <section className="d-flex p-5 justify-content-center" id="filter-bar">
-                    <Button className="me-2" id="filter-item" color="danger" onClick={toggleModal}>
-                        Add Item
-                    </Button>
+                    <Modal isOpen={modal} toggle={toggleModal} size='lg' centered>
+                        <ModalHeader toggle={toggleModal}>Serial number addition</ModalHeader>
+                        <ModalBody>
+                            <Alert color='success' isOpen={success}>You have created a serial number!</Alert>
+                            <Alert color='danger' isOpen={fail}>There was a problem with the submission!</Alert>
+
+                            <Form>
+                                <Row>
+                                    <Col md={1} />
+                                    <Col md={5}>
+                                        <FormGroup>
+                                            <Label for="manufacture">
+                                                Manufactures:
+                                            </Label>
+                                            <Input
+                                                id="manufacture"
+                                                name="manufacture"
+                                                type="select"
+                                                onChange={handleChange}
+                                            >
+                                                <option></option>
+                                                <option >Dixi diamond</option>
+                                                <option>Con cut</option>
+                                                <option>Blades direct</option>
+                                                <option>Pro Link</option>
+                                                <option>Hilti</option>
+                                                <option>ICF</option>
+                                                <option>Cut and core store</option>
+                                                <option>Four core biz</option>
+                                                <option>Diamond product</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md={5}>
+                                        <FormGroup>
+                                            <Label for="toolList"> Tool: </Label>
+                                            <Input
+                                                id="toolList"
+                                                name="name"
+                                                type="select"
+                                                onChange={handleChange}
+                                            >
+                                                <option></option>
+                                                {mapParts}
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md={2} />
+                                </Row>
+
+                                <Row>
+                                    <Col md={1} />
+                                    <Col md={5}>
+                                        <FormGroup>
+                                            <Label for="specNum"> Spec number or serial: </Label>
+                                            <Input
+                                                id="specNum"
+                                                name="specNum"
+                                                placeholder="What is the serial or spec number?"
+                                                type="text"
+                                                onChange={handleChange}
+                                            />
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md={5}>
+                                        <FormGroup >
+                                            <Label for="serialNum">
+                                                Cutall serial #
+                                            </Label>
+                                            <Input
+                                                onChange={handleChange}
+                                                value={newSerialNumberData.serialNum}
+                                                invalid={validInput}
+                                                id="serialNum"
+                                                name="serialNum"
+                                                type='text'
+                                                placeholder='New cutall serial number'
+                                            />
+                                            <datalist id="serialNum">
+                                                {currentSerialNums.map((serialNum) => (
+                                                    <option value={serialNum} key={serialNum} />
+                                                ))}
+                                            </datalist>
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button onClick={handlePost} type='submit' color='primary' disabled={validInput || submitted}>
+                                Submit
+                            </Button>
+                        </ModalFooter>
+                    </Modal>
                 </section>
 
-                <Modal isOpen={modal} toggle={toggleModal} size='lg' centered>
-                    <ModalHeader toggle={toggleModal}>Serial number addition</ModalHeader>
-                    <ModalBody>
-                        <Alert color='success' isOpen={success}>You have created a serial number!</Alert>
-                        <Alert color='danger' isOpen={fail}>There was a problem with the submission!</Alert>
-
-                        <Form>
-                            <Row>
-                                <Col md={1} />
-                                <Col md={5}>
-                                    <FormGroup>
-                                        <Label for="manufacture">
-                                            Manufactures:
-                                        </Label>
-                                        <Input
-                                            id="manufacture"
-                                            name="manufacture"
-                                            type="select"
-                                            onChange={handleChange}
-                                        >
-                                            <option></option>
-                                            <option >Dixi diamond</option>
-                                            <option>Con cut</option>
-                                            <option>Blades direct</option>
-                                            <option>Pro Link</option>
-                                            <option>Hilti</option>
-                                            <option>ICF</option>
-                                            <option>Cut and core store</option>
-                                            <option>Four core biz</option>
-                                            <option>Diamond product</option>
-                                        </Input>
-                                    </FormGroup>
-                                </Col>
-                                <Col md={5}>
-                                    <FormGroup>
-                                        <Label for="toolList"> Tool: </Label>
-                                        <Input
-                                            id="toolList"
-                                            name="name"
-                                            type="select"
-                                            onChange={handleChange}
-                                        >
-                                            <option></option>
-                                            {mapParts}
-                                        </Input>
-                                    </FormGroup>
-                                </Col>
-                                <Col md={2} />
-                            </Row>
-
-                            <Row>
-                                <Col md={1} />
-                                <Col md={5}>
-                                    <FormGroup>
-                                        <Label for="specNum"> Spec number or serial: </Label>
-                                        <Input
-                                            id="specNum"
-                                            name="specNum"
-                                            placeholder="What is the serial or spec number?"
-                                            type="text"
-                                            onChange={handleChange}
-                                        />
-                                    </FormGroup>
-                                </Col>
-                                <Col md={5}>
-                                    <FormGroup >
-                                        <Label for="serialNum">
-                                            Cutall serial #
-                                        </Label>
-                                        <Input
-                                            onChange={handleChange}
-                                            value={newSerialNumberData.serialNum}
-                                            invalid={validInput}
-                                            id="serialNum"
-                                            name="serialNum"
-                                            type='text'
-                                            placeholder='New cutall serial number'
-                                        />
-                                    </FormGroup>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button onClick={handlePost} type='submit' color='primary' disabled={validInput || submitted}>
-                            Submit
+                <section>
+                    <section className="d-flex p-5 justify-content-center" id="filter-bar">
+                        <Button className="me-2" id="filter-item" color="danger" onClick={toggleAssignModal}>
+                            Assign Number
                         </Button>
-                    </ModalFooter>
-                </Modal>
-            </section>
+                    </section>
+
+                    <Modal isOpen={assignModal} toggle={() => {
+                        toggleAssignModal()
+                        setAssignToName('')
+                        setAssignToNumber('')
+                    }} size='lg' centered>
+                        <ModalHeader toggle={() => {
+                            toggleAssignModal()
+                            setAssignToName('')
+                            setAssignToNumber('')
+                        }}>Assign serial Number</ModalHeader>
+                        <ModalBody>
+                            <Alert color='success' isOpen={success}>You have created a serial number!</Alert>
+                            <Alert color='danger' isOpen={fail}>There was a problem with the submission!</Alert>
+
+                            <Form>
+                                <Label for="assignToName">
+                                    Name:
+                                </Label>
+                                <Input
+                                    onChange={(e) => setAssignToName(e.target.value)}
+                                    value={assignedToName}
+                                    invalid={validInput}
+                                    id="assignToName"
+                                    name="assignToName"
+                                    type='text'
+                                    placeholder='Who is the blade going to?'
+                                />
+                                <Label for="assignToName">
+                                    Serial Number:
+                                </Label>
+                                <Input
+                                    onChange={(e) => setAssignToNumber(e.target.value)}
+                                    value={assignedToNumber}
+                                    invalid={validInput}
+                                    id="serialNum"
+                                    name="serialNum"
+                                    type='text'
+                                    list="serialNum"
+                                    autoComplete="on"
+                                    placeholder='New cutall serial number'
+                                />
+                                <datalist id="serialNums">
+                                    {currentSerialNums.map((serialNum) => (
+                                        <option value={serialNum} key={serialNum} />
+                                    ))}
+                                </datalist>
+                            </Form>
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <Button onClick={handleAssign} type='submit' color='primary' disabled={validInput || submitted}>
+                                Submit
+                            </Button>
+                        </ModalFooter>
+                    </Modal>
+                </section>
+            </div>
 
             <section className='splitNumConatiner'>
                 <section className='nums'>
@@ -271,7 +361,7 @@ const SerialNums = (props) => {
                     {otherNums.length !== 0 ? mappedSerialNums(otherNums) : 'No current data stored'}
                 </section>
             </section>
-        </div>
+        </div >
     );
 }
 

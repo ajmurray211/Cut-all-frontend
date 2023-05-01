@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Input, Label, Table } from 'reactstrap';
+import { useWorkerContext } from '../../hooks/useWorkerContext';
 
 const EditComponent = ((props) => {
+    const { API_URL, workerlist } = useWorkerContext()
     const [serialNumsList, setSerialNumsList] = useState([])
     const [helpers, setHelpers] = useState({ ...props.editedData.helperTimes })
 
@@ -25,7 +27,7 @@ const EditComponent = ((props) => {
 
     useEffect(() => {
         axios
-            .get(`${props.API_URL}serialNum/numsList`)
+            .get(`${API_URL}serialNum/numsList`)
             .then((res) => {
                 res.data.data.map((num) => {
                     if (!serialNumsList.includes(num.serialNum)) {

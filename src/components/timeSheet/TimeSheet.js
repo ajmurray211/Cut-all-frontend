@@ -7,8 +7,10 @@ import axios from "axios";
 import { useModal } from "../../hooks/useModal";
 import { useEmail } from "../../hooks/useEmail";
 import { useAuthContext } from '../../hooks/useAuthContext';
+import { useWorkerContext } from "../../hooks/useWorkerContext";
 
 const TimeSheet = (props) => {
+  const { API_URL, workerlist } = useWorkerContext()
   const { user } = useAuthContext()
   const { isOpen: modal, toggleModal: toggle } = useModal();
   const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
@@ -137,7 +139,7 @@ const TimeSheet = (props) => {
     e.preventDefault();
     // setStatus('Created')
     console.log('submit')
-    await axios.put(`${props.API_URL}timeCards/${sheetInfo.employeeName}`, {
+    await axios.put(`${API_URL}timeCards/${sheetInfo.employeeName}`, {
       sheetInfo,
       sheetBody
     })

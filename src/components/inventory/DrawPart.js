@@ -3,12 +3,14 @@ import { Form, Row, Col, FormGroup, Label, Input, Button, Alert } from 'reactstr
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useDataFetcher } from '../../hooks/useDataFetcher';
+import { useWorkerContext } from '../../hooks/useWorkerContext';
 
 const DrawPart = (props) => {
+    const { API_URL, workerlist } = useWorkerContext()
     const { getData, data, error, loading } = useDataFetcher();
 
     useEffect(() => {
-        getData(`${props.API_URL}parts/?format=json`)
+        getData(`${API_URL}parts/?format=json`)
     }, [])
 
     const mapParts = data.map((part) => {
