@@ -6,13 +6,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { HashRouter } from 'react-router-dom';
 import { AuthContextProvider } from './context/AuthContext'
+import { WorkersContextProvider } from './context/WorkerContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
       <HashRouter>
-        <App />
+        <WorkersContextProvider>
+          <App />
+        </WorkersContextProvider>
       </HashRouter>
     </AuthContextProvider>
   </React.StrictMode>

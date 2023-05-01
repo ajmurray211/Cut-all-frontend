@@ -13,12 +13,11 @@ import Navbar from './components/Navbar';
 import UserProfile from './components/UserProfile';
 import HamburgerNav from './components/HamburgerNav';
 import { useState, useEffect } from 'react';
+import { useWorkerContext } from './hooks/useWorkerContext';
 
 function App() {
-  const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-  // const API_URL = 'http://localhost:8080/'
-
   const { user } = useAuthContext()
+  const { API_URL, workerlist } = useWorkerContext()
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 868);
 
   useEffect(() => {

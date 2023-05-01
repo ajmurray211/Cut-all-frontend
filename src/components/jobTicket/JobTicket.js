@@ -11,8 +11,10 @@ import axios from 'axios';
 import { useModal } from '../../hooks/useModal';
 import { useEmail } from '../../hooks/useEmail';
 import { useFindTimeDiff } from '../../hooks/useFindTimeDiff';
+import { useWorkerContext } from '../../hooks/useWorkerContext';
 
 const JobTIcket = (props) => {
+    const { API_URL, workerlist } = useWorkerContext()
     const { isOpen, toggleModal } = useModal();
     const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
     const { findTimes } = useFindTimeDiff()
@@ -66,7 +68,7 @@ const JobTIcket = (props) => {
 
     useEffect(() => {
         axios
-            .get(`${props.API_URL}ticket/topTicketNum`)
+            .get(`${API_URL}ticket/topTicketNum`)
             .then((res) => {
                 let number = res.data.data.ticketNum + 1
                 setValue(values => ({
@@ -78,7 +80,7 @@ const JobTIcket = (props) => {
 
     useEffect(() => {
         axios
-            .get(`${props.API_URL}serialNum/numsList`)
+            .get(`${API_URL}serialNum/numsList`)
             .then((res) => {
                 res.data.data.map((num) => {
                     if (!serialNumsList.includes(num.serialNum)) {
@@ -130,12 +132,12 @@ const JobTIcket = (props) => {
         event.preventDefault()
         toggleModal()
         postTicket()
-        sendEmail('service_v3kf86l', 'template_mdw8cd7', value, 'E5-2RW9TeJyvAH3_r') //dev email  'template_jxp3a6n'
+        sendEmail('service_v3kf86l','template_jxp3a6n' , value, 'E5-2RW9TeJyvAH3_r') //prod email 'template_mdw8cd7'
     }
 
     const postTicket = async () => {
         try {
-            await axios.post(`${props.API_URL}ticket`, {
+            await axios.post(`${API_URL}ticket`, {
                 ...value
             });
 
@@ -147,7 +149,7 @@ const JobTIcket = (props) => {
                     newLength = parseInt(data.qty) * parseInt(data.length);
                 }
 
-                const { data: { data: [serialNumData] } } = await axios.get(`${props.API_URL}serialNum/${data.serialNum}`);
+                const { data: { data: [serialNumData] } } = await axios.get(`${API_URL}serialNum/${data.serialNum}`);
 
                 const { history } = serialNumData;
 
@@ -165,13 +167,13 @@ const JobTIcket = (props) => {
                         return item;
                     });
 
-                    await axios.put(`${props.API_URL}serialNum/update/1`, {
+                    await axios.put(`${API_URL}serialNum/update/1`, {
                         serialNum: data.serialNum,
                         history: updatedHistory
                     });
                     console.log('existing', duplicateDate, data, updatedHistory);
                 } else {
-                    await axios.put(`${props.API_URL}serialNum/update/2`, {
+                    await axios.put(`${API_URL}serialNum/update/2`, {
                         serialNum: data.serialNum,
                         assignedTo: value.worker,
                         history: [

@@ -10,8 +10,10 @@ import searchicon from "../../Assets/searchicon.png";
 import DrawPart from "./DrawPart";
 import { useDataFetcher } from "../../hooks/useDataFetcher";
 import { useModal } from "../../hooks/useModal";
+import { useWorkerContext } from "../../hooks/useWorkerContext";
 
 const Main = (props) => {
+    const { API_URL, workerlist } = useWorkerContext()
     const { isOpen: addPartModal, toggleModal: toggleAddPartModal } = useModal();
     const { isOpen: drawModal, toggleModal: toggleDrawModal } = useModal();
     const { getData, data: parts, error, loading } = useDataFetcher();
@@ -36,9 +38,9 @@ const Main = (props) => {
 
     useEffect(() => {
         if (activeSearchVal === '') {
-            getData(`${props.API_URL}parts/?format=json`)
+            getData(`${API_URL}parts/?format=json`)
         } else {
-            getData(`${props.API_URL}parts/search/?${searchBy}=${activeSearchVal}`)
+            getData(`${API_URL}parts/search/?${searchBy}=${activeSearchVal}`)
         }
     }, [activeSearchVal])
 
@@ -61,7 +63,7 @@ const Main = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        getData(`${props.API_URL}parts/search/?name=${searchVal}`)
+        getData(`${API_URL}parts/search/?name=${searchVal}`)
         setSearchVal('')
     }
 
@@ -72,7 +74,7 @@ const Main = (props) => {
 
     const handlePost = () => {
         console.log(postTool, partName)
-        axios.post(`${props.API_URL}parts/`, {
+        axios.post(`${API_URL}parts/`, {
             name: partName,
             onHand: postOnHand,
             tool: postTool
@@ -85,17 +87,17 @@ const Main = (props) => {
             setActiveSearchVal('')
             setAddAlert(false)
             toggleAddPartModal()
-            getData(`${props.API_URL}parts/?format=json`)
+            getData(`${API_URL}parts/?format=json`)
         }, 5000);
     }
 
     // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const drawPart = async () => {
-        const getPartNumber = await axios.get(`${props.API_URL}parts/search/?name=${drawData.partName}`)
+        const getPartNumber = await axios.get(`${API_URL}parts/search/?name=${drawData.partName}`)
         const partNumber = getPartNumber.data.data[0]._id
         const onHand = getPartNumber.data.data[0].onHand
 
-        const postWorker = await axios.post(`${props.API_URL}workers`, {
+        const postWorker = await axios.post(`${API_URL}workers`, {
             ...drawData,
             partID: partNumber
         })
@@ -104,7 +106,7 @@ const Main = (props) => {
 
         const newOnHandCount = onHand - drawData.amountTaken
 
-        const drawListAddition = await axios.put(`${props.API_URL}parts/${partNumber}`, {
+        const drawListAddition = await axios.put(`${API_URL}parts/${partNumber}`, {
             name: drawData.partName,
             onHand: newOnHandCount,
             dateTaken: drawData.dateTaken
@@ -116,19 +118,18 @@ const Main = (props) => {
         const timer = setTimeout(() => {
             setDrawAlert(false)
             toggleDrawModal()
-            getData(`${props.API_URL}parts/?format=json`)
+            getData(`${API_URL}parts/?format=json`)
         }, 5000);
     }
 
     const mappedParts = parts.map((part, key) => {
         if (part.emailed == false && part.onHand <= 5) {
-            axios.put(`${props.API_URL}parts/${part._id}`, { emailed: true })
+            axios.put(`${API_URL}parts/${part._id}`, { emailed: true })
         }
         return (
             <Part
                 key={part.id}
                 part={part}
-                API_URL={props.API_URL}
                 getData={getData}
                 id={part._id}
             />
@@ -165,7 +166,7 @@ const Main = (props) => {
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
-                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${props.API_URL}parts/?format=json`)}>
+                <Button className="me-2" id="filter-item" color="dark" onClick={() => getData(`${API_URL}parts/?format=json`)}>
                     Refresh
                 </Button>
 
@@ -242,7 +243,7 @@ const Main = (props) => {
                         drawData={drawData}
                         setDrawData={setDrawData}
                         drawAlert={drawAlert}
-                        API_URL={props.API_URL}
+                        API_URL={API_URL}
                     />
                 </ModalBody>
                 <ModalFooter>
