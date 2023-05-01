@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useAuthContext } from './useAuthContext'
+import { useWorkerContext } from './useWorkerContext'
 
 export const useLogin = (props) => {
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(null)
     const { dispatch } = useAuthContext()
+    const { API_URL } = useWorkerContext()
 
-    const API_URL = 'https://shielded-cove-45306.herokuapp.com/'
-    // const API_URL = 'http://localhost:8080/'
 
     const login = async (email, password) => {
         setIsLoading(true)

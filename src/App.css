@@ -156,6 +156,11 @@ margin-bottom: 5px;
 
 /* serial numbers styles */
 
+.modalContainer{
+  display: flex;
+  justify-content: center;
+}
+
 .serialNums.partInfo #entryContainer{
   margin-left: 5vw;
   display: flex;

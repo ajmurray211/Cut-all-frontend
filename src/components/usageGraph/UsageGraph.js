@@ -3,9 +3,11 @@ import { DropdownItem, Dropdown, DropdownToggle, DropdownMenu, Button, Uncontrol
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useWorkerContext } from '../../hooks/useWorkerContext';
 
 const UsageGraph = (props) => {
     const [data, setData] = useState([])
+    const { API_URL, workerlist } = useWorkerContext()
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -22,7 +24,7 @@ const UsageGraph = (props) => {
     }
 
     useEffect(() => {
-        getData(`${props.API_URL}parts/?format=json`)
+        getData(`${API_URL}parts/?format=json`)
         console.log(data)
     }, [])
 

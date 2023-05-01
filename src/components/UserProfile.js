@@ -2,9 +2,11 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Input, Label, Button, Alert } from 'reactstrap';
 import { useAuthContext } from '../hooks/useAuthContext';
+import { useWorkerContext } from '../hooks/useWorkerContext';
 
 const UserProfile = (props) => {
     const { user } = useAuthContext()
+    const { API_URL, workerlist } = useWorkerContext()
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [title, setTitle] = useState('')
@@ -32,7 +34,7 @@ const UserProfile = (props) => {
     }, [user])
 
     const handleUserUpdate = async () => {
-        await axios.put(`${props.API_URL}user/edit/${user.email}`, {
+        await axios.put(`${API_URL}user/edit/${user.email}`, {
             firstName: firstName,
             lastName: lastName,
             title: title,
