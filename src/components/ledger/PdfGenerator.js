@@ -92,6 +92,10 @@ const PDFGenerator = (props) => {
         disclaimer: {
             marginTop: 20,
         },
+        paragraph: {
+            fontSize: 10,
+            marginBottom: 10,
+        },
     });
 
     let helpersParsedData = []
@@ -234,10 +238,6 @@ const PDFGenerator = (props) => {
                                 {props.value.CC && `Email sent to: ${props.value.CC}`}
                             </Text>
                         </View>
-                        {/* <Text style={styles.confirmationSection}>
-                            I {props.value.confirmationName} have read and agreed to the details and conditions
-                            of the job ticket above on behalf of {props.value.billTo && props.value.billTo.toUpperCase()}.
-                        </Text> */}
                         <View>
                             <Text style={styles.confirmationSection}>
                                 I {props.value.confirmationName} have read and agreed to the details and conditions of the job ticket

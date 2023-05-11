@@ -17,7 +17,7 @@ const Ledger = (props) => {
     const [editMode, setEditMode] = useState(false)
     const { isOpen: ticketInfoModal, toggleModal: toggleTicketInfoModal } = useModal();
     const { isOpen: editTicketModal, toggleModal: toggleEditTicketModal } = useModal();
-    const workerList = ['Rilyn', 'Pat', 'Gordon', 'Kyle'];
+    const workerList = ['Rilyn', 'Pat', 'Kyle','Gordon' ];
 
 
     const handleSubmit = (data) => {
