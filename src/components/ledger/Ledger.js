@@ -1,13 +1,14 @@
-import './ledger.css'
 import axios from "axios"
 import { useState, useRef } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import MyWrappedComponent from './ComponentToPrint';
-import EditComponent from './EditComponent';
+import ActiveTicket from './ActiveTicket';
+import EditTicket from './EditTicket';
 import logo from '../../Assets/cut-all-logo.png'
 import { useModal } from '../../hooks/useModal';
 import TicketList from './TicketList';
 import { useWorkerContext } from '../../hooks/useWorkerContext';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import PDFGenerator from "./PdfGenerator";
 
 const Ledger = (props) => {
     const { API_URL, workerlist } = useWorkerContext()
@@ -16,8 +17,8 @@ const Ledger = (props) => {
     const [editMode, setEditMode] = useState(false)
     const { isOpen: ticketInfoModal, toggleModal: toggleTicketInfoModal } = useModal();
     const { isOpen: editTicketModal, toggleModal: toggleEditTicketModal } = useModal();
+    const workerList = ['Rilyn', 'Pat', 'Gordon', 'Kyle'];
 
-    const handlePrint = () => { window.print() }
 
     const handleSubmit = (data) => {
         axios.put(`${API_URL}ticket/${data._id}`, data)
@@ -43,8 +44,6 @@ const Ledger = (props) => {
         toggleEditTicketModal()
     }
 
-    const workerList = ['Rilyn', 'Pat', 'Gordon', 'Kyle'];
-
     const mapapedWorkers = workerList.map((worker) => {
         return (
             < div key={worker} >
@@ -63,41 +62,25 @@ const Ledger = (props) => {
             <section className='ledger split' id='ticketContainer'>
                 {mapapedWorkers}
             </section >
-
             <Modal fullscreen className='modal-width' id='mainModal' isOpen={ticketInfoModal} toggle={toggleTicketInfoModal}>
                 <ModalHeader toggle={toggleTicketInfoModal}><img id='ticketLogo' src={logo} />{activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'} </ModalHeader>
                 <ModalBody id="ticketInfo">
-                    <MyWrappedComponent editMode={editMode} value={activeTicket} ref={componentRef} />
-                    <EditComponent editMode={editMode} editedData={activeTicket} API_URL={API_URL} setEditedData={setActiveTicket} />
+                    <ActiveTicket editMode={editMode} value={activeTicket} ref={componentRef} />
+                    <EditTicket editMode={editMode} editedData={activeTicket} API_URL={API_URL} setEditedData={setActiveTicket} />
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" className={editMode ? 'hide' : 'show'} onClick={toggleTicketInfoModal}>close</Button>
-                    <Button color='primary' className={editMode ? 'hide' : 'show'} onClick={() => handlePrint()}>Print</Button>
+                    <PDFDownloadLink document={< PDFGenerator value={activeTicket} />} fileName={activeTicket && `Ticket #${activeTicket.ticketNum}.pdf`} >
+                        {({ blob, url, loading, error }) =>
+                            loading ? 'Loading document...' : <Button className={editMode ? 'hide' : 'show'} color='success'>Download PDF</Button>
+                        }
+                    </PDFDownloadLink >
                     <Button color='warning' className={editMode ? 'hide' : 'show'} onClick={() => setEditMode(!editMode)}>Edit</Button>
                     <Button color='success' className={editMode ? 'show' : 'hide'} type='submit' onClick={() => {
                         handleSubmit(activeTicket)
                         setEditMode(!editMode)
                     }}>Save</Button>
                     <Button color='danger' className={editMode ? 'hide' : 'show'} onClick={handleDelete}>Delete</Button>
-                </ModalFooter>
-            </Modal>
-
-            <Modal
-                isOpen={editTicketModal}
-                toggle={toggleEditTicketModal}
-                onClosed={toggleTicketInfoModal}
-            >
-                <ModalHeader>Nested Modal title</ModalHeader>
-                <ModalBody>
-                    Are you sure that you want to delete {activeTicket ? activeTicket.worker : ''}s job ticket for {activeTicket ? activeTicket.billTo : ''} completed on {activeTicket ? activeTicket.date : ''}. Once deleted it will be gone forever.
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={toggleEditTicketModal}>
-                        cancel
-                    </Button>{' '}
-                    <Button color="danger" onClick={toggleEditTicketModal}>
-                        Delete
-                    </Button>
                 </ModalFooter>
             </Modal>
         </div >

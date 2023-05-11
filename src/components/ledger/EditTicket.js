@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Input, Label, Table } from 'reactstrap';
 import { useWorkerContext } from '../../hooks/useWorkerContext';
 
-const EditComponent = ((props) => {
+const EditTicket = ((props) => {
     const { API_URL, workerlist } = useWorkerContext()
     const [serialNumsList, setSerialNumsList] = useState([])
     const [helpers, setHelpers] = useState({ ...props.editedData.helperTimes })
@@ -388,4 +388,4 @@ const EditComponent = ((props) => {
     )
 });
 
-export default EditComponent;
+export default EditTicket;

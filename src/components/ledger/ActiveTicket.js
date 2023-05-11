@@ -1,9 +1,8 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import React, { forwardRef } from 'react';
 import { Table } from 'reactstrap';
 import { useFindTimeDiff } from '../../hooks/useFindTimeDiff';
 
-const MyComponentToPrint = forwardRef((props, ref) => {
+const ActiveTicket = forwardRef((props, ref) => {
     const { findTimes } = useFindTimeDiff()
 
     let helpersParsedData = []
@@ -147,4 +146,4 @@ const MyComponentToPrint = forwardRef((props, ref) => {
     )
 });
 
-export default MyComponentToPrint;
+export default ActiveTicket;

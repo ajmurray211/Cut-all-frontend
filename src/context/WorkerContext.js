@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { useDataFetcher } from "../hooks/useDataFetcher";
 import axios from "axios";
 
 export const WorkersContext = createContext();
@@ -15,7 +14,6 @@ export const WorkersContextProvider = ({ children }) => {
 
     useEffect(() => {
         async function fetchData() {
-            console.log("fetching data...");
             const response = await axios.get(`${API_URL}user`);
 
             const uniqueNames = new Set(workerList);
