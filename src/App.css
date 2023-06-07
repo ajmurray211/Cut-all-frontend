@@ -278,6 +278,17 @@ li.part {
   width: 40%;
 }
 
+/* time card styles */
+
+.timeSheet.confirmationModal {
+  min-width: fit-content;
+  margin: 0 auto;
+}
+
+.timeCardData .row {
+  padding-bottom: 20px;
+}
+
 @media screen and (max-width: 768px) {
 
   .link-container {
