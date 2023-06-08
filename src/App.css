@@ -127,6 +127,7 @@ li.part {
 }
 
 .inventory #partPicture {
+  height: 30vh;
   background-color: rgb(44, 44, 255);
   border-radius: 35px;
 }
