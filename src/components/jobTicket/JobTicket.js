@@ -2,7 +2,7 @@ import './jobTicket.css'
 import Multiselect from 'multiselect-react-dropdown';
 import FormGroupMUI from '@mui/material/FormGroup'
 import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Switch, FormControlLabel, FormLabel, FormControl } from '@mui/material';
+import { Switch, FormControlLabel } from '@mui/material';
 import { useState, useEffect } from 'react';
 import BillingRow from './BillingRow';
 import JobDetails from './JobDetails';
@@ -12,6 +12,8 @@ import { useModal } from '../../hooks/useModal';
 import { useEmail } from '../../hooks/useEmail';
 import { useFindTimeDiff } from '../../hooks/useFindTimeDiff';
 import { useWorkerContext } from '../../hooks/useWorkerContext';
+import { PDFViewer, Document } from '@react-pdf/renderer';
+import PdfRenderer from '../PdfRenderer';
 
 const JobTIcket = (props) => {
     const { API_URL, workerlist } = useWorkerContext()
@@ -128,11 +130,13 @@ const JobTIcket = (props) => {
     }
 
     // sends the information in an email 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
+        const pdfBlob = <PdfRenderer value={value} />
+        console.log(pdfBlob)
         event.preventDefault()
         toggleModal()
         postTicket()
-        sendEmail('service_v3kf86l','template_jxp3a6n' , value, 'E5-2RW9TeJyvAH3_r') //prod email 'template_mdw8cd7'
+        sendEmail('service_v3kf86l', value, 'E5-2RW9TeJyvAH3_r', pdfBlob)
     }
 
     const postTicket = async () => {
@@ -198,7 +202,7 @@ const JobTIcket = (props) => {
             setTimeout(() => {
                 setStatus('');
                 setSuccess(false)
-            }, 5000);
+            }, 10000);
         }
         else if (status === 'Error') {
             setTimeout(() => {
@@ -443,16 +447,12 @@ const JobTIcket = (props) => {
 
             <Button onClick={addRow}> Add row </Button>
 
-            <Modal isOpen={isOpen} size='lg'>
+            <Modal fullscreen className='detailsModal' isOpen={isOpen} size='lg'>
                 <ModalHeader toggle={toggleModal}>Signature form for ticket {value.ticketNum}</ModalHeader>
                 <ModalBody id='jobDetails'>
-                    <JobDetails
-                        value={value}
-                        ticketBody={ticketBody}
-                        setValue={setValue}
-                        handleChange={handleChange}
-                        findTimes={findTimes}
-                    />
+                    <PDFViewer style={{ width: '100%', height: '100%' }}>
+                        <PdfRenderer value={value} />
+                    </PDFViewer>
 
                 </ModalBody>
                 <ModalFooter>

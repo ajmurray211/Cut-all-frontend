@@ -8,7 +8,7 @@ import { useModal } from '../../hooks/useModal';
 import TicketList from './TicketList';
 import { useWorkerContext } from '../../hooks/useWorkerContext';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import PDFGenerator from "./PdfGenerator";
+import PdfRenderer from "../PdfRenderer";
 
 const Ledger = (props) => {
     const { API_URL, workerlist } = useWorkerContext()
@@ -17,7 +17,7 @@ const Ledger = (props) => {
     const [editMode, setEditMode] = useState(false)
     const { isOpen: ticketInfoModal, toggleModal: toggleTicketInfoModal } = useModal();
     const { isOpen: editTicketModal, toggleModal: toggleEditTicketModal } = useModal();
-    const workerList = ['Rilyn', 'Pat', 'Kyle','Gordon' ];
+    const workerList = ['Rilyn', 'Pat', 'Kyle', 'Gordon'];
 
 
     const handleSubmit = (data) => {
@@ -70,7 +70,7 @@ const Ledger = (props) => {
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" className={editMode ? 'hide' : 'show'} onClick={toggleTicketInfoModal}>close</Button>
-                    <PDFDownloadLink document={< PDFGenerator value={activeTicket} />} fileName={activeTicket && `Ticket #${activeTicket.ticketNum}.pdf`} >
+                    <PDFDownloadLink document={< PdfRenderer value={activeTicket} />} fileName={activeTicket && `Ticket #${activeTicket.ticketNum}.pdf`} >
                         {({ blob, url, loading, error }) =>
                             loading ? 'Loading document...' : <Button className={editMode ? 'hide' : 'show'} color='success'>Download PDF</Button>
                         }

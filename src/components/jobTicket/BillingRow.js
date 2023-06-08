@@ -16,7 +16,7 @@ const BillingRow = (props) => {
                     autoComplete="on"
                     list="serialNums"
                     type="text"
-                />9+
+                />
                 <datalist id="serialNums">
                     {props.serialNumsList.map((serialNum) => (
                         <option value={serialNum} key={serialNum} />

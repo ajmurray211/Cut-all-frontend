@@ -1,9 +1,9 @@
 import React from 'react';
 import { Document, Page, Text, Image, StyleSheet, View } from '@react-pdf/renderer';
-import cutallLogo from '../../Assets/cut-all-logo.png';
-import { useFindTimeDiff } from '../../hooks/useFindTimeDiff';
+import cutallLogo from '../Assets/cut-all-logo.png';
+import { useFindTimeDiff } from '../hooks/useFindTimeDiff';
 
-const PDFGenerator = (props) => {
+const PdfRenderer = (props) => {
     console.log(props)
     const { findTimes } = useFindTimeDiff()
     const taskData = [
@@ -41,11 +41,13 @@ const PDFGenerator = (props) => {
         },
         tableRow: {
             flexDirection: 'row',
+
         },
         tableCell: {
             flex: 1,
             padding: 5,
             fontSize: 10,
+
         },
         columnHeader: {
             fontWeight: 'bold',
@@ -112,10 +114,14 @@ const PDFGenerator = (props) => {
     const mappedTasks = taskData
         .filter((task) => task.value)
         .map((task, index) => (
-            <View style={styles.tableRow} key={index}>
-                <Text style={styles.tableCell}>{`${task.label} took ${task.value} hrs.`}</Text>
-            </View>
+            <Text style={{ ...styles.tableRow, backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F0F0F0', }} key={index}>
+                <Text style={{ fontWeight: 'bold' }}>{task.label}:</Text> {`${task.value} hrs.`}
+            </Text>
         ));
+
+    const halfLength = Math.ceil(mappedTasks.length / 2);
+    const tasksColumn1 = mappedTasks.slice(0, halfLength);
+    const tasksColumn2 = mappedTasks.slice(halfLength);
 
     const mappedHelpers = helpersParsedData.map((worker, index) => {
         let totalMins = (worker[1].mins ? worker[1].mins : 0) + (worker[2].mins ? worker[2].mins : 0);
@@ -151,7 +157,7 @@ const PDFGenerator = (props) => {
 
     return (
         <Document>
-            <Page>
+            <Page size="A4" scale={0.7}>
                 <View style={styles.container}>
                     ``
                     <View style={styles.logoContainer}>
@@ -215,7 +221,10 @@ const PDFGenerator = (props) => {
 
                     <View style={styles.section}>
                         <Text>Task Durations:</Text>
-                        <View>{mappedTasks}</View>
+                        <View style={styles.tableRow}>
+                            <View style={styles.tableCell}>{tasksColumn1}</View>
+                            <View style={styles.tableCell}>{tasksColumn2}</View>
+                        </View>
                     </View>
 
                     {props.value.detailsNotCovered && (
@@ -247,7 +256,8 @@ const PDFGenerator = (props) => {
                     </View>
                 </View>
             </Page>
-            <Page>
+
+            <Page size="A4" scale={0.7}>
                 <View style={styles.container}>
                     <View>
                         <Text style={styles.heading}>Standard job conditions:</Text>
@@ -299,5 +309,5 @@ const PDFGenerator = (props) => {
     );
 };
 
-export default PDFGenerator;
+export default PdfRenderer;
 
