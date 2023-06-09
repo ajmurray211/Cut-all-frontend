@@ -126,10 +126,11 @@ li.part {
   flex-wrap: wrap;
 }
 
-.inventory #partPicture {
+#partPicture {
   height: 30vh;
   background-color: rgb(44, 44, 255);
   border-radius: 35px;
+  width:290px;
 }
 
 .toolTracker {
