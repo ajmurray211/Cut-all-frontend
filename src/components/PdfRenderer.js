@@ -4,13 +4,13 @@ import cutallLogo from '../Assets/cut-all-logo.png';
 import { useFindTimeDiff } from '../hooks/useFindTimeDiff';
 
 const PdfRenderer = (props) => {
-    console.log(props)
     const { findTimes } = useFindTimeDiff()
     const taskData = [
         { label: 'Wall sawing', value: props.value.wallSawing },
         { label: 'Core drilling', value: props.value.coreDrilling },
         { label: 'Water control', value: props.value.waterControl },
         { label: 'Slab sawing', value: props.value.slabSaw },
+        { label: 'Hand sawing', value: props.value.handSawing },
         { label: 'Jack hammer chipping', value: props.value.hammerChipping },
         { label: 'Load excevate', value: props.value.loadExcevate },
         { label: 'Hauling', value: props.value.haul },
@@ -159,10 +159,10 @@ const PdfRenderer = (props) => {
         <Document>
             <Page size="A4" scale={0.7}>
                 <View style={styles.container}>
-                    ``
+
                     <View style={styles.logoContainer}>
                         <Image style={styles.logo} src={cutallLogo} />
-                        <Text style={styles.title}>Cutall Concrete Invoice</Text>
+                        <Text style={styles.title}>Cutall Concrete Invoice #{props.value.ticketNum}</Text>
                     </View>
 
                     <View style={styles.section}>
@@ -236,16 +236,19 @@ const PdfRenderer = (props) => {
 
                     <View style={styles.section} id="confirmationDetails">
                         <Text style={styles.heading}>Confirmation Details:</Text>
-                        <View>
-                            <Text style={styles.listItem}>
-                                {props.value.poNum && `PO #: ${props.value.poNum}`}
-                            </Text>
-                            <Text style={styles.listItem}>
-                                {props.value.jobNum && `Job #: ${props.value.jobNum}`}
-                            </Text>
-                            <Text style={styles.listItem}>
-                                {props.value.CC && `Email sent to: ${props.value.CC}`}
-                            </Text>
+                        <View style={styles.table}>
+                            <View style={{ ...styles.tableRow, ...styles.tableHead }}>
+                                <Text style={styles.tableCell}>
+                                    PO #: {props.value.poNum && props.value.poNum !== null ? props.value.poNum : 'None'}
+                                </Text>
+                                <Text style={styles.tableCell}>
+                                    Job #: {props.value.jobNum && props.value.jobNum !== null ? props.value.jobNum : 'None'}
+
+                                </Text>
+                                <Text style={styles.tableCell}>
+                                    Emailed to: {props.value.CC && props.value.CC !== null ? props.value.CC : 'None'}
+                                </Text>
+                            </View>
                         </View>
                         <View>
                             <Text style={styles.confirmationSection}>

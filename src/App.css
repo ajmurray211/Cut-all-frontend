@@ -148,6 +148,10 @@ li.part {
   justify-content: space-around;
 }
 
+#ledgerSearchbar{
+  margin: 20px 8px;
+}
+
 .timeSheet {
   margin: 2vw;
 }
