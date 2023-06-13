@@ -253,6 +253,10 @@ li.part {
   margin: 10px;
 }
 
+#serialSearchbar{
+  margin: none;
+}
+
 /* login and register form styles */
 
 .auth_form {

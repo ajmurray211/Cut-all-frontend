@@ -5,17 +5,18 @@ import PartInfo from './PartInfo';
 import { useDataFetcher } from "../../hooks/useDataFetcher";
 import { useModal } from '../../hooks/useModal';
 import { useWorkerContext } from '../../hooks/useWorkerContext';
+import useAlert from '../../hooks/useAlert';
+import searchicon from "../../Assets/searchicon.png";
 
 const SerialNums = (props) => {
-    const { API_URL, workerlist } = useWorkerContext()
+    const { API_URL, workerList } = useWorkerContext()
+    const { alertType: assignAlertType, message: assignMessage, isOpen: assignRequestOpen, showAlert: showAssign } = useAlert()
+    const { alertType: createAlertType, message: createMessage, isOpen: createRequestOpen, showAlert: showCreate } = useAlert()
     const { getData: getToolName, data: toolName, error1, loading1 } = useDataFetcher();
     const { getData: getSerialNumbers, data: serialNumbers, error2, loading2 } = useDataFetcher();
     const { isOpen: modal, toggleModal } = useModal();
     const { isOpen: assignModal, toggleModal: toggleAssignModal } = useModal();
     const [submitted, setSubmitted] = useState(false)
-    const [success, setSuccess] = useState(false)
-    const [fail, setFail] = useState(false)
-    const [status, setStatus] = useState(null)
     const [coreNums, setCoreNums] = useState([])
     const [handNums, setHandNums] = useState([])
     const [wallNums, setWallNums] = useState([])
@@ -25,6 +26,7 @@ const SerialNums = (props) => {
     const [validInput, setValidInput] = useState(false)
     const [assignedToName, setAssignToName] = useState('')
     const [assignedToNumber, setAssignToNumber] = useState('')
+    const [searchVal, setSearchVal] = useState('')
     const [newSerialNumberData, setNewSerialNumberData] = useState({
         manufacture: null,
         name: null,
@@ -42,32 +44,7 @@ const SerialNums = (props) => {
         getSerialNumbers(`${API_URL}serialNum`)
     }, [])
 
-    const mapParts = toolName.map((tool) => {
-        return (
-            <option key={tool.id}>{tool.name}</option>
-        )
-    })
-
-    useEffect(() => {
-        if (status === 201) {
-            setTimeout(() => {
-                setStatus('');
-                setSuccess(false)
-                toggleModal()
-                getSerialNumbers(`${API_URL}serialNum`)
-                setSubmitted(false)
-            }, 5000);
-        }
-        else if (status === 'Error') {
-            setTimeout(() => {
-                setStatus('');
-                setFail(false)
-                toggleModal()
-                getSerialNumbers(`${API_URL}serialNum`)
-                setSubmitted(false)
-            }, 5000);
-        }
-    }, [status]);
+    const mapParts = toolName.map((tool) => <option key={tool.id}>{tool.name}</option>)
 
     const splitSerialNums = (num) => {
         switch (true) {
@@ -112,22 +89,33 @@ const SerialNums = (props) => {
         })
     }, [serialNumbers]);
 
+
     const mappedSerialNums = (who) => {
-        let mapped = who.map((number) => {
-            currentSerialNums.push(number.serialNum)
+        const filteredSerials = who.filter(
+            (serial) =>
+                serial.name.toLowerCase().includes(searchVal.toLowerCase()) ||
+                (serial.serialNum && String(serial.serialNum).toLowerCase().includes(searchVal.toLowerCase()))
+        );
+
+        let mapped = filteredSerials.map((number, i) => {
+            currentSerialNums.push(number.serialNum);
             return (
                 <PartInfo
+                    key={i}
                     number={number}
+                    searchVal={searchVal}
                 />
-            )
-        })
-        return mapped
+            );
+        });
+        return mapped;
     }
-
 
     const handleChange = (e) => {
         if (e.target.name == 'serialNum') {
             validateInput(e.target.value)
+        }
+        if (e.target.name == 'serialSearchbar') {
+            setSearchVal(e.target.value)
         }
         setNewSerialNumberData(data => ({
             ...data,
@@ -138,15 +126,14 @@ const SerialNums = (props) => {
     const handlePost = () => {
         setSubmitted(true)
         axios.post(`${API_URL}serialNum`, newSerialNumberData)
-            .then(res => {
-                console.log(res)
-                setStatus(res.status)
-                setSuccess(true)
-            })
-            .catch(err => {
-                setStatus(err.text)
-                setFail(true)
-            });
+            .then(res => { showCreate(res.status, res.data.message) })
+            .catch(err => { showCreate(err.status, err.data.message) });
+
+        setTimeout(() => {
+            toggleModal();
+            setSubmitted(false);
+            window.location.reload();
+        }, 8000);
     }
 
     const handleAssign = async () => {
@@ -154,31 +141,30 @@ const SerialNums = (props) => {
             assignedTo: assignedToName,
             serialNum: assignedToNumber
         })
-            .then(res => console.log('response from assign', res))
-            .catch(err => console.log('Error', err))
+            .then(res => { showAssign(res.status, res.data.message) })
+            .catch(err => { showAssign(err.status, err.data.message) })
 
-        toggleAssignModal()
-        setAssignToName('')
-        setAssignToNumber('')
-        getSerialNumbers(`${API_URL}serialNum`)
+        setTimeout(() => {
+            toggleAssignModal();
+            setAssignToName('');
+            setAssignToNumber('');
+            window.location.reload();
 
+        }, 8000);
     }
 
     return (
         <div>
             <div className='modalContainer'>
-                <section>
-                    <section className="d-flex p-5 justify-content-center" id="filter-bar">
-                        <Button className="me-2" id="filter-item" color="danger" onClick={toggleModal}>
-                            Add Item
-                        </Button>
-                    </section>
+                <section className="d-flex p-5 justify-content-center" id="filter-bar">
+                    <Button className="me-2" id="filter-item" color="danger" onClick={toggleModal}>
+                        Add Item
+                    </Button>
 
                     <Modal isOpen={modal} toggle={toggleModal} size='lg' centered>
                         <ModalHeader toggle={toggleModal}>Serial number addition</ModalHeader>
                         <ModalBody>
-                            <Alert color='success' isOpen={success}>You have created a serial number!</Alert>
-                            <Alert color='danger' isOpen={fail}>There was a problem with the submission!</Alert>
+                            <Alert color={createAlertType} isOpen={createRequestOpen}>{createMessage}</Alert>
 
                             <Form>
                                 <Row>
@@ -189,6 +175,7 @@ const SerialNums = (props) => {
                                                 Manufactures:
                                             </Label>
                                             <Input
+                                                value={newSerialNumberData.manufacture}
                                                 id="manufacture"
                                                 name="manufacture"
                                                 type="select"
@@ -211,6 +198,7 @@ const SerialNums = (props) => {
                                         <FormGroup>
                                             <Label for="toolList"> Tool: </Label>
                                             <Input
+                                                value={newSerialNumberData.name}
                                                 id="toolList"
                                                 name="name"
                                                 type="select"
@@ -231,6 +219,7 @@ const SerialNums = (props) => {
                                             <Label for="specNum"> Spec number or serial: </Label>
                                             <Input
                                                 id="specNum"
+                                                value={newSerialNumberData.specNum}
                                                 name="specNum"
                                                 placeholder="What is the serial or spec number?"
                                                 type="text"
@@ -263,15 +252,13 @@ const SerialNums = (props) => {
                             </Form>
                         </ModalBody>
                         <ModalFooter>
-                            <Button onClick={handlePost} type='submit' color='primary' disabled={validInput || submitted}>
+                            <Button onClick={handlePost} type='submit' color='primary' disabled={validInput || submitted || !newSerialNumberData.manufacture || !newSerialNumberData.name || !newSerialNumberData.serialNum || !newSerialNumberData.specNum}>
                                 Submit
                             </Button>
                         </ModalFooter>
                     </Modal>
-                </section>
 
-                <section>
-                    <section className="d-flex p-5 justify-content-center" id="filter-bar">
+                    <section >
                         <Button className="me-2" id="filter-item" color="danger" onClick={toggleAssignModal}>
                             Assign Number
                         </Button>
@@ -288,8 +275,7 @@ const SerialNums = (props) => {
                             setAssignToNumber('')
                         }}>Assign serial Number</ModalHeader>
                         <ModalBody>
-                            <Alert color='success' isOpen={success}>You have created a serial number!</Alert>
-                            <Alert color='danger' isOpen={fail}>There was a problem with the submission!</Alert>
+                            <Alert color={assignAlertType} isOpen={assignRequestOpen}>{assignMessage}</Alert>
 
                             <Form>
                                 <Label for="assignToName">
@@ -302,8 +288,15 @@ const SerialNums = (props) => {
                                     id="assignToName"
                                     name="assignToName"
                                     type='text'
+                                    list='workers'
                                     placeholder='Who is the blade going to?'
+                                    autoComplete='on'
                                 />
+                                <datalist id="workers">
+                                    {workerList.map((worker) => (
+                                        <option value={`${worker.firstName} ${worker.lastName}`} key={worker.firstName} />
+                                    ))}
+                                </datalist>
                                 <Label for="assignToName">
                                     Serial Number:
                                 </Label>
@@ -327,38 +320,43 @@ const SerialNums = (props) => {
                         </ModalBody>
 
                         <ModalFooter>
-                            <Button onClick={handleAssign} type='submit' color='primary' disabled={validInput || submitted}>
+                            <Button onClick={handleAssign} type='submit' color='primary' disabled={validInput || submitted || !assignedToName || !assignedToNumber}>
                                 Submit
                             </Button>
                         </ModalFooter>
                     </Modal>
+
+                    <Input id="serialSearchbar" name="serialSearchbar" className="searchbar" type='text' placeholder="Search by tool or serial #" onChange={handleChange} value={searchVal} />
+                    <button className="search-submit" type="submit">
+                        <img src={searchicon} alt="Search Icon" />
+                    </button>
                 </section>
             </div>
 
             <section className='splitNumConatiner'>
                 <section className='nums'>
                     <h2>Wall Saw Serials</h2>
-                    {wallNums.length !== 0 ? mappedSerialNums(wallNums) : 'No current data stored'}
+                    {mappedSerialNums(wallNums).length !== 0 ? mappedSerialNums(wallNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Hand Saw Serials</h2>
-                    {handNums.length != 0 ? mappedSerialNums(handNums) : 'No current data stored'}
+                    {mappedSerialNums(handNums).length != 0 ? mappedSerialNums(handNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Asphalt Saw Serials</h2>
-                    {asphltNums.length !== 0 ? mappedSerialNums(asphltNums) : 'No current data stored'}
+                    {mappedSerialNums(asphltNums).length !== 0 ? mappedSerialNums(asphltNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Concrete Saw Serials</h2>
-                    {concreteNums.length !== 0 ? mappedSerialNums(concreteNums) : 'No current data stored'}
+                    {mappedSerialNums(concreteNums).length !== 0 ? mappedSerialNums(concreteNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Core Drill Serials</h2>
-                    {coreNums.length !== 0 ? mappedSerialNums(coreNums) : 'No current data stored'}
+                    {mappedSerialNums(coreNums).length !== 0 ? mappedSerialNums(coreNums) : 'No current data stored'}
                 </section>
                 <section className='nums'>
                     <h2>Other Serials</h2>
-                    {otherNums.length !== 0 ? mappedSerialNums(otherNums) : 'No current data stored'}
+                    {mappedSerialNums(otherNums).length !== 0 ? mappedSerialNums(otherNums) : 'No current data stored'}
                 </section>
             </section>
         </div >

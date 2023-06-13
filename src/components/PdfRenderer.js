@@ -170,11 +170,13 @@ const PdfRenderer = (props) => {
                         <View style={styles.table}>
                             <View style={{ ...styles.tableRow, ...styles.tableHead }}>
                                 <Text style={styles.tableCell}>Truck #</Text>
+                                <Text style={styles.tableCell}>Date</Text>
                                 <Text style={styles.tableCell}>Customer</Text>
                                 <Text style={styles.tableCell}>Address</Text>
                             </View>
                             <View style={styles.tableRow}>
                                 <Text style={styles.tableCell}>{props.value.truckNum}</Text>
+                                <Text style={styles.tableCell}>{props.value.date}</Text>
                                 <Text style={styles.tableCell} id='customer'>
                                     {props.value.billTo.toLocaleUpperCase()}
                                 </Text>
