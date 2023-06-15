@@ -130,7 +130,7 @@ li.part {
   height: 30vh;
   background-color: rgb(44, 44, 255);
   border-radius: 35px;
-  width:290px;
+  width: 290px;
 }
 
 .toolTracker {
@@ -148,7 +148,7 @@ li.part {
   justify-content: space-around;
 }
 
-#ledgerSearchbar{
+#ledgerSearchbar {
   margin: 20px 8px;
 }
 
@@ -253,24 +253,35 @@ li.part {
   margin: 10px;
 }
 
-#serialSearchbar{
+#serialSearchbar {
   margin: none;
 }
 
 /* login and register form styles */
 
 .auth_form {
-  position: absolute;
-  left: 50%;
-  top: 65%;
-  transform: translate(-50%, -50%);
   min-height: 20rem;
-  width: 40rem;
-  max-width: 90%;
+  width: 60%;
+  margin: auto;
+  margin-bottom: 30px;
 }
 
-.inputs {
-  padding: 20px;
+.inputGroup {
+  width: 100%;
+}
+
+.visibility-icons {
+  position: absolute;
+  top: 5px;
+  right: 30px;
+  /* transform: translateY(-50%); */
+  cursor: pointer;
+}
+
+.passwordGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .auth-info {
@@ -309,10 +320,6 @@ li.part {
     font-size: larger;
   }
 
-  .auth_form {
-    left: 46%;
-
-  }
 }
 
 /* styles for phone view */
@@ -348,8 +355,5 @@ li.part {
   }
 
   /* login and register styles */
-  .auth_form {
-    left: 43%;
-  }
 
 }

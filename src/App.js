@@ -36,8 +36,8 @@ function App() {
       <div>
         <Routes>
           <Route path='/' element={<Inventory API_URL={API_URL} />} />
-          <Route path='/login' element={<Login API_URL={API_URL} />} />
-          <Route path='/register' element={<Register API_URL={API_URL} />} />
+          <Route path='/login' element={!user ? <Login API_URL={API_URL} /> : <Navigate to='/' />} />
+          <Route path='/register' element={!user ? <Register API_URL={API_URL} /> : <Navigate to='/' />} />
           <Route path='/serialNums' element={<SerialNums API_URL={API_URL} />} />
           <Route path='/usageGraph' element={<UsageGraph API_URL={API_URL} />} />
           <Route path='/jobTicket' element={<JobTIcket API_URL={API_URL} />} />
@@ -49,8 +49,6 @@ function App() {
       {/* <div>
         <Routes>
           <Route path='/' element={user ? <Inventory API_URL={API_URL} /> : <Navigate to='/login' />} />
-          <Route path='/login' element={!user ? <Login API_URL={API_URL} /> : <Navigate to='/' />} />
-          <Route path='/register' element={!user ? <Register API_URL={API_URL} /> : <Navigate to='/' />} />
           <Route path='/serialNums' element={user ? <SerialNums API_URL={API_URL} /> : <Navigate to='/login' />} />
           <Route path='/usageGraph' element={user ? <UsageGraph API_URL={API_URL} /> : <Navigate to='/login' />} />
           <Route path='/jobTicket' element={user ? <JobTIcket API_URL={API_URL} /> : <Navigate to='/login' />} />
