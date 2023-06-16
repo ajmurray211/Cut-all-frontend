@@ -43,7 +43,40 @@ nav p {
 .link {
   color: black;
   text-decoration: none;
-  padding: 9px;
+  padding: 11px;
+}
+
+#userOptions {
+  text-align: center;
+  padding: 10px 30px;
+}
+
+#userOptions .user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#userOptions #userName {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.dropdown-item a {
+  text-decoration: none;
+  font-style: none;
+  color: black;
+}
+
+#userOptions #userEmail {
+  font-size: 0.9rem;
+  color: #888888;
+}
+
+.loginNav{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* body styling */
@@ -288,15 +321,90 @@ li.part {
   padding-right: 20px;
 }
 
+
+
 /* user profile styles */
-.userProfile {
+@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Bree+Serif&display=swap");
+
+.profile-header {
+  background: #fff;
+  width: 100vw;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  height: 190px;
+  position: relative;
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
 }
 
-.userInfoSection {
-  width: 40%;
+.profile-img {
+  float: left;
+  width: 340px;
+  height: 200px;
+}
+
+.profile-img img {
+  border-radius: 50%;
+  height: 25vh;
+  width: 25vh;
+  border: 5px solid #fff;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  left: 50px;
+  top: 20px;
+  z-index: 5;
+  background: #fff;
+}
+
+.profile-nav-info {
+  float: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 60px;
+}
+
+.profile-nav-info h3 {
+  font-variant: small-caps;
+  font-size: 2rem;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+.profile-nav-info .address p {
+  margin-right: 5px;
+}
+
+.main-bd {
+  width: 100%;
+  display: flex;
+  padding-right: 15px;
+}
+
+.profile-side {
+  width: 30vw;
+  background: #fff;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+  padding: 90px 30px 20px;
+  font-family: "Bree Serif", serif;
+  margin-left: 10px;
+  z-index: 99;
+}
+
+.profile-side p {
+  margin-bottom: 7px;
+  color: #333;
+  font-size: 14px;
+}
+
+.right-side {
+  margin: 0 auto;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.userProfile,
+.timeCards {
+  margin: 0 2rem;
 }
 
 /* time card styles */
@@ -354,6 +462,19 @@ li.part {
     display: none;
   }
 
-  /* login and register styles */
+  /* user profile styles */
 
+  .profile-side {
+    display: none;
+  }
+
+  .profile-img img {
+    height: 15vh;
+    width: 15vh;
+  }
+
+  .userProfile,
+  .timeCards {
+    margin: 0 ;
+  }
 }
