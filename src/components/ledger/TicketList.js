@@ -25,18 +25,28 @@ const TicketList = (props) => {
         setDisplayedData([...displayedData, ...nextChunk]);
         setPage(page + 1);
     };
+
     const handleCollapse = () => {
         setDisplayedData(tickets.slice(0, 5));
         setPage(1);
         setCollapsed(false);
     };
 
-    const filteredTickets = displayedData.filter((ticket) => ticket._id !== props.activeTicket?._id);
+    // if the user doesnt have any tickets stored they are omitted
+    if (displayedData.length === 0) {
+        return null;
+    }
+
+    const filteredTickets = displayedData.filter(
+        (ticket) =>
+            ticket.billTo.toLowerCase().includes(props.searchVal.toLowerCase()) ||
+            (ticket.ticketNum && String(ticket.ticketNum).includes(props.searchVal))
+    );
 
     const mappedSeperateTickets = (
         <div>
-            {displayedData.map((ticket) => (
-                <li className='ticket'>
+            {filteredTickets.map((ticket, i) => (
+                <li key={i} className='ticket'>
                     <Button
                         onClick={() => {
                             props.setActiveTicket(ticket);
@@ -61,11 +71,12 @@ const TicketList = (props) => {
     );
 
     return (
-        <div key={props.worker}>
+        <div style={{ display: filteredTickets.length === 0  ? 'none' : '' }} key={props.worker}>
             <h2>{props.worker}'s Job Tickets</h2>
             <ul>{mappedSeperateTickets}</ul>
         </div>
     );
+
 };
 
 export default TicketList;

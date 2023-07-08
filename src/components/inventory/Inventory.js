@@ -17,6 +17,8 @@ const Main = (props) => {
     const { isOpen: addPartModal, toggleModal: toggleAddPartModal } = useModal();
     const { isOpen: drawModal, toggleModal: toggleDrawModal } = useModal();
     const { getData, data: parts, error, loading } = useDataFetcher();
+    const [success, setSuccess] = useState(false)
+    const [fail, setFail] = useState(false)
     const [searchVal, setSearchVal] = useState('')
     const [activeSearchVal, setActiveSearchVal] = useState('')
     const [searchBy, setSearchBy] = useState('')
@@ -28,6 +30,8 @@ const Main = (props) => {
     const [nameTouched, setNameTouched] = useState(false)
     const [toolTouched, setToolTouched] = useState(false)
     const [bladeNamesList, setBladeNamesList] = useState([])
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
     const [drawData, setDrawData] = useState({
         partName: null,
         name: null,
@@ -56,10 +60,10 @@ const Main = (props) => {
                 let copy = [...bladeNamesList]
                 copy.push(part.name)
                 setBladeNamesList(copy)
-                console.log(bladeNamesList, copy)
             }
         })
     }
+    splitBladeNames()
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -72,15 +76,30 @@ const Main = (props) => {
         setActiveSearchVal(event.target.value)
     }
 
-    const handlePost = () => {
+    const handlePost = async () => {
+        const formData = new FormData();
+        formData.append("name", partName);
+        formData.append("onHand", postOnHand);
+        formData.append("tool", postTool);
+        formData.append("image", selectedFile);
+
+        try {
+            const response = axios.post(`${API_URL}parts/`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (response.status === 201) {
+                setSuccess(true);
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                setFail(true);
+            }
+        }
         console.log(postTool, partName)
-        axios.post(`${API_URL}parts/`, {
-            name: partName,
-            onHand: postOnHand,
-            tool: postTool
-        })
-            .then(res => res.status == 201 ? setAddAlert(true) : null)
-            .catch(err => console.log('error', err))
+
         const timer = setTimeout(() => {
             setPartName('')
             setPostOnHand(null)
@@ -90,6 +109,17 @@ const Main = (props) => {
             getData(`${API_URL}parts/?format=json`)
         }, 5000);
     }
+
+    const handleFileInputChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file);
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            setPreviewUrl(reader.result);
+        };
+    };
 
     // draws parts from stock and appends a worker to the draw list while updating the amount on hand
     const drawPart = async () => {
@@ -176,7 +206,6 @@ const Main = (props) => {
 
                 <Button className="me-2" id="filter-item" color="danger" onClick={() => {
                     toggleAddPartModal()
-                    // splitBladeNames()
                 }}>
                     Add Item
                 </Button>
@@ -196,8 +225,8 @@ const Main = (props) => {
                                 type="text"
                                 onChange={(event) => setPartName(event.target.value)}
                                 value={partName}
-                                valid={partName && nameTouched}
-                                invalid={partName == null && nameTouched && bladeNamesList.includes(partName)}
+                                valid={partName && nameTouched && !bladeNamesList.includes(partName)}
+                                invalid={bladeNamesList.includes(partName)}
                                 onBlur={() => setNameTouched(true)}
                             />
                             <FormFeedback valid>Name is valid</FormFeedback>
@@ -230,10 +259,15 @@ const Main = (props) => {
                             <FormFeedback invalid>Oops! There is a problem.</FormFeedback>
 
                         </FormGroup>
+                        <FormGroup>
+                            <Label for="partImage" > Upload an image </Label>
+                            <Input id="partImage" type="file" onChange={handleFileInputChange} />
+                            {previewUrl && <img id="partPicture" src={previewUrl} alt="Preview" />}
+                        </FormGroup>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={handlePost}> Submit </Button>
+                    <Button disabled={bladeNamesList.includes(partName) || postTool === null || partName === null ||partName === ''} color="primary" onClick={handlePost}> Submit </Button>
                 </ModalFooter>
             </Modal>
             <Modal isOpen={drawModal} size='lg' centered >

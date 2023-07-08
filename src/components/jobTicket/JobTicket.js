@@ -2,33 +2,35 @@ import './jobTicket.css'
 import Multiselect from 'multiselect-react-dropdown';
 import FormGroupMUI from '@mui/material/FormGroup'
 import { Alert, Form, Row, Col, Label, FormGroup, Input, Button, Table, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Switch, FormControlLabel, FormLabel, FormControl } from '@mui/material';
+import { Switch, FormControlLabel } from '@mui/material';
 import { useState, useEffect } from 'react';
 import BillingRow from './BillingRow';
-import JobDetails from './JobDetails';
 import TimeSheet from './TimeSheet';
 import axios from 'axios';
 import { useModal } from '../../hooks/useModal';
-import { useEmail } from '../../hooks/useEmail';
 import { useFindTimeDiff } from '../../hooks/useFindTimeDiff';
 import { useWorkerContext } from '../../hooks/useWorkerContext';
+import { PDFViewer } from '@react-pdf/renderer';
+import PdfRenderer from '../PdfRenderer';
+import { useAuthContext } from '../../hooks/useAuthContext';
+import useAlert from '../../hooks/useAlert';
 
 const JobTIcket = (props) => {
-    const { API_URL, workerlist } = useWorkerContext()
+    const { API_URL, workerList } = useWorkerContext()
+    const { user } = useAuthContext()
     const { isOpen, toggleModal } = useModal();
-    const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
+    const { isOpen: isConfimOpen, toggleModal: toggleConfim } = useModal();
+    const { alertType, message, isOpen: postIsOpen, showAlert } = useAlert()
     const { findTimes } = useFindTimeDiff()
     const [ticketBody, setTicketBody] = useState([])
     const [value, setValue] = useState({
         email: 'murray.aj.murray@gmail.com',
-        worker: '',
+        worker: user ? user.firstName : '',
         billTo: '',
         otherWorkers: [],
-        truckNum: '',
+        truckNum: user ? parseInt(user.truckNumber) : 0,
         date: '',
         address: '',
-        jobInfoHTML: null,
-        helperTimesHTML: null,
         jobInfo: [],
         handSawing: null,
         wallSawing: null,
@@ -49,7 +51,7 @@ const JobTIcket = (props) => {
         CC: null,
         jobNum: null,
         poNum: null,
-        milage: null,
+        milage: 0,
         totalPaidTime: null,
         travelBegin: null,
         travelEnd: null,
@@ -60,11 +62,10 @@ const JobTIcket = (props) => {
         helperTimes: null,
         ticketNum: null,
         jobPerQuote: true,
-        workAdded: false
+        workAdded: false,
     })
     const [serialNumsList, setSerialNumsList] = useState([])
-    let infoToHTML = []
-    let workersList = ['Rilyn', 'Kyle', 'Pat', 'Gordon', 'Other']
+    let workersList = workerList.flatMap((worker) => (worker.firstName !== user?.firstName) ? worker.firstName : []);
 
     useEffect(() => {
         axios
@@ -92,55 +93,35 @@ const JobTIcket = (props) => {
             })
     }, [])
 
-    // add the html varibles to values variable for emailing 
-    const compileHTML = () => {
+    const handleDataCompile = () => {
         let totalMins = 0
         let total = '-'
-        let combined = infoToHTML.join(' ')
         if (value.jobTotal) {
             value.travelTotal != null ? totalMins = value.jobTotal.mins + value.travelTotal.mins : totalMins = value.jobTotal.mins
             let hr = Math.floor(totalMins / 60);
             let min = totalMins % 60
             total = `${hr}hrs. ${min}mins.`
         }
-
-        let timetablels = []
-        for (let name in value.helperTimes) {
-            if (Object.keys(value.helperTimes[name]).length !== 0) {
-                let key = value.helperTimes[name]
-                timetablels.push(`<tr> <td>${name} </td> <td>${key.jobBegin}</td> <td>${key.jobEnd}</td> <td> ${key.travelBegin}</td> <td>${key.travelEnd}</td> <td>${key.milage}</td> </tr>`)
-            }
-        }
-
         setValue(values => ({
             ...values,
-            jobInfoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"></colgroup>
-            <thead> 
-            <tr> <th>QTY</th> <th>Length/DIA</th> <th>Depth (in.)</th> <th>Work Code</th> <th>Description</th> <th>Blade serial #</th> </tr>
-            </thead>
-            <tbody> ${combined} </tbody>
-            </table>`,
             jobInfo: ticketBody,
-            helperTimesHTML: timetablels.join(''),
             totalPaidTime: total
         }))
-        console.log('compile html', value)
-    }
-
-    // sends the information in an email 
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        toggleModal()
-        postTicket()
-        sendEmail('service_v3kf86l','template_jxp3a6n' , value, 'E5-2RW9TeJyvAH3_r') //prod email 'template_mdw8cd7'
     }
 
     const postTicket = async () => {
         try {
             await axios.post(`${API_URL}ticket`, {
                 ...value
-            });
-
+            })
+                .then(res => {
+                    console.log('hit alert', res)
+                    showAlert(res.status, res.data.message)
+                    setTimeout(() => {
+                        toggleModal()
+                        // window.location.reload()
+                    }, 8000);
+                })
             for (const data of value.jobInfo) {
                 let newDepth = data.depth;
                 let newLength = data.length;
@@ -192,22 +173,6 @@ const JobTIcket = (props) => {
         }
     };
 
-    // resets variables changing when status changes 
-    useEffect(() => {
-        if (status === 'OK') {
-            setTimeout(() => {
-                setStatus('');
-                setSuccess(false)
-            }, 5000);
-        }
-        else if (status === 'Error') {
-            setTimeout(() => {
-                setStatus('');
-                setFail(false)
-            }, 10000);
-        }
-    }, [status]);
-
     const handleSelect = (selectedList) => {
         setValue((values) => ({
             ...values,
@@ -216,10 +181,21 @@ const JobTIcket = (props) => {
     };
 
     const handleRemove = (selectedList) => {
+        console.log(selectedList)
+        const updatedHelperValues = { ...value['helperTimes'] };
+        for (const name in updatedHelperValues) {
+            console.log(name)
+            if (!selectedList.includes(name)) {
+                delete updatedHelperValues[name];
+            }
+        }
+        console.log(updatedHelperValues)
+
         setValue((values) => ({
             ...values,
-            otherWorkers: selectedList
-        }))
+            otherWorkers: selectedList,
+            helperTimes: updatedHelperValues,
+        }));
     };
 
     const handleChange = (e) => {
@@ -269,7 +245,6 @@ const JobTIcket = (props) => {
 
     // allows user to add more rows 
     const addRow = () => {
-        console.log('hit add row')
         let row = {
             'qty': '',
             'length': '',
@@ -283,14 +258,15 @@ const JobTIcket = (props) => {
     }
 
     const deleteRow = (index) => {
-        let newBody = ticketBody.filter((row, i) => i !== index)
+        let newBody = [...ticketBody]
+        newBody.splice(index, 1);
         setTicketBody(newBody);
     };
 
     const mappedRows = ticketBody.map((row, index) => {
-        let line = (`<tr> <td"> ${row.qty} </td> <td"> ${row.length}</td> <td"> ${row.depth} </td> <td"> ${row.workCode} </td>  <td">${row.equipUsed} </td> <td">${row.serialNum}</td> </tr>`)
-        infoToHTML.push(line)
         return <BillingRow
+            ticketBody={ticketBody}
+            key={index}
             index={index}
             serialNumsList={serialNumsList}
             editRow={editRow}
@@ -300,8 +276,6 @@ const JobTIcket = (props) => {
 
     return (
         <div id='job-ticket'>
-            <Alert color='success' isOpen={success}>You have submitted a job ticket!</Alert>
-            <Alert color='danger' isOpen={fail}>There was a problem with the submission check all the data fields!</Alert>
             <Form>
                 <Row>
                     <Col md={2} />
@@ -314,25 +288,28 @@ const JobTIcket = (props) => {
                                 id="employeeName"
                                 name="worker"
                                 placeholder="Who are you?"
-                                type="select"
+                                type="text"
+                                value={value.worker}
                                 onChange={(event) => handleChange(event)}
+                                list='workers'
+                                autoComplete="on"
                             >
-                                <option></option>
-                                <option>Rilyn</option>
-                                <option>Kyle</option>
-                                <option>Pat</option>
-                                <option>Gordon</option>
-                                <option>Kim</option>
+
                             </Input>
+                            <datalist id="workers">
+                                {workersList.map((worker) => (
+                                    <option value={worker} key={worker} />
+                                ))}
+                            </datalist>
                         </FormGroup>
                     </Col>
                     <Col md={2}>
                         <Label>Milage:</Label>
-                        <Input name='milage' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
+                        <Input value={value.milage} name='milage' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
                     </Col>
                     <Col md={2}>
                         <Label>Truck Number:</Label>
-                        <Input name='truckNum' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
+                        <Input value={value.truckNum} name='truckNum' type='number' min={0} onChange={(event) => handleChange(event)}></Input>
                     </Col>
                     <Col md={2}>
                         <Label>Ticket Number:</Label>
@@ -365,6 +342,7 @@ const JobTIcket = (props) => {
                             selectedValues={value['otherWorkers']}
                             onSelect={handleSelect}
                             onRemove={handleRemove}
+                            closeOnSelect
                         />
                     </Col>
                 </Row>
@@ -443,20 +421,44 @@ const JobTIcket = (props) => {
 
             <Button onClick={addRow}> Add row </Button>
 
-            <Modal isOpen={isOpen} size='lg'>
-                <ModalHeader toggle={toggleModal}>Signature form for ticket {value.ticketNum}</ModalHeader>
+            <Modal toggle={toggleModal} fullscreen className='detailsModal' isOpen={isOpen} size='lg'>
+                <ModalHeader toggle={toggleModal}>Confirmation for ticket {value.ticketNum}</ModalHeader>
                 <ModalBody id='jobDetails'>
-                    <JobDetails
-                        value={value}
-                        ticketBody={ticketBody}
-                        setValue={setValue}
-                        handleChange={handleChange}
-                        findTimes={findTimes}
-                    />
+                    <Alert color={alertType} isOpen={postIsOpen}>{message}</Alert>
 
+                    <PDFViewer style={{ width: '100%', height: '100%' }}>
+                        <PdfRenderer value={value} />
+                    </PDFViewer>
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={handleSubmit} type='submit'>Submit</Button>
+                    <Button onClick={postTicket} type='submit'>Submit</Button>
+                </ModalFooter>
+            </Modal>
+            <Modal fullscreen className='confimModal' isOpen={isConfimOpen} size='lg'>
+                <ModalHeader toggle={toggleConfim}>Signature form for ticket {value.ticketNum}</ModalHeader>
+                <ModalBody id='jobDetails'>
+                    <FormGroup>
+                        <Label for='CC'>Contractor email:</Label>
+                        <Input value={value.CC} id='CC' type='text' name='CC' onChange={handleChange} />
+                        <br></br>
+                        <Label for='CC'>PO number:</Label>
+                        <Input value={value.poNum} id='CC' type='text' name='poNum' onChange={handleChange} />
+                        <br></br>
+                        <Label for='CC'>Job number:</Label>
+                        <Input value={value.jobNum} id='CC' type='text' name='jobNum' onChange={handleChange} />
+                        <br></br>
+                        <Label for="confirmationName">
+                            Typing your name acts as an e-signature:
+                        </Label>
+                        <Input value={value.confirmationName} type='text' name='confirmationName' id='confirmationName' onChange={handleChange} />
+                    </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                    <Button disabled={!value.confirmationName} onClick={() => {
+                        handleDataCompile()
+                        toggleModal()
+                        toggleConfim()
+                    }} >Continue</Button>
                 </ModalFooter>
             </Modal>
 
@@ -550,10 +552,6 @@ const JobTIcket = (props) => {
                         <th>Down Time</th>
                         <th><input type='number' min={0} name='downTime' onChange={handleChange}></input></th>
                     </tr>
-                    <tr>
-                        <th>Mini breaker</th>
-                        <th><input type='number' min={0} name='downTime' onChange={handleChange}></input></th>
-                    </tr>
                 </tbody>
             </Table>
             <section>
@@ -561,10 +559,7 @@ const JobTIcket = (props) => {
                 <textarea id='detailsArea' name='detailsNotCovered' onChange={handleChange} />
             </section>
 
-            <Button onClick={() => {
-                toggleModal()
-                compileHTML()
-            }} >continue</Button>
+            <Button onClick={toggleConfim} >continue</Button>
         </div>
     );
 }

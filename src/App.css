@@ -3,12 +3,18 @@
 
 /* base styling */
 
+html {
+  overflow: auto !important;
+  padding-right: 0 !important;
+
+}
+
 .App {
   text-align: center;
   font-family: 'Nunito', sans-serif;
 }
 
-.hide{
+.hide {
   display: none;
 }
 
@@ -18,7 +24,7 @@
   height: 25vh;
 }
 
-nav{
+nav {
   margin-bottom: 40px;
   display: flex;
   flex-wrap: nowrap;
@@ -28,22 +34,55 @@ nav{
   z-index: 999;
 }
 
-.link-container{
+.link-container {
   display: flex;
   width: 70%;
   flex-direction: row;
   justify-content: space-around;
-  font-size:x-large;
+  font-size: x-large;
 }
 
 nav p {
-display: none;
+  display: none;
 }
 
-.link{
+.link {
   color: black;
   text-decoration: none;
-  padding: 9px;
+  padding: 11px;
+}
+
+#userOptions {
+  text-align: center;
+  padding: 10px 30px;
+}
+
+#userOptions .user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#userOptions #userName {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.dropdown-item a {
+  text-decoration: none;
+  font-style: none;
+  color: black;
+}
+
+#userOptions #userEmail {
+  font-size: 0.9rem;
+  color: #888888;
+}
+
+.loginNav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* body styling */
@@ -92,45 +131,48 @@ ul {
   list-style: none;
 }
 
-li.part{
+li.part {
   transition: all 0.4s ease;
 }
 
-.down{
+.down {
   transform: rotateZ(-90deg)
 }
 
-#partLastPerson{
+#partLastPerson {
   padding-top: 15px;
 }
+
 /* inventory styles */
 .part {
   width: 350px;
 }
 
-.card{
-  margin: 0 30px 15px 30px ;
+.card {
+  margin: 0 30px 15px 30px;
   border-radius: 35px;
 }
 
 .part-collapse {
-border-radius: 35px;
-margin-bottom: 5px;
+  border-radius: 35px;
+  margin-bottom: 5px;
 }
 
-.inventory#partsContainer{
+.inventory#partsContainer {
   font-size: larger;
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
 }
 
-.inventory #partPicture{
+#partPicture {
+  height: 30vh;
   background-color: rgb(44, 44, 255);
   border-radius: 35px;
+  width: 290px;
 }
 
-.toolTracker{
+.toolTracker {
   display: flex;
   justify-items: center;
   justify-content: space-around;
@@ -139,90 +181,242 @@ margin-bottom: 5px;
 
 /* ledger styles */
 
-.ledger#ticketContainer{
+.ledger#ticketContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 }
 
-.timeSheet{
+#ledgerSearchbar {
+  margin: 20px 8px;
+}
+
+.timeSheet {
   margin: 2vw;
 }
 
-.timeSheet.workCodes{
+.timeSheet.workCodes {
   text-align: left;
   color: black;
 }
 
+#ticketBody {
+  padding-left: 2vw;
+  display: flex;
+  justify-content: space-around;
+  max-height: 1000px;
+}
+
+.ticket {
+  padding: 1vw;
+  text-decoration: none;
+  list-style: none;
+}
+
+#workerInput {
+  padding-right: 20px;
+}
+
+.half#right ul {
+  list-style: none;
+}
+
+#right {
+  padding-left: 5px;
+}
+
+#left {
+  width: 100%;
+}
+
+.jobInfoLine {
+  list-style: numbers;
+}
+
+#ticketLogo {
+  height: 50px;
+  width: 60px;
+}
+
+#customer {
+  font-weight: 700;
+  font-style: oblique;
+  font-family: Arial, Helvetica, sans-serif
+}
+
 /* serial numbers styles */
 
-.modalContainer{
+.modalContainer {
   display: flex;
   justify-content: center;
 }
 
-.serialNums.partInfo #entryContainer{
+.serialNums.partInfo #entryContainer {
   margin-left: 5vw;
   display: flex;
   flex-direction: column;
-  list-style-type:none; 
+  list-style-type: none;
   justify-content: space-around;
   padding-top: 2vw;
 }
 
-.splitNumConatiner{
+.splitNumConatiner {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   margin-bottom: 25px;
 }
 
-.entry{
+.entry {
   font-size: larger;
   margin: 5px;
   border-radius: 10px;
   padding: 5px;
 }
 
-.nums{
+.nums {
   width: 25vw;
   margin: 10px;
 }
 
+#serialSearchbar {
+  margin: none;
+}
+
 /* login and register form styles */
 
-.auth_form{
-  position: absolute;
-  left: 50%;
-  top: 65%;
-  transform: translate(-50%, -50%);
+.auth_form {
   min-height: 20rem;
-  width: 40rem;
-  max-width: 90%;
+  width: 60%;
+  margin: auto;
+  margin-bottom: 30px;
 }
 
-.inputs{
-  padding: 20px;
+.inputGroup {
+  width: 100%;
 }
 
-.auth-info{
+.visibility-icons {
+  position: absolute;
+  top: 5px;
+  right: 30px;
+  /* transform: translateY(-50%); */
+  cursor: pointer;
+}
+
+.passwordGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-info {
   padding-right: 20px;
 }
 
+
+/* job ticket styles */
+
+
+
 /* user profile styles */
-.userProfile{
+@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Bree+Serif&display=swap");
+
+.profile-header {
+  background: #fff;
+  width: 100vw;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  height: 190px;
+  position: relative;
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
 }
 
-.userInfoSection{
-  width: 40%;
+.profile-img {
+  float: left;
+  width: 340px;
+  height: 200px;
 }
 
-@media screen and (max-width: 768px){
+.profile-img img {
+  border-radius: 50%;
+  height: 25vh;
+  width: 25vh;
+  border: 5px solid #fff;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  left: 50px;
+  top: 20px;
+  z-index: 5;
+  background: #fff;
+}
 
-  .link-container{
+.profile-nav-info {
+  float: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 60px;
+}
+
+.profile-nav-info h3 {
+  font-variant: small-caps;
+  font-size: 2rem;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+.profile-nav-info .address p {
+  margin-right: 5px;
+}
+
+.main-bd {
+  width: 100%;
+  display: flex;
+  padding-right: 15px;
+}
+
+.profile-side {
+  width: 30vw;
+  background: #fff;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+  padding: 90px 30px 20px;
+  font-family: "Bree Serif", serif;
+  margin-left: 10px;
+  z-index: 99;
+}
+
+.profile-side p {
+  margin-bottom: 7px;
+  color: #333;
+  font-size: 14px;
+}
+
+.right-side {
+  margin: 0 auto;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.userProfile,
+.timeCards {
+  margin: 0 2rem;
+}
+
+/* time card styles */
+
+.timeSheet.confirmationModal {
+  min-width: fit-content;
+  margin: 0 auto;
+}
+
+.timeCardData .row {
+  padding-bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+
+  .link-container {
     display: flex;
     width: 60%;
     flex-direction: row;
@@ -230,47 +424,53 @@ margin-bottom: 5px;
     font-size: larger;
   }
 
-  .auth_form{
-    left: 46%;
-
-  }
 }
 
 /* styles for phone view */
-@media screen and (max-width: 425px){
-  .link-container{
+@media screen and (max-width: 425px) {
+  .link-container {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
   }
 
-  section{
+  section {
     color: grey;
   }
 
-  #filter-bar{
+  #filter-bar {
     flex-wrap: wrap;
   }
 
-  #filter-item{
+  #filter-item {
     padding: 5px;
   }
-  
-  .item{
+
+  .item {
     color: black;
   }
 
-  #partLastPerson{
+  #partLastPerson {
     display: none;
   }
 
-  nav p{
+  nav p {
     display: none;
   }
 
-  /* login and register styles */
-  .auth_form{
-    left: 43%;
+  /* user profile styles */
+
+  .profile-side {
+    display: none;
   }
 
+  .profile-img img {
+    height: 15vh;
+    width: 15vh;
+  }
+
+  .userProfile,
+  .timeCards {
+    margin: 0;
+  }
 }

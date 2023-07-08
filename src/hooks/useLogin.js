@@ -12,19 +12,20 @@ export const useLogin = (props) => {
     const login = async (email, password) => {
         setIsLoading(true)
         setError(null)
-        const respose = await fetch(`${API_URL}user/login`, {
+        const response = await fetch(`${API_URL}user/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         })
 
-        const json = await respose.json()
+        const json = await response.json()
 
-        if (!respose.ok) {
+        if (!response.ok) {
             setIsLoading(false)
             setError(json.error)
         }
-        if (respose.ok) {
+
+        if (response.ok) {
             // save the user to local storage 
             localStorage.setItem('user', JSON.stringify(json))
 

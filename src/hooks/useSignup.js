@@ -9,13 +9,13 @@ export const useSignup = () => {
     const { API_URL } = useWorkerContext()
 
 
-    const signup = async (email, password) => {
+    const signup = async (newUserData) => {
         setIsLoading(true)
         setError(null)
         const respose = await fetch(`${API_URL}user/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ ...newUserData })
         })
 
         const json = await respose.json()

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Input, Label, Table } from 'reactstrap';
 import { useWorkerContext } from '../../hooks/useWorkerContext';
 
-const EditComponent = ((props) => {
+const EditTicket = ((props) => {
     const { API_URL, workerlist } = useWorkerContext()
     const [serialNumsList, setSerialNumsList] = useState([])
     const [helpers, setHelpers] = useState({ ...props.editedData.helperTimes })
@@ -315,77 +315,52 @@ const EditComponent = ((props) => {
                         <tr> <th>
                             <Label>Wall Sawing</Label>
                             <Input name='wallSawing' onChange={(e) => handleChange(e)} type='number' value={props.editedData.wallSawing} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Core Drilling</Label>
                             <Input name='coreDrilling' onChange={(e) => handleChange(e)} type='number' value={props.editedData.coreDrilling} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Water Control</Label>
                             <Input name='waterControl' onChange={(e) => handleChange(e)} type='number' value={props.editedData.waterControl} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Slab Saw</Label>
                             <Input name='slabSaw' onChange={(e) => handleChange(e)} type='number' value={props.editedData.slabSaw} />
-                        </th></tr>
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Hand Saw</Label>
-                            <Input name='handSawing' onChange={(e) => handleChange(e)} type='number' value={props.editedData.slabSaw} />
-                        </th></tr>
-
-                        <tr> <th>
+                            <Input name='handSawing' onChange={(e) => handleChange(e)} type='number' value={props.editedData.handSawing} />
+                        </th></tr><tr> <th>
                             <Label>Hammer Chipping</Label>
                             <Input name='hammerChipping' onChange={(e) => handleChange(e)} type='number' value={props.editedData.hammerChipping} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Load Excevate</Label>
                             <Input name='loadExcevating' onChange={(e) => handleChange(e)} type='number' value={props.editedData.loadExcevate} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Haul</Label>
                             <Input name='haul' onChange={(e) => handleChange(e)} type='number' value={props.editedData.haul} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Hand Labor</Label>
                             <Input name='handLabor' onChange={(e) => handleChange(e)} type='number' value={props.editedData.handLabor} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Dump Yards</Label>
                             <Input name='dumpYards' onChange={(e) => handleChange(e)} type='number' value={props.editedData.dumpYards} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Release</Label>
                             <Input name='release' onChange={(e) => handleChange(e)} type='number' value={props.editedData.release} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Standby</Label>
                             <Input name='standby' onChange={(e) => handleChange(e)} type='number' value={props.editedData.standby} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Other</Label>
                             <Input name='other' onChange={(e) => handleChange(e)} type='number' value={props.editedData.other} />
-                        </th></tr>
-
-                        <tr> <th>
+                        </th></tr><tr> <th>
                             <Label>Down Time</Label>
                             <Input name='downtime' onChange={(e) => handleChange(e)} type='number' value={props.editedData.downTime} />
                         </th></tr>
                     </tbody>
                 </Table>
 
-            </section>
-        </div>
+            </section >
+        </div >
     )
 });
 
-export default EditComponent;
+export default EditTicket;
