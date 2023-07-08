@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { useDataFetcher } from "../hooks/useDataFetcher";
 import axios from "axios";
 
 export const WorkersContext = createContext();
@@ -15,20 +14,8 @@ export const WorkersContextProvider = ({ children }) => {
 
     useEffect(() => {
         async function fetchData() {
-            console.log("fetching data...");
-            const response = await axios.get(`${API_URL}user`);
-
-            const uniqueNames = new Set(workerList);
-
-            response.data.data.forEach((worker) => {
-                if (worker.firstName) {
-                    const name = `${worker.firstName}`;
-                    if (!uniqueNames.has(name)) {
-                        uniqueNames.add(name);
-                    }
-                }
-            });
-            setWorkerList(Array.from(uniqueNames));
+            const response = await axios.get(`${API_URL}user/`);
+            setWorkerList(response.data.data)
         }
         fetchData();
     }, []);
@@ -36,7 +23,7 @@ export const WorkersContextProvider = ({ children }) => {
     console.log('worker context state', API_URL, workerList)
 
     return (
-        <WorkersContext.Provider value={{ workerList, API_URL }}>
+        <WorkersContext.Provider value={{ API_URL, workerList }}>
             {children}
         </WorkersContext.Provider>
     );

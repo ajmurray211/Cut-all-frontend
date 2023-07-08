@@ -17,33 +17,45 @@ const Part = (props) => {
     const [previewUrl, setPreviewUrl] = useState(null);
 
     const handleEdit = async (event) => {
-        // const formData = new FormData();
-        // formData.append("image", selectedFile);
-        
-        const getID = await axios.put(`${API_URL}parts/${props.part._id}`, {
-            name: putName,
-            onHand: putOnHand,
-        })
-            .then(res => { if (res.status == 201) setSuccess(true) })
-            .catch(err => { if (err.status == 201) setFail(true) })
+        const formData = new FormData();
+        formData.append("name", putName);
+        formData.append("onHand", putOnHand);
+        formData.append("image", selectedFile);
+
+        try {
+            const response = await axios.put(`${API_URL}parts/${props.part._id}`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (response.status === 201) {
+                setSuccess(true);
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                setFail(true);
+            }
+        }
+
         setTimeout(() => {
-            setFail(false)
-            setSuccess(false)
-            toggleEdit()
-            props.getData(`${API_URL}parts/?format=json`)
-        }, 5000)
-    }
+            setFail(false);
+            setSuccess(false);
+            toggleEdit();
+            props.getData(`${API_URL}parts/?format=json`);
+        }, 5000);
+    };
 
-    // const handleFileInputChange = (event) => {
-    //     const file = event.target.files[0];
-    //     setSelectedFile(file);
+    const handleFileInputChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file);
 
-    //     const reader = new FileReader();
-    //     reader.readAsDataURL(file);
-    //     reader.onloadend = () => {
-    //         setPreviewUrl(reader.result);
-    //     };
-    // };
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            setPreviewUrl(reader.result);
+        };
+    };
 
     const handleDelete = async () => {
         const getID = await axios.delete(`${API_URL}parts/${props.part._id}`)
@@ -69,7 +81,8 @@ const Part = (props) => {
             >
                 <img
                     alt="Sample"
-                    src={logo}
+                    // src={logo}
+                    src={`${API_URL}${props.part.image}`}
                     className="inventory"
                     id="partPicture"
                 />
@@ -119,11 +132,11 @@ const Part = (props) => {
                             <Label for="partCount"> Amount on hand </Label>
                             <Input id="partCount" placeholder={props.part.onHand} type="number" onChange={(event) => setPutOnHand(event.target.value)} value={putOnHand} />
                         </FormGroup>
-                        {/* <FormGroup>
+                        <FormGroup>
                             <Label for="partImage" > Upload an image </Label>
                             <Input id="partImage" type="file" onChange={handleFileInputChange} />
                             {previewUrl && <img id="partPicture" src={previewUrl} alt="Preview" />}
-                        </FormGroup> */}
+                        </FormGroup>
                     </Form>
                     <ModalFooter>
                         <Button color="danger" onClick={handleDelete}> Delete </Button>

@@ -18,11 +18,11 @@ import { useWorkerContext } from './hooks/useWorkerContext';
 function App() {
   const { user } = useAuthContext()
   const { API_URL, workerlist } = useWorkerContext()
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 868);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1000);
     };
     window.addEventListener('resize', handleResize);
     return () => {
@@ -36,21 +36,19 @@ function App() {
       <div>
         <Routes>
           <Route path='/' element={<Inventory API_URL={API_URL} />} />
-          <Route path='/login' element={<Login API_URL={API_URL} />} />
-          <Route path='/register' element={<Register API_URL={API_URL} />} />
+          <Route path='/login' element={!user ? <Login API_URL={API_URL} /> : <Navigate to='/' />} />
+          <Route path='/register' element={!user ? <Register API_URL={API_URL} /> : <Navigate to='/' />} />
           <Route path='/serialNums' element={<SerialNums API_URL={API_URL} />} />
           <Route path='/usageGraph' element={<UsageGraph API_URL={API_URL} />} />
           <Route path='/jobTicket' element={<JobTIcket API_URL={API_URL} />} />
           <Route path='/ledger' element={<Ledger API_URL={API_URL} />} />
           <Route path='/timeSheet' element={<TimeSheet API_URL={API_URL} />} />
-          <Route path='/userProfile' element={<UserProfile API_URL={API_URL} />} />
+          <Route path='/userProfile' element={user ? <UserProfile API_URL={API_URL} /> : <Navigate to='/' />} />
         </Routes>
       </div>
       {/* <div>
         <Routes>
           <Route path='/' element={user ? <Inventory API_URL={API_URL} /> : <Navigate to='/login' />} />
-          <Route path='/login' element={!user ? <Login API_URL={API_URL} /> : <Navigate to='/' />} />
-          <Route path='/register' element={!user ? <Register API_URL={API_URL} /> : <Navigate to='/' />} />
           <Route path='/serialNums' element={user ? <SerialNums API_URL={API_URL} /> : <Navigate to='/login' />} />
           <Route path='/usageGraph' element={user ? <UsageGraph API_URL={API_URL} /> : <Navigate to='/login' />} />
           <Route path='/jobTicket' element={user ? <JobTIcket API_URL={API_URL} /> : <Navigate to='/login' />} />

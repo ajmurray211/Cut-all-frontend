@@ -3,15 +3,11 @@ import { useLogout } from '../hooks/useLogout'
 import { Button, UncontrolledDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Label } from 'reactstrap';
 import logo from '../Assets/cut-all-logo.png';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import userIcon from '../Assets/userIcon.png'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Navbar = () => {
     const { user } = useAuthContext()
     const { logout } = useLogout()
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-
-    const toggle = () => setDropdownOpen((prevState) => !prevState);
 
     const handleLogout = () => {
         logout()
@@ -20,7 +16,6 @@ const Navbar = () => {
     return (
         <nav className='fullNav'>
             <Link to="/"><img className="cut-all-logo" alt='Cut all logo' src={logo} /></Link>
-            {/* {user && ( */}
             <section className='link-container'>
                 <Link className='link' to='/'>Inventory</Link>
                 <Link className='link' to='/ledger'>Ledger</Link>
@@ -28,18 +23,22 @@ const Navbar = () => {
                 <Link className='link' to='/timeSheet'>Time Sheet</Link>
                 <Link className='link' to='/jobTicket'>Job ticket</Link>
             </section>
-            {/* )} */}
             <section className='auth-info'>
                 {user && (
                     <div>
-                        <img src={userIcon} alt='user icon' />
+                        <AccountCircleIcon fontSize='large' />
                         <UncontrolledDropdown group>
-                            <Button disabled color='warning'>{user.email}</Button>
+                            <Button disabled color='light'>Actions</Button>
                             <DropdownToggle
                                 caret
-                                color="warning"
+                                color="light"
                             />
-                            <DropdownMenu>
+                            <DropdownMenu id='userOptions'>
+                                <div className="user-info">
+                                    <AccountCircleIcon fontSize='large' />
+                                    <span id='userName'>{user.firstName} {user.lastName}</span>
+                                    <span id='userEmail'>{user.email}</span>
+                                </div>
                                 <DropdownItem onClick={() => handleLogout()} >
                                     Log out
                                 </DropdownItem>
@@ -51,9 +50,8 @@ const Navbar = () => {
                     </div>
                 )}
                 {!user && (
-                    <div>
-                        <img src={userIcon} alt='user icon' />
-
+                    <div className='loginNav'>
+                        <AccountCircleIcon fontSize='large' />
                         <Link className='link' to='/login'>Log In</Link>
                     </div>
                 )}

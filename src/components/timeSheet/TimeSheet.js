@@ -2,18 +2,19 @@ import { useState, useEffect } from "react";
 import { Input, Table, Label, FormGroup, Col, Form, Row, Button, Alert, ModalHeader, ModalBody, ModalFooter, Modal, } from "reactstrap";
 import TimeRow from "./TimeRow";
 import InfoDisplay from "./InfoDisplay";
-import "./timeSheet.css";
 import axios from "axios";
 import { useModal } from "../../hooks/useModal";
-import { useEmail } from "../../hooks/useEmail";
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { useWorkerContext } from "../../hooks/useWorkerContext";
 
 const TimeSheet = (props) => {
-  const { API_URL, workerlist } = useWorkerContext()
+  const { API_URL, workerList } = useWorkerContext()
   const { user } = useAuthContext()
   const { isOpen: modal, toggleModal: toggle } = useModal();
-  const { sendEmail, status, success, loading, fail, setFail, setStatus, setSuccess } = useEmail()
+  const [status, setStatus] = useState({
+    code: null,
+    mssg: null
+  })
   const [sheetBody, setSheetBody] = useState([]);
   const [sheetInfo, setSheetInfo] = useState({
     employeeName: null,
@@ -22,9 +23,8 @@ const TimeSheet = (props) => {
     title: null,
     status: null,
     date: null,
-    infoHTML: null,
+    id: null
   });
-  let sheetHTML = [];
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -34,26 +34,22 @@ const TimeSheet = (props) => {
         status: user.status,
         title: user.title,
         employeeNum: user.employeeNumber,
-        truckNum: user.truckNumber
+        truckNum: user.truckNumber,
+        id: user._id
       });
     }
   }, []);
 
   // resets variables changing when status changes
   useEffect(() => {
-    if (status === "Created" || status === "OK") {
+    if (status.code !== null) {
       setTimeout(() => {
-        console.log(sheetInfo, "after email");
-        setStatus("");
-        setSuccess(false);
+        setStatus({
+          code: null,
+          mssg: null
+        });
         toggle();
-      }, 5000);
-    } else if (status === "Error") {
-      setTimeout(() => {
-        setStatus("")
-        setFail(false);
-        toggle();
-      }, 5000);
+      }, 8000);
     }
   }, [status]);
 
@@ -75,7 +71,6 @@ const TimeSheet = (props) => {
     let copy = [...sheetBody];
     copy[i][e.target.name] = e.target.value;
     setSheetBody(copy);
-    console.log(sheetBody);
     let counter = 0;
     sheetBody.forEach((row) => {
       if (row.hours !== "") counter += parseFloat(row.hours);
@@ -84,10 +79,10 @@ const TimeSheet = (props) => {
   };
 
   const deleteRow = (index) => {
-    console.log(index)
-    setTotal(total - sheetBody[index].hours)
-    sheetBody.splice(index, 1)
-    setSheetBody([...sheetBody]);
+    const updatedSheetBody = [...sheetBody];
+    updatedSheetBody.splice(index, 1);
+    setSheetBody(updatedSheetBody);
+    setTotal(total - sheetBody[index].hours);
   }
 
   const handleChange = (e) => {
@@ -97,92 +92,96 @@ const TimeSheet = (props) => {
     }));
   };
 
-  const autoEmail = () => {
-    console.log('api call')
-  }
+  const handleOptionSelect = (event) => {
+    const selectedValue = event.target.value;
+    const selectedWorker = workerList.find(
+      (worker) => `${worker.firstName} ${worker.lastName}` === selectedValue
+    );
 
-  setInterval(() => {
-    const now = new Date();
-    // Check if it's Saturday at midnight
-    if (now.getDay() === 6 && now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-      autoEmail();
+    if (selectedWorker) {
+      setSheetInfo({
+        employeeName: `${selectedWorker.firstName} ${selectedWorker.lastName}`,
+        status: selectedWorker.status,
+        title: selectedWorker.title,
+        employeeNum: selectedWorker.employeeNumber,
+        truckNum: selectedWorker.truckNumber,
+        id: selectedWorker._id
+      });
     }
-    else if (now.getDay() === 6 && now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-      autoEmail();
-    }
-  }, 1000 * 60); // Check every minute
+  };
 
   const mapRows = sheetBody.map((row, i) => {
-    sheetHTML.push(
-      `<tr><td>${row.startTime}</td><td>${row.endTime}</td><td>${row.workCode}</td><td>${row.jobName}</td><td>${row.hours}</td><td>${row.notes}</td></tr>`
-    );
-    return <TimeRow i={i} editRow={editRow} handleChange={handleChange} deleteRow={deleteRow} />;
+    return <TimeRow i={i} key={i} editRow={editRow} handleChange={handleChange} deleteRow={deleteRow} sheetBody={sheetBody} />;
   });
-
-  const compileHTML = () => {
-    let combined = sheetHTML.join(" ");
-    // console.log(combined, sheetInfo);
-    setSheetInfo((value) => ({
-      ...value,
-      infoHTML: `<table style="border-collapse: collapse; width: 96.2382%; border-width: 1px; border-color: rgb(0, 0, 0);" border="1"><colgroup><col style="width:4%;"><col style="width: 4%;"><col style="width:4%;"><col style="width:7%;"><col style="width:4%;"><col style="width:7%;"></colgroup>
-          <thead>
-          <tr> <th>Start Time</th> <th>End Time</th> <th>Work Code</th> <th>Job Name</th> <th>Hours</th> <th>Notes</th> </tr>
-          </thead>
-          <tbody>
-          ${combined}
-          <tr> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <td style = "background-color: rgb(128, 128, 128);" ></td> <th>Total</th> <td>${total}</td> <td style = "background-color: rgb(128, 128, 128);" ></td> </tr>
-          </tbody></table>`,
-    }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setStatus('Created')
-    console.log('submit')
-    await axios.put(`${API_URL}timeCards/${sheetInfo.employeeName}`, {
-      sheetInfo,
-      sheetBody
-    })
-      .then(
-        (result) => {
-          // setStatus(result.statusText);
-          // setSuccess(true);
-          console.log(result)
-        },
-        (error) => {
-          // setFail(true);
-          // setStatus("Error");
-          console.log(error);
-        }
-      );
-    sendEmail("service_v3kf86l", "template_5kfgkxl", sheetInfo, "E5-2RW9TeJyvAH3_r")
+
+    try {
+      const result = await axios.post(`${API_URL}timeCards/${sheetInfo.id}`, { sheetBody, date: sheetInfo.date });
+      let newStatus = {
+        code: 'success',
+        mssg: result.data.message,
+      };
+      setStatus(newStatus);
+
+      // Reset values to defaults
+      setSheetBody([]);
+      setSheetInfo({
+        employeeName: null,
+        employeeNum: null,
+        truckNum: null,
+        title: null,
+        status: null,
+        date: null,
+        id:null
+      });
+      setTotal(0);
+    } catch (error) {
+      console.log(error);
+      setStatus({
+        code: 'danger',
+        mssg: error.response.data.message,
+      });
+    }
   };
 
   return (
     <div className="timeSheet">
       <h1>Time Sheet</h1>
-      <Form>
+      <Form className="timeCardData">
         <Row>
           <Col md={3} />
           <Col md={3}>
             <FormGroup>
               <Label for="employeeName">Employee Name</Label>
               <Input
-                defaultValue={sheetInfo.employeeName}
+                value={user ? `${user.firstName} ${user.lastName}` : sheetInfo.employeeName}
                 id="employeeName"
                 name="employeeName"
                 placeholder="Who are you?"
                 type="text"
                 onChange={handleChange}
+                autoComplete="on"
+                list="workers"
+                onSelect={handleOptionSelect}
               >
               </Input>
+              <datalist id="workers">
+                {workerList.map((worker) => (
+                  <option
+                    value={`${worker.firstName} ${worker.lastName}`}
+                    key={`${worker.firstName} ${worker.lastName}`}
+                  />
+                ))}
+              </datalist>
             </FormGroup>
           </Col>
           <Col md={3}>
             <Label for="title">Title</Label>
             <Input
               placeholder="Enter Employee title"
-              defaultValue={sheetInfo.title}
+              value={user ? user.title : sheetInfo.title}
               onChange={handleChange}
               name="title"
               id="title"
@@ -195,7 +194,7 @@ const TimeSheet = (props) => {
           <Col md={3}>
             <Label for="employeeNum">Employee Number</Label>
             <Input
-              defaultValue={sheetInfo.employeeNum}
+              value={user ? user.employeeNumber : sheetInfo.employeeNum}
               placeholder="Enter Employee Number"
               onChange={handleChange}
               name="employeeNum"
@@ -208,7 +207,7 @@ const TimeSheet = (props) => {
             <Input
               placeholder="Enter Your Status"
               onChange={handleChange}
-              defaultValue={sheetInfo.status}
+              value={user ? user.status : sheetInfo.status}
               name="status"
               id="status"
               type="text"
@@ -220,8 +219,9 @@ const TimeSheet = (props) => {
           <Col md={3}>
             <Label for="truckNum">Truck Number</Label>
             <Input
+              value={user ? user.truckNumber : sheetInfo.truckNum}
+              required
               onChange={handleChange}
-              defaultValue={sheetInfo.truckNum}
               placeholder="Enter truck number"
               name="truckNum"
               id="truckNum"
@@ -231,12 +231,15 @@ const TimeSheet = (props) => {
           <Col md={3}>
             <Label for="date">Date</Label>
             <Input
+              required
               onChange={handleChange}
               name="date"
               id="date"
               type="date"
+              invalid={isNaN(Date.parse(sheetInfo.date))}
             ></Input>
           </Col>
+
         </Row>
       </Form>
 
@@ -246,7 +249,7 @@ const TimeSheet = (props) => {
             <th>Start Time</th>
             <th>End Time</th>
             <th>Work Code</th>
-            <th>Job Number</th>
+            <th>Job Name</th>
             <th>Hours</th>
             <th>Notes</th>
           </tr>
@@ -293,8 +296,8 @@ const TimeSheet = (props) => {
         </ul>
       </div>
       <Button
+        disabled={sheetInfo.date === null || isNaN(Date.parse(sheetInfo.date)) || sheetBody.length == 0}
         onClick={(e) => {
-          compileHTML();
           toggle();
         }}
       >
@@ -309,11 +312,8 @@ const TimeSheet = (props) => {
       >
         <ModalHeader toggle={toggle}>Time Sheet Confirmation</ModalHeader>
         <ModalBody>
-          <Alert color="success" isOpen={success}>
-            You have submitted a time sheet!
-          </Alert>
-          <Alert color="danger" isOpen={fail}>
-            There was a problem with your time sheet submission!
+          <Alert color={status.code} isOpen={status.mssg}>
+            {status.mssg}
           </Alert>
           <InfoDisplay
             sheetInfo={sheetInfo}

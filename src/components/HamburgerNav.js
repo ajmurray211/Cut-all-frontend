@@ -8,6 +8,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import { useLogout } from '../hooks/useLogout'
 import { Link } from 'react-router-dom';
 import logo from '../Assets/cut-all-logo.png';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function HamburgerNav() {
     const [collapsed, setCollapsed] = useState(true);
@@ -29,16 +30,19 @@ function HamburgerNav() {
                 <section className='auth-info'>
                     {user && (
                         <div>
-                            <span>{user.email}</span>
-                            <UncontrolledDropdown group>
-                                <Button disabled color="warning">
-                                    Actions
-                                </Button>
+                            <UncontrolledDropdown  group direction='down'>
+                                <NavbarToggler onClick={toggleNavbar} className="me-2" />
+
                                 <DropdownToggle
                                     caret
-                                    color="warning"
+                                    color="light"
                                 />
-                                <DropdownMenu>
+                                <DropdownMenu id='userOptions'>
+                                    <div className="user-info">
+                                        <AccountCircleIcon fontSize='large' />
+                                        <span id='userName'>{user.firstName} {user.lastName}</span>
+                                        <span id='userEmail'>{user.email}</span>
+                                    </div>
                                     <DropdownItem onClick={() => handleLogout()} >
                                         Log out
                                     </DropdownItem>
@@ -55,7 +59,6 @@ function HamburgerNav() {
                         </div>
                     )}
                 </section>
-                <NavbarToggler onClick={toggleNavbar} className="me-2" />
                 <Collapse isOpen={!collapsed} navbar>
                     <Nav navbar>
                         <Link className='link' onClick={toggleNavbar} to='/'>Inventory</Link>
