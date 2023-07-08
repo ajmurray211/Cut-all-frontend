@@ -81,8 +81,8 @@ const Part = (props) => {
             >
                 <img
                     alt="Sample"
-                    // src={logo}
-                    src={`${API_URL}${props.part.image}`}
+                    src={logo}
+                    // src={`${API_URL}${props.part.image}`}
                     className="inventory"
                     id="partPicture"
                 />
