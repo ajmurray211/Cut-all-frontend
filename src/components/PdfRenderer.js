@@ -13,7 +13,7 @@ const PdfRenderer = (props) => {
         { label: 'Hand sawing', value: props.value.handSawing },
         { label: 'Jack hammer chipping', value: props.value.hammerChipping },
         { label: 'Load excevate', value: props.value.loadExcevate },
-        { label: 'Hauling', value: props.value.haul },
+        { label: 'Hauling', value: props.value.haul }, 
         { label: 'Hand labor', value: props.value.handLabor },
         { label: 'Dump yards', value: props.value.dumpYards },
         { label: 'Releases', value: props.value.release },
@@ -162,7 +162,7 @@ const PdfRenderer = (props) => {
 
                     <View style={styles.logoContainer}>
                         <Image style={styles.logo} src={cutallLogo} />
-                        <Text style={styles.title}>Cutall Concrete Invoice #{props.value.ticketNum}</Text>
+                        <Text style={styles.title}>Cutall Concrete Ticket #{props.value.ticketNum}</Text>
                     </View>
 
                     <View style={styles.section}>

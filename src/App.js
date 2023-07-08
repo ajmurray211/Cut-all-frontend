@@ -44,7 +44,6 @@ function App() {
           <Route path='/ledger' element={<Ledger API_URL={API_URL} />} />
           <Route path='/timeSheet' element={<TimeSheet API_URL={API_URL} />} />
           <Route path='/userProfile' element={user ? <UserProfile API_URL={API_URL} /> : <Navigate to='/' />} />
-
         </Routes>
       </div>
       {/* <div>

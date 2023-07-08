@@ -3,6 +3,12 @@
 
 /* base styling */
 
+html {
+  overflow: auto !important;
+  padding-right: 0 !important;
+
+}
+
 .App {
   text-align: center;
   font-family: 'Nunito', sans-serif;
@@ -73,7 +79,7 @@ nav p {
   color: #888888;
 }
 
-.loginNav{
+.loginNav {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -238,19 +244,6 @@ li.part {
   font-family: Arial, Helvetica, sans-serif
 }
 
-@page {
-  margin: 0;
-}
-
-@media print {
-
-  html,
-  body {
-    height: 100%;
-    overflow: hidden;
-  }
-}
-
 /* serial numbers styles */
 
 .modalContainer {
@@ -320,6 +313,9 @@ li.part {
 .auth-info {
   padding-right: 20px;
 }
+
+
+/* job ticket styles */
 
 
 
@@ -475,6 +471,6 @@ li.part {
 
   .userProfile,
   .timeCards {
-    margin: 0 ;
+    margin: 0;
   }
 }
