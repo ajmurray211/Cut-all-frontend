@@ -63,8 +63,11 @@ const Main = (props) => {
             }
         })
     }
-    splitBladeNames()
-
+    
+    useEffect(() => {
+        splitBladeNames();
+    }, [parts]);
+    
     const handleSubmit = (event) => {
         event.preventDefault()
         getData(`${API_URL}parts/search/?name=${searchVal}`)
