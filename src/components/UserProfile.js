@@ -7,13 +7,14 @@ import userIcon from '../Assets/userIcon.png'
 
 const UserProfile = (props) => {
     const { user } = useAuthContext()
-    const { API_URL, workerlist } = useWorkerContext()
+    const { API_URL, workerList } = useWorkerContext()
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [title, setTitle] = useState('')
     const [employeeNumber, setEmployeeNumber] = useState('')
     const [status, setStatus] = useState('')
     const [email, setEmail] = useState('No email Stored')
+    const [timeCards, setTimeCards] = useState([])
     const [truckNumber, setTruckNumber] = useState('')
     const [alert, setAlert] = useState({ type: null, mssg: null })
     const [show, setShow] = useState(false)
@@ -41,12 +42,19 @@ const UserProfile = (props) => {
         }
     }
 
+    const getTimeCards = async () => {
+        // let userInfo = await axios.get(`${API_URL}user/${user._id}`)
+        let timecards = workerList.filter(worker => worker._id === user._id)[0]?.timeCards;
+        setTimeCards(timecards)
+    }
+
     useEffect(() => {
+        getTimeCards()
         assignValues()
     }, [user])
 
     const handleUserUpdate = async () => {
-        await axios.put(`${API_URL}user/edit/${user.email}`, {
+        await axios.put(`${API_URL}user/edit/${user._id}`, {
             firstName: firstName,
             lastName: lastName,
             title: title,
@@ -90,11 +98,9 @@ const UserProfile = (props) => {
         });
     }
 
-
-    const mappedTimecards = user.timeCards.map((card) => {
-        console.log(card)
+    const mappedTimecards = timeCards.map((card, key) => {
         return (
-            <tr>
+            <tr key={key}>
                 <td>
                     {card.date ? card.date : ''}
                 </td>
@@ -122,20 +128,20 @@ const UserProfile = (props) => {
 
     return (
         <div>
-            <div class="profile-header">
-                <div class="profile-img">
-
+            <div className="profile-header">
+                <div className="profile-img">
+                    {user.isAdmin && <div className="admin-banner">Admin</div>}
                     <img src={userIcon} width="200" alt="Profile Image" />
                 </div>
-                <div class="profile-nav-info">
-                    <h3 class="user-name">{user.firstName} {user.lastName}</h3>
-                    <p class="user-mail">{user.email}</p>
+                <div className="profile-nav-info">
+                    <h3 className="user-name">{user.firstName} {user.lastName}</h3>
+                    <p className="user-mail">{user.email}</p>
                 </div>
             </div>
 
-            <div class="main-bd">
-                <div class="left-side">
-                    <div class="profile-side">
+            <div className="main-bd">
+                <div className="left-side">
+                    <div className="profile-side">
                         <div>
                             <h3>Instructions</h3>
                             <p>
@@ -146,8 +152,8 @@ const UserProfile = (props) => {
                     </div>
                 </div>
 
-                <div class="right-side">
-                    <div class="nav">
+                <div className="right-side">
+                    <div className="nav">
                         <Button
                             color={!showInfo ? 'light' : 'primary'}
                             onClick={toggleInfo}
@@ -170,7 +176,7 @@ const UserProfile = (props) => {
                                     <FormGroup >
                                         <Label size='lg' for='firstName'>First Name</Label>
                                         <Input
-                                            size='lg'
+                                            bsSize='lg'
                                             value={firstName}
                                             placeholder='please enter a value'
                                             name='firstName'
@@ -183,7 +189,7 @@ const UserProfile = (props) => {
                                     <FormGroup >
                                         <Label size='lg' for='lastName'>Last Name</Label>
                                         <Input
-                                            size='lg'
+                                            bsSize='lg'
                                             value={lastName}
                                             placeholder='please enter a value'
                                             name='lastName'
@@ -198,7 +204,7 @@ const UserProfile = (props) => {
                                     <FormGroup >
                                         <Label size='lg' for='title'>Title</Label>
                                         <Input
-                                            size='lg'
+                                            bsSize='lg'
                                             value={title}
                                             placeholder='please enter a value'
                                             name='title'
@@ -227,7 +233,7 @@ const UserProfile = (props) => {
                                     <FormGroup >
                                         <Label size='lg' for='status'>Status</Label>
                                         <Input
-                                            size='lg'
+                                            bsSize='lg'
                                             value={status}
                                             placeholder='please enter a value'
                                             name='status'
@@ -240,7 +246,7 @@ const UserProfile = (props) => {
                                     <FormGroup >
                                         <Label size='lg' for='truckNumber'>Truck Number</Label>
                                         <Input
-                                            size='lg'
+                                            bsSize='lg'
                                             value={truckNumber}
                                             placeholder='please enter a value'
                                             name='truckNumber'
@@ -256,9 +262,9 @@ const UserProfile = (props) => {
                     </div>
 
                     <div className='timeCards' style={{ display: !showInfo ? '' : 'none' }}>
-                        <h2>Timecards for this pay period</h2>
+                        <h2>Time card entries for this pay period</h2>
                         <Table bordered responsive striped>
-                            <thead style={{ display: user.timeCards.length ? '' : 'none' }}>
+                            <thead style={{ display: timeCards.length ? '' : 'none' }}>
                                 <tr>
                                     <th>Date</th>
                                     <th>Start Time</th>
@@ -269,8 +275,9 @@ const UserProfile = (props) => {
                                     <th>Notes</th>
                                 </tr>
                             </thead>
-                            <tbody>{user.timeCards.length ? mappedTimecards : 'No timecards stored'}</tbody>
+                            <tbody>{timeCards.length ? mappedTimecards : 'No timecards stored'}</tbody>
                         </Table>
+
                     </div>
                 </div>
             </div>

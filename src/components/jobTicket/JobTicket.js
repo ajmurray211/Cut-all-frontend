@@ -24,7 +24,6 @@ const JobTIcket = (props) => {
     const { findTimes } = useFindTimeDiff()
     const [ticketBody, setTicketBody] = useState([])
     const [value, setValue] = useState({
-        email: 'murray.aj.murray@gmail.com',
         worker: user ? user.firstName : '',
         billTo: '',
         otherWorkers: [],
@@ -119,7 +118,7 @@ const JobTIcket = (props) => {
                     showAlert(res.status, res.data.message)
                     setTimeout(() => {
                         toggleModal()
-                        // window.location.reload()
+                        window.location.reload()
                     }, 8000);
                 })
             for (const data of value.jobInfo) {

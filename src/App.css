@@ -333,9 +333,26 @@ li.part {
 }
 
 .profile-img {
+  overflow: hidden;
   float: left;
   width: 340px;
   height: 200px;
+}
+
+.admin-banner {
+  position: relative;
+  top: 40px;
+  left: 45%;
+  padding: 8px 12px;
+  transform: rotate(45deg);
+  width: 10rem;
+  color: #01480e;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 8px 12px;
+  z-index: 6;
+  border-radius: 50%;
+  background: linear-gradient(to top right, green, white);
 }
 
 .profile-img img {
