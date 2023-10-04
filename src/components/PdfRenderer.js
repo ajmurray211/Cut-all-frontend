@@ -162,7 +162,7 @@ const PdfRenderer = (props) => {
 
                     <View style={styles.logoContainer}>
                         <Image style={styles.logo} src={cutallLogo} />
-                        <Text style={styles.title}>Cutall Concrete Ticket #{props.value.ticketNum}</Text>
+                        <Text style={styles.title}>Cut All Concrete Ticket #{props.value.ticketNum}</Text>
                     </View>
 
                     <View style={styles.section}>

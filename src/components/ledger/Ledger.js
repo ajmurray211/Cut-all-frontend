@@ -1,6 +1,6 @@
 import axios from "axios"
-import { useState} from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Offcanvas, OffcanvasBody, OffcanvasHeader, InputGroup, InputGroupText, Input, Label } from 'reactstrap';
+import { useEffect, useState } from "react";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Popover, PopoverBody, PopoverHeader, InputGroup, InputGroupText, Input, Label, UncontrolledPopover } from 'reactstrap';
 import EditTicket from './EditTicket';
 import logo from '../../Assets/cut-all-logo.png'
 import { useModal } from '../../hooks/useModal';
@@ -17,6 +17,17 @@ const Ledger = (props) => {
     const { isOpen: ticketInfoModal, toggleModal: toggleTicketInfoModal } = useModal();
     const { isOpen: deleteConfirmation, toggleModal: toggleDeleteConfirmation } = useModal();
     const [searchVal, setSearchVal] = useState('')
+    const [topTicket, setTopTicket] = useState(0);
+
+    useEffect(() => {
+        axios
+            .get(`${API_URL}ticket/topTicketNum`)
+            .then((res) => {
+                let number = res.data.data.ticketNum - 1
+                console.log(number)
+                setTopTicket(number)
+            })
+    }, [])
 
     const handleChange = (event) => {
         event.preventDefault()
@@ -48,10 +59,11 @@ const Ledger = (props) => {
         window.location.reload(); // Reload the page
     }
 
-    const mapapedWorkers = workerList.map((worker) => {
+    const mapapedWorkers = workerList.map((worker, i) => {
         return (
-            <div key={worker.firstName} >
+            <div className="ticketList" key={worker.firstName} >
                 <TicketList
+                    topTicket={topTicket}
                     worker={worker.firstName}
                     API_URL={API_URL}
                     setActiveTicket={setActiveTicket}
@@ -64,16 +76,81 @@ const Ledger = (props) => {
 
     return (
         <div>
-            <h1>List of job tickets on file</h1>
-            <form className="me-2" id="filter-item" >
-                <input id="ledgerSearchbar" className="searchbar" type='text' placeholder="Search by company or ticket #" onChange={handleChange} value={searchVal} />
-                <button className="search-submit" type="submit">
-                    <img src={searchicon} alt="Search Icon" />
-                </button>
-            </form>
-            <section className='ledger split' id='ticketContainer'>
-                {mapapedWorkers}
-            </section >
+            <section id="viewerSection">
+                <div className="">
+                    {/* <h1>List of job tickets on file</h1> */}
+                </div>
+                <div className="searchContainer">
+                    <div>
+                        <p>Ticket number: {activeTicket ? activeTicket.ticketNum : ''}</p>
+                        <p>Customer: {activeTicket ? activeTicket.billTo : ''}</p>
+                    </div>
+                    <div>
+                        <form className="me-2" id="filter-item" >
+                            <input id="ledgerSearchbar" className="searchbar" type='text' placeholder="Search by company or ticket #" onChange={handleChange} value={searchVal} />
+                            <button className="search-submit" type="submit">
+                                <img src={searchicon} alt="Search Icon" />
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div id="viewerContainer">
+
+                    <PDFViewer className="pdfViwer" style={{ width: '100%', height: '100%' }}>
+                        {activeTicket ? <PdfRenderer value={activeTicket} /> : 'There was a problem '}
+                    </PDFViewer>
+                </div>
+                <div className="pdfButtonsContainer">
+                    <Button size="lg" color='warning' className={editMode ? 'hide' : 'show'} onClick={() => setEditMode(!editMode)}>Edit</Button>
+                    <Button id="deletionConfirmation" size="lg" color='danger'>Delete</Button>
+                </div>
+            </section>
+
+            <section id="ticketSection">
+                <div>
+                    <div></div>
+                    <div>
+                        <form className="me-2" id="filter-item" >
+                            <input id="ledgerSearchbar" className="searchbar" type='text' placeholder="Search by company or ticket #" onChange={handleChange} value={searchVal} />
+                            <button className="search-submit" type="submit">
+                                <img src={searchicon} alt="Search Icon" />
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div className='ledger split' id='ticketContainer'>
+                    {mapapedWorkers}
+                </div >
+            </section>
+
+            <UncontrolledPopover
+                isOpen={deleteConfirmation}
+                trigger="focus"
+                target="deletionConfirmation"
+                placement="top"
+                toggle={toggleDeleteConfirmation}
+            >
+                <PopoverHeader toggle={toggleDeleteConfirmation}>
+                    Deletion confirmation
+                </PopoverHeader>
+                <PopoverBody>
+                    <strong>
+                        Are you sure that you want to delete this job ticket? There will be no recovery possible once deleted.
+                    </strong>
+                    <br />
+                    <Button color="danger" onClick={handleDelete}>
+                        Delete
+                    </Button>
+                </PopoverBody>
+            </UncontrolledPopover>
+        </div >
+    );
+}
+
+export default Ledger;
+
+
+{/* 
             <Modal fullscreen className='modal-width' id='mainModal' isOpen={ticketInfoModal}>
                 <ModalHeader toggle={() => {
                     toggleTicketInfoModal()
@@ -101,29 +178,5 @@ const Ledger = (props) => {
                         setEditMode(!editMode)
                         toggleTicketInfoModal()
                     }}>Save</Button>
-                    <Button color='danger' className={editMode ? 'hide' : 'show'} onClick={toggleDeleteConfirmation}>Delete</Button>
                 </ModalFooter>
-            </Modal>
-            <Offcanvas
-                isOpen={deleteConfirmation}
-                direction="top"
-                toggle={toggleDeleteConfirmation}
-            >
-                <OffcanvasHeader toggle={toggleDeleteConfirmation}>
-                    Deletion confirmation
-                </OffcanvasHeader>
-                <OffcanvasBody>
-                    <strong>
-                        Are you sure that you want to delete this job ticket? There will be no recovery possible once deleted.
-                    </strong>
-                    <br />
-                    <Button color="danger" onClick={handleDelete}>
-                        Delete
-                    </Button>
-                </OffcanvasBody>
-            </Offcanvas>
-        </div >
-    );
-}
-
-export default Ledger;
+            </Modal> */}

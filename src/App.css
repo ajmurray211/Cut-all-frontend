@@ -181,6 +181,11 @@ li.part {
 
 /* ledger styles */
 
+.tempStyle {
+  background-color: green;
+  margin: 10px;
+}
+
 .ledger#ticketContainer {
   display: flex;
   flex-wrap: wrap;
@@ -281,6 +286,44 @@ li.part {
 
 #serialSearchbar {
   margin: none;
+}
+
+#viewerSection{
+  border-radius: 35px;
+  border: 1px solid black;
+  margin: 0 20px;
+}
+
+.searchContainer{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.pdfButtonsContainer{
+  border: 1px solid black;
+  border-radius:  35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 20px;
+}
+
+.pdfViwer{
+  min-height: 800px;
+  min-width: 350px;
+  max-width: 80%;
+  background-color: #525659;
+}
+
+#ticketSection{
+  border-radius: 35px;
+  border: 1px solid black;
+  margin: 10px 20px;
+}
+
+.ticketList{
+  min-width: 33%;
 }
 
 /* login and register form styles */

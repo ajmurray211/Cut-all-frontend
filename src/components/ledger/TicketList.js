@@ -2,22 +2,26 @@ import { useState, useEffect } from "react";
 import { Button } from "reactstrap";
 import { useDataFetcher } from '../../hooks/useDataFetcher';
 import { useWorkerContext } from "../../hooks/useWorkerContext";
+import axios from "axios";
 
 const TicketList = (props) => {
     const { API_URL, workerlist } = useWorkerContext()
     const { getData, data: tickets, error, loading } = useDataFetcher();
+    // const { getData: getTopTicket, data: topTicket, } = useDataFetcher();
     const [page, setPage] = useState(1);
     const [displayedData, setDisplayedData] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
-
+    
     useEffect(() => {
         getData(`${API_URL}ticket/workerList/${props.worker}`);
+
     }, []);
 
     useEffect(() => {
         if (tickets.length > 0) {
             setDisplayedData(tickets.slice(0, 5));
         }
+
     }, [tickets]);
 
     const handleLoadMore = () => {
@@ -45,18 +49,23 @@ const TicketList = (props) => {
 
     const mappedSeperateTickets = (
         <div>
-            {filteredTickets.map((ticket, i) => (
-                <li key={i} className='ticket'>
-                    <Button
-                        onClick={() => {
-                            props.setActiveTicket(ticket);
-                            props.toggleTicketInfoModal();
-                        }}
-                    >
-                        {ticket.billTo} - {ticket.date} - Ticket #{ticket.ticketNum ? ticket.ticketNum : '-----'}
-                    </Button>
-                </li>
-            ))}
+            {filteredTickets.map((ticket, i) => {
+                if (props.topTicket == ticket.ticketNum) {
+                    props.setActiveTicket(ticket);
+                }
+                return (
+                    <li key={i} className='ticket'>
+                        <Button
+                            onClick={() => {
+                                props.setActiveTicket(ticket);
+                                props.toggleTicketInfoModal();
+                            }}
+                        >
+                            {`${ticket.billTo} - ${ticket.date} - Ticket #${ticket.ticketNum ? ticket.ticketNum : '-----'}`}
+                        </Button>
+                    </li>
+                );
+            })}
             {!collapsed && displayedData.length < tickets.length && (
                 <Button color="warning" onClick={handleLoadMore}>
                     {tickets.length - displayedData.length >= 5
@@ -71,7 +80,7 @@ const TicketList = (props) => {
     );
 
     return (
-        <div style={{ display: filteredTickets.length === 0  ? 'none' : '' }} key={props.worker}>
+        <div style={{ display: filteredTickets.length === 0 ? 'none' : '' }} key={props.worker}>
             <h2>{props.worker}'s Job Tickets</h2>
             <ul>{mappedSeperateTickets}</ul>
         </div>
