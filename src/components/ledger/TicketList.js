@@ -2,32 +2,36 @@ import { useState, useEffect } from "react";
 import { Button } from "reactstrap";
 import { useDataFetcher } from '../../hooks/useDataFetcher';
 import { useWorkerContext } from "../../hooks/useWorkerContext";
-import axios from "axios";
 
 const TicketList = (props) => {
     const { API_URL, workerlist } = useWorkerContext()
     const { getData, data: tickets, error, loading } = useDataFetcher();
-    // const { getData: getTopTicket, data: topTicket, } = useDataFetcher();
     const [page, setPage] = useState(1);
     const [displayedData, setDisplayedData] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
-    
+
     useEffect(() => {
         getData(`${API_URL}ticket/workerList/${props.worker}`);
-
     }, []);
 
     useEffect(() => {
         if (tickets.length > 0) {
             setDisplayedData(tickets.slice(0, 5));
         }
-
     }, [tickets]);
 
     const handleLoadMore = () => {
         const nextChunk = tickets.slice(page * 5, (page + 1) * 5);
         setDisplayedData([...displayedData, ...nextChunk]);
         setPage(page + 1);
+    };
+
+    const scrollToBot = () => {
+        let scrollPostion = document.body.scrollHeight + 100
+        window.scrollTo({
+            top: scrollPostion,
+            behavior: "smooth",
+        });
     };
 
     const handleCollapse = () => {
@@ -50,15 +54,13 @@ const TicketList = (props) => {
     const mappedSeperateTickets = (
         <div>
             {filteredTickets.map((ticket, i) => {
-                if (props.topTicket == ticket.ticketNum) {
-                    props.setActiveTicket(ticket);
-                }
                 return (
                     <li key={i} className='ticket'>
                         <Button
+                            disabled={props.editMode}
                             onClick={() => {
                                 props.setActiveTicket(ticket);
-                                props.toggleTicketInfoModal();
+                                scrollToBot()
                             }}
                         >
                             {`${ticket.billTo} - ${ticket.date} - Ticket #${ticket.ticketNum ? ticket.ticketNum : '-----'}`}

@@ -1,12 +1,25 @@
 /* font-family: 'Nunito', sans-serif */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap');
 
-/* base styling */
+:root {
+  --font-1: 'Onest', sans-serif;
+  --font-2: 'Ubuntu', sans-serif;
+}
+
+/* global styling */
 
 html {
   overflow: auto !important;
   padding-right: 0 !important;
 
+}
+
+.title {
+  font-family: var(--font-1);
+}
+
+.body {
+  font-family: var(--font-2);
 }
 
 .App {
@@ -18,6 +31,10 @@ html {
   display: none;
 }
 
+.grayed {
+  background-color: #f2f2f2;
+}
+
 /* header styling */
 
 .cut-all-logo {
@@ -25,11 +42,9 @@ html {
 }
 
 nav {
-  margin-bottom: 40px;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  /* justify-content: space-around; */
   background-color: rgb(12, 100, 253);
   z-index: 999;
 }
@@ -180,58 +195,69 @@ li.part {
 }
 
 /* ledger styles */
-
-.tempStyle {
-  background-color: green;
-  margin: 10px;
+.ledgerPage {
+  background-color: hsl(0, 0%, 93%);
+  padding: 50px 0;
+  display: flex;
 }
 
-.ledger#ticketContainer {
+#ticketContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  max-height: 100vh;
 }
 
 #ledgerSearchbar {
   margin: 20px 8px;
 }
 
-.timeSheet {
-  margin: 2vw;
+#ledgerViewerSection {
+  border: 1px solid black;
+  margin: 0 20px;
+  background-color: white;
+  width: 72vw;
+  min-width: 620px;
 }
 
-.timeSheet.workCodes {
-  text-align: left;
-  color: black;
+#viewerContainer {
+  border-top: 1px solid black;
+  padding: 10px 0;
+  height: 85%;
+  min-height: 900px;
+}
+
+.pdfViwerLedger {
+  background-color: #525659;
+  height: 100%;
+  width: 100%;
 }
 
 #ticketBody {
   padding-left: 2vw;
   display: flex;
   justify-content: space-around;
-  max-height: 1000px;
+}
+
+#ledgerTicketSection {
+  border: 1px solid black;
+  background-color: white;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  max-width: 23%;
+  min-width: 340px;
+  overflow: scroll;
 }
 
 .ticket {
-  padding: 1vw;
+  padding: 5px;
   text-decoration: none;
   list-style: none;
 }
 
 #workerInput {
   padding-right: 20px;
-}
-
-.half#right ul {
-  list-style: none;
-}
-
-#right {
-  padding-left: 5px;
-}
-
-#left {
-  width: 100%;
 }
 
 .jobInfoLine {
@@ -247,6 +273,138 @@ li.part {
   font-weight: 700;
   font-style: oblique;
   font-family: Arial, Helvetica, sans-serif
+}
+
+.pdfLedgerButtonsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 10px;
+}
+
+.ledgerSearchBarContainer {
+  /* position: absolute; */
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+.ledgerTitle {
+  padding: 20px 0 0;
+}
+
+@media screen and (max-width: 1200px) {
+  .ledgerPage {
+    flex-wrap: wrap;
+  }
+
+  #ledgerViewerSection {
+    width: 100%;
+  }
+
+  #ledgerTicketSection {
+    overflow: auto;
+    max-width: none;
+    margin: 0 20px 20px;
+  }
+
+  #ticketContainer {
+    max-height: none;
+  }
+}
+
+/* timecard page */
+.timeSheet {
+  margin: 2vw;
+}
+
+.timeSheet.workCodes {
+  text-align: left;
+  color: black;
+}
+
+/* edit ticket component */
+
+.editComponent {
+  padding: 35px;
+}
+
+.editAdminSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  margin: 20px 0;
+  border: 1px solid rgba(128, 128, 128, 0.351);
+  padding: 5px;
+}
+
+.editWorkCompletedSection {
+  margin: 20px 0;
+}
+
+.editTimeSection {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(128, 128, 128, 0.351);
+  padding: 5px;
+}
+
+.timeTitleContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.timeContentContainer {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
+.editInputGroup {
+  margin: 5px;
+  max-width: 20%;
+  padding: 10px;
+  min-width: 130px;
+}
+
+.editTimeInputs {
+  min-width: 130px;
+}
+
+.editOtherWorkSection {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 20px 0;
+  border: 1px solid rgba(128, 128, 128, 0.351);
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.editConfirmationContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 35%;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 10px;
+  min-width: 250px;
+}
+
+.editConfirmationMsg {
+  text-align: left;
+}
+
+.timeBreakdownContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 60%;
+  min-width: 290px;
 }
 
 /* serial numbers styles */
@@ -288,41 +446,50 @@ li.part {
   margin: none;
 }
 
-#viewerSection{
+#viewerSection {
   border-radius: 35px;
   border: 1px solid black;
-  margin: 0 20px;
+  margin: 10px 20px;
+  background-color: white;
 }
 
-.searchContainer{
+.searchContainer {
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
 
-.pdfButtonsContainer{
-  border: 1px solid black;
-  border-radius:  35px;
+.pdfButtonsContainer {
+  /* border: 1px solid black; */
+  border-radius: 35px;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   padding: 20px;
 }
 
-.pdfViwer{
+.pdfViwer {
   min-height: 800px;
   min-width: 350px;
   max-width: 80%;
   background-color: #525659;
+  height: 100%;
+  width: 100%;
 }
 
-#ticketSection{
+#ticketSection {
   border-radius: 35px;
   border: 1px solid black;
   margin: 10px 20px;
+  background-color: white;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  max-width: 33%;
 }
 
-.ticketList{
+.ticketList {
   min-width: 33%;
 }
 
@@ -357,10 +524,7 @@ li.part {
   padding-right: 20px;
 }
 
-
 /* job ticket styles */
-
-
 
 /* user profile styles */
 @import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");

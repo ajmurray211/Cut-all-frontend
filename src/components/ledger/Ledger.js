@@ -2,7 +2,6 @@ import axios from "axios"
 import { useEffect, useState } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Popover, PopoverBody, PopoverHeader, InputGroup, InputGroupText, Input, Label, UncontrolledPopover } from 'reactstrap';
 import EditTicket from './EditTicket';
-import logo from '../../Assets/cut-all-logo.png'
 import { useModal } from '../../hooks/useModal';
 import TicketList from './TicketList';
 import { useWorkerContext } from '../../hooks/useWorkerContext';
@@ -14,20 +13,25 @@ const Ledger = (props) => {
     const { API_URL, workerList } = useWorkerContext()
     const [activeTicket, setActiveTicket] = useState(null)
     const [editMode, setEditMode] = useState(false)
-    const { isOpen: ticketInfoModal, toggleModal: toggleTicketInfoModal } = useModal();
     const { isOpen: deleteConfirmation, toggleModal: toggleDeleteConfirmation } = useModal();
     const [searchVal, setSearchVal] = useState('')
     const [topTicket, setTopTicket] = useState(0);
 
     useEffect(() => {
-        axios
-            .get(`${API_URL}ticket/topTicketNum`)
-            .then((res) => {
-                let number = res.data.data.ticketNum - 1
-                console.log(number)
-                setTopTicket(number)
-            })
-    }, [])
+        const fetchData = async () => {
+            try {
+                const topTicketResponse = await axios.get(`${API_URL}ticket/topTicketNum`);
+                const topTicketId = topTicketResponse.data.data._id;
+                const ticketResponse = await axios.get(`${API_URL}ticket/${topTicketId}`);
+                const activeTicketData = ticketResponse.data.data;
+                setActiveTicket(activeTicketData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        setEditMode(false)
+        fetchData();
+    }, []);
 
     const handleChange = (event) => {
         event.preventDefault()
@@ -38,12 +42,12 @@ const Ledger = (props) => {
         axios.put(`${API_URL}ticket/${data._id}`, data)
             .then(res => {
                 console.log(res.data.message);
-                window.location.reload(); // Reload the page
             }).catch(err => console.log(err))
 
         activeTicket.jobInfo.forEach(async (line) => {
+            console.log(line)
             axios.put(`${API_URL}serialNum/editJobInfo`, {
-                serialNum: line.serialNum,
+                serialNum: line.serialNum? line.serialNum : null,
                 date: activeTicket.date,
                 runLength: parseInt(line.length),
                 depth: parseInt(line.depth)
@@ -63,64 +67,63 @@ const Ledger = (props) => {
         return (
             <div className="ticketList" key={worker.firstName} >
                 <TicketList
+                    editMode={editMode}
                     topTicket={topTicket}
                     worker={worker.firstName}
                     API_URL={API_URL}
                     setActiveTicket={setActiveTicket}
-                    toggleTicketInfoModal={toggleTicketInfoModal}
                     searchVal={searchVal}
                 />
             </div>
         )
     })
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log('set ticket num')
+    }
+
     return (
-        <div>
-            <section id="viewerSection">
-                <div className="">
-                    {/* <h1>List of job tickets on file</h1> */}
+        <div className="ledgerPage body">
+            <section id="ledgerTicketSection">
+                <div className="ledgerSearchBarContainer">
+                    <form onSubmit={handleSubmit} className="me-2" id="filter-item" >
+                        <input id="ledgerSearchbar" className="searchbar" type='text' placeholder="Search by company or ticket #" onChange={handleChange} value={searchVal} />
+                        <button className="search-submit" type="submit">
+                            <img src={searchicon} alt="Search Icon" />
+                        </button>
+                    </form>
                 </div>
-                <div className="searchContainer">
-                    <div>
-                        <p>Ticket number: {activeTicket ? activeTicket.ticketNum : ''}</p>
-                        <p>Customer: {activeTicket ? activeTicket.billTo : ''}</p>
-                    </div>
-                    <div>
-                        <form className="me-2" id="filter-item" >
-                            <input id="ledgerSearchbar" className="searchbar" type='text' placeholder="Search by company or ticket #" onChange={handleChange} value={searchVal} />
-                            <button className="search-submit" type="submit">
-                                <img src={searchicon} alt="Search Icon" />
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div id="viewerContainer">
-
-                    <PDFViewer className="pdfViwer" style={{ width: '100%', height: '100%' }}>
-                        {activeTicket ? <PdfRenderer value={activeTicket} /> : 'There was a problem '}
-                    </PDFViewer>
-                </div>
-                <div className="pdfButtonsContainer">
-                    <Button size="lg" color='warning' className={editMode ? 'hide' : 'show'} onClick={() => setEditMode(!editMode)}>Edit</Button>
-                    <Button id="deletionConfirmation" size="lg" color='danger'>Delete</Button>
-                </div>
-            </section>
-
-            <section id="ticketSection">
-                <div>
-                    <div></div>
-                    <div>
-                        <form className="me-2" id="filter-item" >
-                            <input id="ledgerSearchbar" className="searchbar" type='text' placeholder="Search by company or ticket #" onChange={handleChange} value={searchVal} />
-                            <button className="search-submit" type="submit">
-                                <img src={searchicon} alt="Search Icon" />
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div className='ledger split' id='ticketContainer'>
+                <div id='ticketContainer'>
                     {mapapedWorkers}
                 </div >
+            </section>
+
+            <section id="ledgerViewerSection">
+                <div className="ledgerTitle ">
+                    <h1>Current selected ticket</h1>
+                </div>
+                <div className="pdfLedgerButtonsContainer">
+                    <Button size="lg" color='warning' className={editMode ? 'hide' : 'show'} onClick={() => setEditMode(!editMode)}>Edit</Button>
+                    <Button size="lg" color='success' className={editMode ? 'show' : 'hide'} type='submit' onClick={() => {
+                        handleUpdate(activeTicket)
+                        setEditMode(!editMode)
+                    }}>Save</Button>
+                    <Button disabled={editMode} id="deletionConfirmation" size="lg" color='danger'>Delete</Button>
+                </div>
+
+                <div id="viewerContainer">
+                    {editMode ?
+                        <div>
+                            <EditTicket editMode={editMode} editedData={activeTicket} API_URL={API_URL} setEditedData={setActiveTicket} />
+                        </div>
+                        :
+                        <PDFViewer className="pdfViwerLedger">
+                            {activeTicket ? <PdfRenderer value={activeTicket} /> : 'There was a problem '}
+                        </PDFViewer>
+                    }
+                </div>
+
             </section>
 
             <UncontrolledPopover
@@ -148,35 +151,3 @@ const Ledger = (props) => {
 }
 
 export default Ledger;
-
-
-{/* 
-            <Modal fullscreen className='modal-width' id='mainModal' isOpen={ticketInfoModal}>
-                <ModalHeader toggle={() => {
-                    toggleTicketInfoModal()
-                    setEditMode(false)
-                }}>
-                    <img
-                        id='ticketLogo'
-                        src={logo} />
-                    {activeTicket ? `${activeTicket.worker}s Ticket for ${activeTicket.billTo} on ${activeTicket.date}, Ticket # ${activeTicket.ticketNum ? activeTicket.ticketNum : '-----'}` : 'Ticket Info'}
-                </ModalHeader>
-                <ModalBody id="ticketInfo">
-                    {editMode ? (
-                        <EditTicket editMode={editMode} editedData={activeTicket} API_URL={API_URL} setEditedData={setActiveTicket} />
-                    ) : (
-                        <PDFViewer style={{ width: '100%', height: '100%' }}>
-                            <PdfRenderer value={activeTicket} />
-                        </PDFViewer>
-                    )}
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="secondary" className={editMode ? 'hide' : 'show'} onClick={toggleTicketInfoModal}>close</Button>
-                    <Button color='warning' className={editMode ? 'hide' : 'show'} onClick={() => setEditMode(!editMode)}>Edit</Button>
-                    <Button color='success' className={editMode ? 'show' : 'hide'} type='submit' onClick={() => {
-                        handleUpdate(activeTicket)
-                        setEditMode(!editMode)
-                        toggleTicketInfoModal()
-                    }}>Save</Button>
-                </ModalFooter>
-            </Modal> */}

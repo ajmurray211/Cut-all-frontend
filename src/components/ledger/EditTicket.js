@@ -173,7 +173,7 @@ const EditTicket = ((props) => {
                 <td><Input name='infoRow' onChange={(e) => handleChange(e, index, 'length', e.target.value)} value={row.length} />  </td>
                 <td><Input name='infoRow' onChange={(e) => handleChange(e, index, 'depth', e.target.value)} value={row.depth} />  </td>
                 <td><Input name='infoRow' onChange={(e) => handleChange(e, index, 'workCode', e.target.value)} value={row.workCode} />  </td>
-                <td><Input name='infoRow' onChange={(e) => handleChange(e, index, 'equipUsed', e.target.value)} value={row.equipUsed} />  </td>
+                <td><Input name='infoRow' type='textarea' onChange={(e) => handleChange(e, index, 'equipUsed', e.target.value)} value={row.equipUsed} />  </td>
                 <td>
                     <Input
                         name='infoRow'
@@ -194,171 +194,177 @@ const EditTicket = ((props) => {
     })
 
     return (
-        <div className={props.editMode ? 'show' : 'hide'} id={props.editMode ? 'ticketBody' : 'hide'}>
-            <section className='half' id='left'>
-                <h3 >Job Information:</h3>
-                <ul id='input name = onChange={(e) => handleChange(e)}Container'>
-                    <Table
-                        size='sm'
-                        bordered
-                        striped
-                    >
-                        <thead>
-                            <tr>
-                                <th>Truck #</th>
-                                <th>Customer</th>
-                                <th>Address</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><Input name='truckNum' onChange={(e) => handleChange(e)} value={props.editedData.truckNum} /></td>
-                                <td id='customer'><Input name='billTo' onChange={(e) => handleChange(e)} value={props.editedData.billTo} /></td>
-                                <td><Input name='address' onChange={(e) => handleChange(e)} value={props.editedData.address} /></td>
-                            </tr>
-                        </tbody>
-                    </Table>
-                    <li><span className='input Item'>Work Completed</span>:
-                        <Table
-                            title='Work Completed'
-                            bordered
-                            size='sm'
-                            responsive
-                            striped
-                        >
-                            <thead>
-                                <tr>
-                                    <th>QTY</th>
-                                    <th>Length / DIA</th>
-                                    <th>Depth (in.)</th>
-                                    <th>Work Code</th>
-                                    <th>Description / Equip. Used</th>
-                                    <th>Blade serial #</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {mappedjobInfo}
-                            </tbody>
-
-                        </Table>
-                    </li>
-                    <li> <span className='input Item'>CA men on the job and their times.</span>
-                        <Table
-                            size='sm'
-                            bordered
-                            striped>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Travel Time</th>
-                                    <th>Job Time</th>
-                                    <th>Total Time</th>
-                                    <th>Milage</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            name='worker'
-                                            onChange={(e) => handleChange(e)}
-                                            value={props.editedData.worker}
-                                            list='workers'
-                                            autoComplete='on'
-                                        />
-                                    </td>
-                                    <td><><Input name='travelBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelBegin} /> - <Input name='travelEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelEnd} /> </> </td>
-                                    <td><><Input name='jobBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobBegin} /> - <Input name='jobEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobEnd} /> </></td>
-                                    <td>{props.editedData.totalPaidTime}</td>
-                                    <td><Input name='milage' onChange={(e) => handleChange(e)} value={props.editedData.milage} /></td>
-                                </tr>
-                                {mappedHelpers}
-                            </tbody>
-                        </Table>
-                    </li>
-
-                </ul>
-                <h3>Other Job Details</h3>
-                <Input name='detailsNotCovered' onChange={(e) => handleChange(e)} type='textarea' value={props.editedData.detailsNotCovered} />
-
-                <section id='confirmationDetails'>
-                    <ul>
-                        <li>
-                            <Label>PO #:</Label>
-                            <Input name='poNum' onChange={(e) => handleChange(e)} value={props.editedData.poNum} />
-                        </li>
-                        <li>
-                            <Label>Job #:</Label>
-                            <Input name='jobNum' onChange={(e) => handleChange(e)} value={props.editedData.jobNum} />
-                        </li>
-                        <li>
-                            <Label>Email CC:</Label>
-                            <Input name='CC' onChange={(e) => handleChange(e)} value={props.editedData.CC} />
-                        </li>
-                    </ul>
-                    I {props.editedData.confirmationName} have read and agreed to the details and conditions of the job ticket above on behalf of <span id='customer'>{props.editedData.billTo.toLocaleUpperCase()}</span>.
-                </section>
-            </section>
-
-            <section className='half' id='right'>
+        <div className='editComponent'>
+            <div className='editAdminSection'>
+                <div>
+                    <Label>Truck #</Label>
+                    <Input name='truckNum' onChange={(e) => handleChange(e)} value={props.editedData.truckNum} />
+                </div>
+                <div>
+                    <Label>Customer</Label>
+                    <Input name='billTo' onChange={(e) => handleChange(e)} value={props.editedData.billTo} />
+                </div>
+                <div>
+                    <Label>Address</Label>
+                    <Input name='address' onChange={(e) => handleChange(e)} value={props.editedData.address} />
+                </div>
+            </div>
+            <div className='editWorkCompletedSection'>
                 <Table
+                    title='Work Completed'
                     bordered
-                    size="sm"
+                    size='sm'
+                    responsive
                     striped
                 >
                     <thead>
                         <tr>
-                            <th>Hours Spent</th>
+                            <th>QTY</th>
+                            <th>Length / DIA</th>
+                            <th>Depth (in.)</th>
+                            <th>Work Code</th>
+                            <th>Description / Equip. Used</th>
+                            <th>Blade serial #</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr> <th>
-                            <Label>Wall Sawing</Label>
-                            <Input name='wallSawing' onChange={(e) => handleChange(e)} type='number' value={props.editedData.wallSawing} />
-                        </th></tr><tr> <th>
-                            <Label>Core Drilling</Label>
-                            <Input name='coreDrilling' onChange={(e) => handleChange(e)} type='number' value={props.editedData.coreDrilling} />
-                        </th></tr><tr> <th>
-                            <Label>Water Control</Label>
-                            <Input name='waterControl' onChange={(e) => handleChange(e)} type='number' value={props.editedData.waterControl} />
-                        </th></tr><tr> <th>
-                            <Label>Slab Saw</Label>
-                            <Input name='slabSaw' onChange={(e) => handleChange(e)} type='number' value={props.editedData.slabSaw} />
-                        </th></tr><tr> <th>
-                            <Label>Hand Saw</Label>
-                            <Input name='handSawing' onChange={(e) => handleChange(e)} type='number' value={props.editedData.handSawing} />
-                        </th></tr><tr> <th>
-                            <Label>Hammer Chipping</Label>
-                            <Input name='hammerChipping' onChange={(e) => handleChange(e)} type='number' value={props.editedData.hammerChipping} />
-                        </th></tr><tr> <th>
-                            <Label>Load Excevate</Label>
-                            <Input name='loadExcevating' onChange={(e) => handleChange(e)} type='number' value={props.editedData.loadExcevate} />
-                        </th></tr><tr> <th>
-                            <Label>Haul</Label>
-                            <Input name='haul' onChange={(e) => handleChange(e)} type='number' value={props.editedData.haul} />
-                        </th></tr><tr> <th>
-                            <Label>Hand Labor</Label>
-                            <Input name='handLabor' onChange={(e) => handleChange(e)} type='number' value={props.editedData.handLabor} />
-                        </th></tr><tr> <th>
-                            <Label>Dump Yards</Label>
-                            <Input name='dumpYards' onChange={(e) => handleChange(e)} type='number' value={props.editedData.dumpYards} />
-                        </th></tr><tr> <th>
-                            <Label>Release</Label>
-                            <Input name='release' onChange={(e) => handleChange(e)} type='number' value={props.editedData.release} />
-                        </th></tr><tr> <th>
-                            <Label>Standby</Label>
-                            <Input name='standby' onChange={(e) => handleChange(e)} type='number' value={props.editedData.standby} />
-                        </th></tr><tr> <th>
-                            <Label>Other</Label>
-                            <Input name='other' onChange={(e) => handleChange(e)} type='number' value={props.editedData.other} />
-                        </th></tr><tr> <th>
-                            <Label>Down Time</Label>
-                            <Input name='downtime' onChange={(e) => handleChange(e)} type='number' value={props.editedData.downTime} />
-                        </th></tr>
+                        {mappedjobInfo}
                     </tbody>
                 </Table>
+            </div>
+            <div className='editTimeSection'>
+                <Table
+                    bordered
+                    size='sm'
+                    responsive
+                    striped
+                >
+                    <thead>
+                        <tr id='timeTitleContainer'>
+                            <th>Name</th>
+                            <th>Travel time</th>
+                            <th>Job Time</th>
+                            <th>Total Time</th>
+                            <th>Milage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id='timeContentContainer'>
+                            <td>
+                                <Input
+                                    className='editTimeInputs'
+                                    name='worker'
+                                    onChange={(e) => handleChange(e)}
+                                    value={props.editedData.worker}
+                                    list='workers'
+                                    autoComplete='on'
+                                />
+                            </td>
+                            <td className=''>
+                                <Input name='travelBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelBegin} /> -
+                                <Input name='travelEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.travelEnd} />
+                            </td>
+                            <td className=''>
+                                <Input name='jobBegin' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobBegin} /> -
+                                <Input name='jobEnd' onChange={(e) => handleChange(e)} type='time' value={props.editedData.jobEnd} />
+                            </td>
+                            <td className=''>{props.editedData.totalPaidTime}</td>
+                            <td>
+                                <Input className='' name='milage' onChange={(e) => handleChange(e)} value={props.editedData.milage} />
+                            </td>
+                        </tr>
+                        {mappedHelpers}
+                    </tbody>
+                </Table>
+            </div >
+            <div className='editOtherWorkSection'>
+                <div className='editConfirmationContainer'>
+                    <div className=''>
+                        <Label>PO Number</Label>
+                        <Input placeholder='PO number' name='poNum' onChange={(e) => handleChange(e)} value={props.editedData.poNum} />
+                    </div>
+                    <div className=''>
+                        <Label>Job Number</Label>
+                        <Input placeholder='Job Number' name='jobNum' onChange={(e) => handleChange(e)} value={props.editedData.jobNum} />
+                    </div>
+                    <div className=''>
+                        <Label>Emailed To</Label>
+                        <Input placeholder='CC' name='CC' onChange={(e) => handleChange(e)} value={props.editedData.CC} />
+                    </div>
+                    <div className='editConfirmationMsg'>
+                        I {props.editedData.confirmationName} have read and agreed to the details and conditions of the job ticket above on behalf of <span id='customer'>{props.editedData.billTo.toLocaleUpperCase()}</span>.
+                    </div>
+                </div>
+                <div className='timeBreakdownContainer'>
+                    <div className='grayed editInputGroup'>
+                        <Label>Wall Sawing</Label>
+                        <Input placeholder='-' name='wallSawing' onChange={(e) => handleChange(e)} type='number' value={props.editedData.wallSawing} />
+                    </div>
 
-            </section >
+                    <div className='grayed editInputGroup'>
+                        <Label>Core Drilling</Label>
+                        <Input placeholder='-' name='coreDrilling' onChange={(e) => handleChange(e)} type='number' value={props.editedData.coreDrilling} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Water Control</Label>
+                        <Input placeholder='-' name='waterControl' onChange={(e) => handleChange(e)} type='number' value={props.editedData.waterControl} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Slab Saw</Label>
+                        <Input placeholder='-' name='slabSaw' onChange={(e) => handleChange(e)} type='number' value={props.editedData.slabSaw} />
+                    </div>
+                    <div className='grayed editInputGroup'>
+                        <Label>Hand Saw</Label>
+                        <Input placeholder='-' name='handSawing' onChange={(e) => handleChange(e)} type='number' value={props.editedData.handSawing} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Hammer Chipping</Label>
+                        <Input placeholder='-' name='hammerChipping' onChange={(e) => handleChange(e)} type='number' value={props.editedData.hammerChipping} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Load Excevate</Label>
+                        <Input placeholder='-' name='loadExcevating' onChange={(e) => handleChange(e)} type='number' value={props.editedData.loadExcevate} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Haul</Label>
+                        <Input placeholder='-' name='haul' onChange={(e) => handleChange(e)} type='number' value={props.editedData.haul} />
+                    </div>
+                    <div className='grayed editInputGroup'>
+                        <Label>Hand Labor</Label>
+                        <Input placeholder='-' name='handLabor' onChange={(e) => handleChange(e)} type='number' value={props.editedData.handLabor} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Dump Yards</Label>
+                        <Input placeholder='-' name='dumpYards' onChange={(e) => handleChange(e)} type='number' value={props.editedData.dumpYards} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Release</Label>
+                        <Input placeholder='-' name='release' onChange={(e) => handleChange(e)} type='number' value={props.editedData.release} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Standby</Label>
+                        <Input placeholder='-' name='standby' onChange={(e) => handleChange(e)} type='number' value={props.editedData.standby} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Other</Label>
+                        <Input placeholder='-' name='other' onChange={(e) => handleChange(e)} type='number' value={props.editedData.other} />
+                    </div>
+
+                    <div className='grayed editInputGroup'>
+                        <Label>Down Time</Label>
+                        <Input placeholder='-' name='downtime' onChange={(e) => handleChange(e)} type='number' value={props.editedData.downTime} />
+                    </div>
+                </div>
+            </div>
         </div >
     )
 });
