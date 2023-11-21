@@ -101,7 +101,7 @@ const Ledger = (props) => {
 
             <section id="ledgerViewerSection">
                 <div className="ledgerTitle ">
-                    <h1>Current selected ticket</h1>
+                    <h1>Current Selected Ticket</h1>
                 </div>
                 <div className="pdfLedgerButtonsContainer">
                     <Button size="lg" color='warning' className={editMode ? 'hide' : 'show'} onClick={() => setEditMode(!editMode)}>Edit</Button>
